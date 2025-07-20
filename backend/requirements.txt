@@ -3,4 +3,5 @@ Flask-SQLAlchemy
 Flask-JWT-Extended
 python-dotenv
 pandas
+psycopg2-binary
 flasgger
