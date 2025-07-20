@@ -1,1 +1,1 @@
-# management-system-scientific-exhibition
+# Sistema de Gestão para Mostra Científica
