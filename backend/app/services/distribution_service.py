@@ -3,8 +3,9 @@ import random
 
 def distribute_works():
     works = Work.query.all()
-    pedagogicos = Evaluator.query.filter_by(type='pedagogico').all()
-    tecnicos = Evaluator.query.filter_by(type='tecnico').all()
+    # Considera 'Pedagógica' como avaliador pedagógico, o resto como técnico
+    pedagogicos = Evaluator.query.filter(Evaluator.area.ilike('%pedag%')).all()
+    tecnicos = Evaluator.query.filter(~Evaluator.area.ilike('%pedag%')).all()
 
     if not pedagogicos or not tecnicos:
         raise Exception('É necessário pelo menos um avaliador pedagógico e um técnico.')

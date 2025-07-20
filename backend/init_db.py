@@ -1,6 +1,6 @@
 from app import create_app
 from app.extensions import db
-from app.models import Evaluator, Work
+from app.models import Evaluator, Work, Admin
 from werkzeug.security import generate_password_hash
 
 app = create_app()
@@ -9,21 +9,38 @@ with app.app_context():
     db.drop_all()
     db.create_all()
 
+    # TODO: coletar todos as areas e subareas
+    # TODO: coletar todos os trabalhos
+    # TODO: coletar todos os avaliadores
+    # TODO: feature de importação de trabalhos
+    # TODO: feature de ler a ficha de avaliação OCR
+
+    # admin
+    if not Admin.query.filter_by(login='admin').first():
+        admin = Admin(
+            name='Administrador',
+            login='admin',
+            password_hash=generate_password_hash('admin123')
+        )
+        db.session.add(admin)
+
     # Criar avaliadores
-    if not Evaluator.query.filter_by(email='pedagogico@ifrj.edu.br').first():
+    if not Evaluator.query.filter_by(siape_or_cpf='123456789').first():
         ped = Evaluator(
             name='Avaliador Pedagógico',
-            email='pedagogico@ifrj.edu.br',
-            password_hash=generate_password_hash('123456'),
-            type='pedagogico'
+            siape_or_cpf='123456789',
+            birthdate='01011980',
+            area='Pedagógica',
+            subareas='Sociedade, Educação'
         )
         db.session.add(ped)
-    if not Evaluator.query.filter_by(email='tecnico@ifrj.edu.br').first():
+    if not Evaluator.query.filter_by(siape_or_cpf='98765432100').first():
         tec = Evaluator(
             name='Avaliador Técnico',
-            email='tecnico@ifrj.edu.br',
-            password_hash=generate_password_hash('123456'),
-            type='tecnico'
+            siape_or_cpf='98765432100',
+            birthdate='02021985',
+            area='Computação',
+            subareas='Robótica, IA'
         )
         db.session.add(tec)
 
@@ -77,4 +94,4 @@ with app.app_context():
     ]
     db.session.add_all(works)
     db.session.commit()
-    print('Tabelas e dados iniciais criados com sucesso!') 
+    print('Initial tables and data created successfully!') 

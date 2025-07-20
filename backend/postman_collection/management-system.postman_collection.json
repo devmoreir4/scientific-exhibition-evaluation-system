@@ -1,0 +1,181 @@
+{
+    "info": {
+      "name": "Management System Scientific Exhibition",
+      "_postman_id": "c1e1e1e1-1234-5678-9101-abcdefabcdef",
+      "description": "Coleção de testes para o sistema de avaliação científica",
+      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+      {
+        "name": "Auth - Login Admin",
+        "request": {
+          "method": "POST",
+          "header": [
+            { "key": "Content-Type", "value": "application/json" }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"login\": \"admin\",\n  \"password\": \"admin123\"\n}"
+          },
+          "url": { "raw": "http://localhost:5000/api/v1/auth/admin/token", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "v1", "auth", "admin", "token"] }
+        }
+      },
+      {
+        "name": "Auth - Login Avaliador",
+        "request": {
+          "method": "POST",
+          "header": [
+            { "key": "Content-Type", "value": "application/json" }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"siape_or_cpf\": \"123456789\",\n  \"birthdate\": \"01011980\"\n}"
+          },
+          "url": { "raw": "http://localhost:5000/api/v1/auth/token", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "v1", "auth", "token"] }
+        }
+      },
+      {
+        "name": "Auth - Cadastrar Avaliador",
+        "request": {
+          "method": "POST",
+          "header": [
+            { "key": "Content-Type", "value": "application/json" }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"name\": \"Novo Avaliador\",\n  \"siape_or_cpf\": \"11122233344\",\n  \"birthdate\": \"15031990\",\n  \"area\": \"Química\",\n  \"subareas\": \"Polímeros, Sustentabilidade\"\n}"
+          },
+          "url": { "raw": "http://localhost:5000/api/v1/auth/register", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "v1", "auth", "register"] }
+        }
+      },
+      {
+        "name": "Admin - Listar Avaliadores",
+        "request": {
+          "method": "GET",
+          "header": [
+            { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+          ],
+          "url": { "raw": "http://localhost:5000/api/v1/admin/users", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "v1", "admin", "users"] }
+        }
+      },
+      {
+        "name": "Admin - Editar Avaliador",
+        "request": {
+          "method": "PUT",
+          "header": [
+            { "key": "Authorization", "value": "Bearer {{admin_token}}" },
+            { "key": "Content-Type", "value": "application/json" }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"name\": \"Nome Editado\",\n  \"area\": \"Computação\"\n}"
+          },
+          "url": { "raw": "http://localhost:5000/api/v1/admin/users/1", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "v1", "admin", "users", "1"] }
+        }
+      },
+      {
+        "name": "Admin - Remover Avaliador",
+        "request": {
+          "method": "DELETE",
+          "header": [
+            { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+          ],
+          "url": { "raw": "http://localhost:5000/api/v1/admin/users/1", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "v1", "admin", "users", "1"] }
+        }
+      },
+      {
+        "name": "Admin - Listar Trabalhos",
+        "request": {
+          "method": "GET",
+          "header": [
+            { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+          ],
+          "url": { "raw": "http://localhost:5000/api/v1/admin/works", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "v1", "admin", "works"] }
+        }
+      },
+      {
+        "name": "Admin - Editar Trabalho",
+        "request": {
+          "method": "PUT",
+          "header": [
+            { "key": "Authorization", "value": "Bearer {{admin_token}}" },
+            { "key": "Content-Type", "value": "application/json" }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"title\": \"Novo Título do Trabalho\"\n}"
+          },
+          "url": { "raw": "http://localhost:5000/api/v1/admin/works/1", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "v1", "admin", "works", "1"] }
+        }
+      },
+      {
+        "name": "Admin - Remover Trabalho",
+        "request": {
+          "method": "DELETE",
+          "header": [
+            { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+          ],
+          "url": { "raw": "http://localhost:5000/api/v1/admin/works/1", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "v1", "admin", "works", "1"] }
+        }
+      },
+      {
+        "name": "Admin - Distribuir Trabalhos",
+        "request": {
+          "method": "POST",
+          "header": [
+            { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+          ],
+          "url": { "raw": "http://localhost:5000/api/v1/admin/works/distribute", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "v1", "admin", "works", "distribute"] }
+        }
+      },
+      {
+        "name": "Evaluator - Listar Trabalhos Atribuídos",
+        "request": {
+          "method": "GET",
+          "header": [
+            { "key": "Authorization", "value": "Bearer {{evaluator_token}}" }
+          ],
+          "url": { "raw": "http://localhost:5000/api/v1/evaluator/works/assigned", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "v1", "evaluator", "works", "assigned"] }
+        }
+      },
+      {
+        "name": "Evaluator - Enviar Avaliação",
+        "request": {
+          "method": "POST",
+          "header": [
+            { "key": "Authorization", "value": "Bearer {{evaluator_token}}" },
+            { "key": "Content-Type", "value": "application/json" }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"work_id\": 1,\n  \"criterion1\": 5,\n  \"criterion2\": 4,\n  \"criterion3\": 5,\n  \"criterion4\": 3,\n  \"criterion5\": 4,\n  \"comments\": \"Muito bom!\"\n}"
+          },
+          "url": { "raw": "http://localhost:5000/api/v1/evaluator/evaluations", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "v1", "evaluator", "evaluations"] }
+        }
+      },
+      {
+        "name": "Evaluator - Minhas Avaliações",
+        "request": {
+          "method": "GET",
+          "header": [
+            { "key": "Authorization", "value": "Bearer {{evaluator_token}}" }
+          ],
+          "url": { "raw": "http://localhost:5000/api/v1/evaluator/evaluations/mine", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "v1", "evaluator", "evaluations", "mine"] }
+        }
+      },
+      {
+        "name": "Evaluator - Avaliações de um Trabalho",
+        "request": {
+          "method": "GET",
+          "header": [
+            { "key": "Authorization", "value": "Bearer {{evaluator_token}}" }
+          ],
+          "url": { "raw": "http://localhost:5000/api/v1/evaluator/evaluations/work/1", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "v1", "evaluator", "evaluations", "work", "1"] }
+        }
+      }
+    ],
+    "variable": [
+      { "key": "admin_token", "value": "" },
+      { "key": "evaluator_token", "value": "" }
+    ]
+  }
