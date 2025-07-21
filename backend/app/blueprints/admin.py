@@ -4,8 +4,17 @@ from app.services.distribution_service import distribute_works
 from app.services.ocr_service import process_sheet_image
 from app.models import Evaluator, Work, Evaluation
 from app.extensions import db
+import os
 
 admin_bp = Blueprint('admin', __name__)
+
+UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'uploads')
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+def get_next_evaluation_number():
+    existing = [f for f in os.listdir(UPLOAD_FOLDER) if f.startswith('evaluation_')]
+    nums = [int(f.split('_')[1].split('.')[0]) for f in existing if f.split('_')[1].split('.')[0].isdigit()]
+    return max(nums, default=0) + 1
 
 def admin_required(fn):
     from functools import wraps
@@ -277,7 +286,7 @@ def update_work(work_id):
 @admin_required
 def process_sheet():
     """
-    Processar imagem de ficha de avaliação (OCR/OMR)
+    Processar imagem de ficha de avaliação (OCR/OMR) e salvar backup
     ---
     tags:
       - Administração
@@ -299,7 +308,16 @@ def process_sheet():
         return jsonify({'msg': 'Arquivo não enviado.'}), 400
     file = request.files['file']
     image_bytes = file.read()
+    # salvar imagem
+    ext = os.path.splitext(file.filename or 'sheet.jpg')[1]
+    numero = get_next_evaluation_number()
+    filename = f"evaluation_{numero}{ext}"
+    save_path = os.path.join(UPLOAD_FOLDER, filename)
+    with open(save_path, 'wb') as f:
+        f.write(image_bytes)
+    # processar OCR/OMR
     result = process_sheet_image(image_bytes)
+    result['saved_image'] = filename
     return jsonify(result), 200
 
 @admin_bp.route('/sheets/confirm', methods=['POST'])
