@@ -1,7 +1,8 @@
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.services.distribution_service import distribute_works
-from app.models import Evaluator, Work
+from app.services.ocr_service import process_sheet_image
+from app.models import Evaluator, Work, Evaluation
 from app.extensions import db
 
 admin_bp = Blueprint('admin', __name__)
@@ -269,4 +270,91 @@ def update_work(work_id):
     work.has_technical_student = data.get('has_technical_student', work.has_technical_student)
     work.has_prototype = data.get('has_prototype', work.has_prototype)
     db.session.commit()
-    return jsonify({'msg': 'Trabalho atualizado com sucesso!'}), 200 
+    return jsonify({'msg': 'Trabalho atualizado com sucesso!'}), 200
+
+@admin_bp.route('/sheets/process', methods=['POST'])
+@jwt_required()
+@admin_required
+def process_sheet():
+    """
+    Processar imagem de ficha de avaliação (OCR/OMR)
+    ---
+    tags:
+      - Administração
+    security:
+      - BearerAuth: []
+    consumes:
+      - multipart/form-data
+    parameters:
+      - in: formData
+        name: file
+        type: file
+        required: true
+        description: Imagem da ficha preenchida
+    responses:
+      200:
+        description: Dados extraídos da ficha
+    """
+    if 'file' not in request.files:
+        return jsonify({'msg': 'Arquivo não enviado.'}), 400
+    file = request.files['file']
+    image_bytes = file.read()
+    result = process_sheet_image(image_bytes)
+    return jsonify(result), 200
+
+@admin_bp.route('/sheets/confirm', methods=['POST'])
+@jwt_required()
+@admin_required
+def confirm_sheet():
+    """
+    Confirmar e salvar avaliação manual validada
+    ---
+    tags:
+      - Administração
+    security:
+      - BearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - work_id
+              - evaluator_id
+              - scores
+            properties:
+              work_id:
+                type: integer
+              evaluator_id:
+                type: integer
+                description: ID do avaliador
+              scores:
+                type: array
+                items:
+                  type: integer
+    responses:
+      201:
+        description: Avaliação manual salva com sucesso
+      400:
+        description: Dados obrigatórios faltando
+    """
+    data = request.get_json()
+    work_id = data.get('work_id')
+    scores = data.get('scores')
+    evaluator_id = data.get('evaluator_id')
+    if not work_id or not evaluator_id or not scores or len(scores) != 5:
+        return jsonify({'msg': 'Dados obrigatórios faltando.'}), 400
+    evaluation = Evaluation(
+        criterion1=scores[0],
+        criterion2=scores[1],
+        criterion3=scores[2],
+        criterion4=scores[3],
+        criterion5=scores[4],
+        method='manual_validated',
+        evaluator_id=evaluator_id,
+        work_id=work_id
+    )
+    db.session.add(evaluation)
+    db.session.commit()
+    return jsonify({'msg': 'Avaliação manual salva com sucesso!'}), 201 

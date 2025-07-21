@@ -42,5 +42,6 @@ class Evaluation(db.Model):
     criterion3 = db.Column(db.Float, nullable=False)
     criterion4 = db.Column(db.Float, nullable=False)
     criterion5 = db.Column(db.Float, nullable=False)
+    method = db.Column(db.String(32), nullable=False, default='online')
     evaluator_id = db.Column(db.Integer, db.ForeignKey('evaluator.id'), nullable=False)
     work_id = db.Column(db.Integer, db.ForeignKey('work.id'), nullable=False) 
