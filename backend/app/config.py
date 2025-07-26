@@ -9,4 +9,5 @@ class Config:
     JWT_ALGORITHM = os.environ.get('ALGORITHM', 'HS256')
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(
         minutes=int(os.environ.get('ACCESS_TOKEN_EXPIRE_MINUTES', 30))
-    ) 
+    )
+    GOOGLE_API_KEY = os.environ.get('GOOGLE_API_KEY') 
