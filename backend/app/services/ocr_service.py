@@ -8,7 +8,6 @@ import io
 LIMIAR_PIXELS = 200
 TAMANHO_ROI = 30
 
-# Coordenadas dos centros das caixas (mapeadas do modelo)
 coordenadas_centros = [
     (142, 750), (312, 750), (503, 748), (678, 750), (859, 748),
     (140, 893), (312, 897), (505, 893), (678, 893), (858, 895),
@@ -27,12 +26,11 @@ rotulos_questoes = [
 rotulos_opcoes = ["1-Ruim", "2-Regular", "3-Bom", "4-Ótimo", "5-Excelente"]
 
 def process_sheet_image(image_bytes):
-    # Carregar imagem a partir dos bytes
     image = Image.open(io.BytesIO(image_bytes)).convert('RGB')
     img = np.array(image)
     img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
 
-    # --- Extração dos campos de texto ---
+    # extração dos campos de texto
     texto_completo_para_ocr = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     texto_extraido = pytesseract.image_to_string(texto_completo_para_ocr, lang='por')
     id_poster = re.search(r'ID do pôster/banner:\s*(\d+)', texto_extraido)
@@ -41,7 +39,7 @@ def process_sheet_image(image_bytes):
     extracted_work_id = id_poster.group(1).strip() if id_poster else "Não encontrado"
     extracted_work_evaluator = avaliador.group(1).strip().split('\n')[0] if avaliador else "Não encontrado"
 
-    # --- Análise dos Checkboxes ---
+    # análise checkboxes
     cinza = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     binaria = cv2.adaptiveThreshold(cinza, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 11, 2)
 
@@ -56,12 +54,13 @@ def process_sheet_image(image_bytes):
         roi = binaria[y1:y2, x1:x2]
         pixels_marcados = cv2.countNonZero(roi)
         nome_questao = rotulos_questoes[id_questao]
+
         if nome_questao not in respostas:
             respostas[nome_questao] = "Não marcado"
+
         if pixels_marcados > LIMIAR_PIXELS:
             respostas[nome_questao] = rotulos_opcoes[id_opcao]
 
-    # Converter respostas para lista de scores (1-5)
     for questao in rotulos_questoes:
         valor = respostas.get(questao, "Não marcado")
         if valor == "Não marcado":

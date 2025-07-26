@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.services.distribution_service import distribute_works
 from app.services.ocr_service import process_sheet_image
+from app.services.ocr_ai_service import process_sheet_image_ai
 from app.models import Evaluator, Work, Evaluation
 from app.extensions import db
 import os
@@ -51,7 +52,6 @@ def distribute():
     except Exception as e:
         return jsonify({'msg': f'Erro na distribuição: {str(e)}'}), 500
 
-# --- Administração de usuários ---
 @admin_bp.route('/users', methods=['GET'])
 @jwt_required()
 @admin_required
@@ -163,7 +163,6 @@ def update_user(user_id):
     db.session.commit()
     return jsonify({'msg': 'Usuário atualizado com sucesso!'}), 200
 
-# --- Administração de trabalhos ---
 @admin_bp.route('/works', methods=['GET'])
 @jwt_required()
 @admin_required
@@ -306,19 +305,86 @@ def process_sheet():
     """
     if 'file' not in request.files:
         return jsonify({'msg': 'Arquivo não enviado.'}), 400
+    
     file = request.files['file']
+
+    if file.filename == '':
+        return jsonify({'msg': 'Nenhum arquivo selecionado.'}), 400
+
     image_bytes = file.read()
-    # salvar imagem
+
+    if not image_bytes:
+        return jsonify({'msg': 'Arquivo enviado está vazio ou corrompido.'}), 400
+    
     ext = os.path.splitext(file.filename or 'sheet.jpg')[1]
     numero = get_next_evaluation_number()
     filename = f"evaluation_{numero}{ext}"
     save_path = os.path.join(UPLOAD_FOLDER, filename)
     with open(save_path, 'wb') as f:
         f.write(image_bytes)
-    # processar OCR/OMR
+        
     result = process_sheet_image(image_bytes)
     result['saved_image'] = filename
+    
     return jsonify(result), 200
+
+@admin_bp.route('/sheets/process-ai', methods=['POST'])
+@jwt_required()
+@admin_required
+def process_sheet_ai():
+    """
+    Processar imagem de ficha de avaliação usando IA e salvar backup
+    ---
+    tags:
+      - Administração
+    security:
+      - BearerAuth: []
+    consumes:
+      - multipart/form-data
+    parameters:
+      - in: formData
+        name: file
+        type: file
+        required: true
+        description: Imagem da ficha preenchida
+    responses:
+      200:
+        description: Dados extraídos da ficha usando IA
+      400:
+        description: Erro no processamento da imagem
+      500:
+        description: Erro interno do servidor
+    """
+    if 'file' not in request.files:
+        return jsonify({'msg': 'Arquivo não enviado.'}), 400
+    
+    file = request.files['file']
+
+    if file.filename == '':
+        return jsonify({'msg': 'Nenhum arquivo selecionado.'}), 400
+
+    image_bytes = file.read()
+
+    if not image_bytes:
+        return jsonify({'msg': 'Arquivo enviado está vazio ou corrompido.'}), 400
+    
+    try:
+        ext = os.path.splitext(file.filename or 'sheet.jpg')[1]
+        numero = get_next_evaluation_number()
+        filename = f"evaluation_ai_{numero}{ext}"
+        save_path = os.path.join(UPLOAD_FOLDER, filename)
+        with open(save_path, 'wb') as f:
+            f.write(image_bytes)
+        
+        result = process_sheet_image_ai(image_bytes)
+        result['saved_image'] = filename
+        
+        return jsonify(result), 200
+            
+    except ValueError as e:
+        return jsonify({'msg': str(e)}), 400
+    except Exception as e:
+        return jsonify({'msg': f'Erro interno: {str(e)}'}), 500
 
 @admin_bp.route('/sheets/confirm', methods=['POST'])
 @jwt_required()

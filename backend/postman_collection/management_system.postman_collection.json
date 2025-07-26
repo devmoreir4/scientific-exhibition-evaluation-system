@@ -129,6 +129,61 @@
         }
       },
       {
+        "name": "Admin - Processar Ficha (OCR)",
+        "request": {
+          "method": "POST",
+          "header": [
+            { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+          ],
+          "body": {
+            "mode": "formdata",
+            "formdata": [
+              {
+                "key": "file",
+                "type": "file",
+                "src": []
+              }
+            ]
+          },
+          "url": { "raw": "http://localhost:5000/api/v1/admin/sheets/process", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "v1", "admin", "sheets", "process"] }
+        }
+      },
+      {
+        "name": "Admin - Processar Ficha (IA)",
+        "request": {
+          "method": "POST",
+          "header": [
+            { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+          ],
+          "body": {
+            "mode": "formdata",
+            "formdata": [
+              {
+                "key": "file",
+                "type": "file",
+                "src": []
+              }
+            ]
+          },
+          "url": { "raw": "http://localhost:5000/api/v1/admin/sheets/process-ai", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "v1", "admin", "sheets", "process-ai"] }
+        }
+      },
+      {
+        "name": "Admin - Confirmar Avaliação Manual",
+        "request": {
+          "method": "POST",
+          "header": [
+            { "key": "Authorization", "value": "Bearer {{admin_token}}" },
+            { "key": "Content-Type", "value": "application/json" }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"work_id\": 1,\n  \"evaluator_id\": 1,\n  \"scores\": [4, 5, 3, 4, 5]\n}"
+          },
+          "url": { "raw": "http://localhost:5000/api/v1/admin/sheets/confirm", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "v1", "admin", "sheets", "confirm"] }
+        }
+      },
+      {
         "name": "Evaluator - Listar Trabalhos Atribuídos",
         "request": {
           "method": "GET",
