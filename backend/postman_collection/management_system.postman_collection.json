@@ -29,7 +29,7 @@
           ],
           "body": {
             "mode": "raw",
-            "raw": "{\n  \"siape_or_cpf\": \"123456789\",\n  \"birthdate\": \"01011980\"\n}"
+            "raw": "{\n  \"siape_or_cpf\": \"123456789\",\n  \"password\": \"01011980\"\n}"
           },
           "url": { "raw": "http://localhost:5000/api/v1/auth/token", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "v1", "auth", "token"] }
         }
@@ -203,7 +203,7 @@
           ],
           "body": {
             "mode": "raw",
-            "raw": "{\n  \"work_id\": 1,\n  \"criterion1\": 5,\n  \"criterion2\": 4,\n  \"criterion3\": 5,\n  \"criterion4\": 3,\n  \"criterion5\": 4,\n  \"comments\": \"Muito bom!\"\n}"
+            "raw": "{\n  \"work_id\": 1,\n  \"criterion1\": 5,\n  \"criterion2\": 4,\n  \"criterion3\": 5,\n  \"criterion4\": 3,\n  \"criterion5\": 4\n}"
           },
           "url": { "raw": "http://localhost:5000/api/v1/evaluator/evaluations", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "v1", "evaluator", "evaluations"] }
         }
@@ -226,6 +226,21 @@
             { "key": "Authorization", "value": "Bearer {{evaluator_token}}" }
           ],
           "url": { "raw": "http://localhost:5000/api/v1/evaluator/evaluations/work/1", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "v1", "evaluator", "evaluations", "work", "1"] }
+        }
+      },
+      {
+        "name": "Evaluator - Alterar Senha",
+        "request": {
+          "method": "PUT",
+          "header": [
+            { "key": "Authorization", "value": "Bearer {{evaluator_token}}" },
+            { "key": "Content-Type", "value": "application/json" }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\n  \"current_password\": \"01011980\",\n  \"new_password\": \"minha_nova_senha123\"\n}"
+          },
+          "url": { "raw": "http://localhost:5000/api/v1/evaluator/change-password", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "v1", "evaluator", "change-password"] }
         }
       }
     ],

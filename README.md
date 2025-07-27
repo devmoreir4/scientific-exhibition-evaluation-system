@@ -1,1 +1,1 @@
-# Sistema de Gestão para Mostra Científica
+# Sistema de Gerenciamento para Mostra Científica
