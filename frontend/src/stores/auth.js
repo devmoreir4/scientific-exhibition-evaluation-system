@@ -23,7 +23,6 @@ export const useAuthStore = defineStore('auth', {
         this.role = data.role || (isAdmin ? 'admin' : 'evaluator')
         localStorage.setItem('token', this.token)
         localStorage.setItem('role', this.role)
-        api.defaults.headers.common['Authorization'] = `Bearer ${this.token}`
         return true
       } catch (e) {
         console.error('Erro ao fazer login:', e, e.response)
@@ -39,11 +38,19 @@ export const useAuthStore = defineStore('auth', {
       this.user = null
       localStorage.removeItem('token')
       localStorage.removeItem('role')
-      delete api.defaults.headers.common['Authorization']
     },
     checkAuth() {
-      if (this.token) {
-        api.defaults.headers.common['Authorization'] = `Bearer ${this.token}`
+      const savedToken = localStorage.getItem('token')
+      const savedRole = localStorage.getItem('role')
+      
+      if (savedToken && savedRole) {
+        this.token = savedToken
+        this.role = savedRole
+        return true
+      } else {
+        this.token = ''
+        this.role = ''
+        return false
       }
     }
   }

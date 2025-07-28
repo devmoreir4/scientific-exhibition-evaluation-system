@@ -13,6 +13,15 @@ def list_users():
         for u in users
     ]}), 200
 
+@admin_bp.route('/users/simple', methods=['GET'])
+@jwt_required()
+def list_users_simple():
+    users = Evaluator.query.all()
+    return jsonify({'users': [
+        {'id': u.id, 'name': u.name}
+        for u in users
+    ]}), 200
+
 @admin_bp.route('/users/<int:user_id>', methods=['DELETE'])
 @jwt_required()
 def delete_user(user_id):

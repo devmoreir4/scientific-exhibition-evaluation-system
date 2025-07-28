@@ -17,6 +17,10 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const auth = useAuthStore()
+  
+  // Restaurar autenticação se houver token salvo
+  auth.checkAuth()
+  
   // Rotas públicas
   if (to.meta.public) return next()
   // Página 404

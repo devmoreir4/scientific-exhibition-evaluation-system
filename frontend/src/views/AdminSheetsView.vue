@@ -30,8 +30,13 @@
             <input type="number" v-model.number="formData.work_id" required min="1" />
           </div>
           <div class="form-group">
-            <label>ID do Avaliador:</label>
-            <input type="number" v-model.number="formData.evaluator_id" required min="1" />
+            <label>Avaliador:</label>
+            <select v-model="formData.evaluator_id" required>
+              <option value="">Selecione um avaliador</option>
+              <option v-for="evaluator in evaluators" :key="evaluator.id" :value="evaluator.id">
+                {{ evaluator.name }}
+              </option>
+            </select>
           </div>
           <div class="form-group">
             <label>Critérios (1-5):</label>
@@ -63,7 +68,7 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import api from '../axios'
 
@@ -84,11 +89,28 @@ const confirming = ref(false)
 const confirmMsg = ref('')
 const confirmError = ref('')
 
+const evaluators = ref([])
+const loadingEvaluators = ref(false)
+
 const formData = reactive({
   work_id: 1,
-  evaluator_id: 1,
+  evaluator_id: '',
   scores: [1, 1, 1, 1, 1]
 })
+
+function fetchEvaluators() {
+  loadingEvaluators.value = true
+  api.get('/admin/users/simple')
+    .then(res => {
+      evaluators.value = res.data.users
+    })
+    .catch(e => {
+      console.error('Erro ao buscar avaliadores:', e)
+    })
+    .finally(() => {
+      loadingEvaluators.value = false
+    })
+}
 
 function distributeWorks() {
   distributing.value = true
@@ -117,9 +139,9 @@ function processSheetAi() {
   processError.value = ''
   const uploadFormData = new FormData()
   uploadFormData.append('file', file.value)
-  api.post('/admin/sheets/process-ai', uploadFormData)
+  api.post('/admin/sheets/process', uploadFormData)
     .then(res => {
-      console.log('Resposta /admin/sheets/process-ai:', res)
+      console.log('Resposta /admin/sheets/process:', res)
       console.log('Dados extraídos:', res.data)
       processMsg.value = 'Ficha processada com sucesso!';
       lastSheet.value = res.data
@@ -129,7 +151,7 @@ function processSheetAi() {
       
       // Preencher o formulário com os dados extraídos
       formData.work_id = parseInt(res.data.extracted_work_id) || 1
-      formData.evaluator_id = 1 // Por enquanto fixo, pode ser ajustado depois
+      formData.evaluator_id = ''
       
       // Converter scores extraídos para números válidos
       const extractedScores = res.data.extracted_scores || []
@@ -153,6 +175,11 @@ function processSheetAi() {
 
 function confirmSheet() {
   if (!lastSheet.value) return
+  
+  if (!formData.evaluator_id) {
+    confirmError.value = 'Por favor, selecione um avaliador.'
+    return
+  }
   
   for (let i = 0; i < formData.scores.length; i++) {
     if (formData.scores[i] < 1 || formData.scores[i] > 5) {
@@ -181,6 +208,10 @@ function confirmSheet() {
     .catch(e => { confirmError.value = e.response?.data?.msg || 'Erro ao confirmar avaliação.' })
     .finally(() => { confirming.value = false })
 }
+
+onMounted(() => {
+  fetchEvaluators()
+})
 </script>
 
 <style scoped>
@@ -334,7 +365,7 @@ h2 {
   font-weight: 600;
   font-size: 0.95rem;
 }
-.form-group input {
+.form-group input, .form-group select {
   padding: 0.5rem 0.7rem;
   border: 1.5px solid #CFE3C6;
   border-radius: 6px;

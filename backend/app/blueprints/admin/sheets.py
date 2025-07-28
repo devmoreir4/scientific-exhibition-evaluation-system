@@ -3,7 +3,7 @@ from flask import jsonify, request, current_app
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.services.ocr_service import process_sheet_image
 from app.services.ocr_ai_service import process_sheet_image_ai
-from app.models import Evaluation
+from app.models import Evaluation, Evaluator, Work
 from app.extensions import db
 import os
 
@@ -75,8 +75,26 @@ def confirm_sheet():
     work_id = data.get('work_id')
     scores = data.get('scores')
     evaluator_id = data.get('evaluator_id')
+    
     if not work_id or not evaluator_id or not scores or len(scores) != 5:
         return jsonify({'msg': 'Dados obrigatórios faltando.'}), 400
+    
+    evaluator = Evaluator.query.get(evaluator_id)
+    if not evaluator:
+        return jsonify({'msg': 'Avaliador não encontrado.'}), 404
+    
+    work = Work.query.get(work_id)
+    if not work:
+        return jsonify({'msg': 'Trabalho não encontrado.'}), 404
+    
+    existing_evaluation = Evaluation.query.filter_by(
+        evaluator_id=evaluator_id, 
+        work_id=work_id
+    ).first()
+    
+    if existing_evaluation:
+        return jsonify({'msg': 'Este avaliador já avaliou este trabalho.'}), 409
+    
     evaluation = Evaluation(
         criterion1=scores[0],
         criterion2=scores[1],
