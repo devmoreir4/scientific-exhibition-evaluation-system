@@ -5,8 +5,10 @@
     <div v-else-if="work">
       <div class="work-info">
         <strong>{{ work.title }}</strong> <br />
-        Autor: {{ work.author }}<br />
-        Área: {{ work.area }} | Subárea: {{ work.subarea }}
+        <strong>Autores:</strong> {{ work.authors }}<br />
+        <strong>Orientador:</strong> {{ work.advisor }}<br />
+        <strong>Tipo:</strong> {{ getTypeLabel(work.type) }}<br />
+        <strong>Área:</strong> {{ work.area }} | <strong>Subárea:</strong> {{ work.subarea }}
       </div>
       <form @submit.prevent="submitEvaluation">
         <div v-for="(criterion, index) in criteria" :key="index" class="criterion">
@@ -44,6 +46,14 @@ const criteria = [
   'Criatividade e originalidade da proposta:',
   'Expressão oral (volume, clareza e pausa) e domínio do assunto (conceitos, linguagem e termos técnicos):'
 ]
+
+function getTypeLabel(type) {
+  const types = {
+    'poster_banner': 'Pôster/Banner',
+    'oral_presentation': 'Apresentação Oral'
+  }
+  return types[type] || type
+}
 
 function fetchWork() {
   loadingWork.value = true
@@ -108,6 +118,7 @@ h2 {
   margin-bottom: 1.5rem;
   color: #17635A;
   font-weight: 600;
+  line-height: 1.6;
 }
 form {
   display: flex;

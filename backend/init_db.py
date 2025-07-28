@@ -53,48 +53,43 @@ with app.app_context():
     works = [
         Work(
             title='Análise Preditiva de Evasão Escolar com IA',
-            author='Ana B. Silva / Ciência da Computação / IFRJ',
+            authors='Ana B. Silva, Maria C. Santos',
+            advisor='Prof. Dr. João Silva',
+            type='poster_banner',
             area='Computação',
-            subarea='IA',
-            abstract='Este trabalho utiliza algoritmos de inteligência artificial para prever a evasão de alunos.',
-            has_technical_student=True,
-            has_prototype=False
+            subarea='IA'
         ),
         Work(
             title='Robô Seguidor de Linha Otimizado',
-            author='Carlos de Souza / Eng. de Controle e Automação / IFRJ',
+            authors='Carlos de Souza, Pedro Oliveira',
+            advisor='Prof. Dr. Roberto Lima',
+            type='oral_presentation',
             area='Computação',
-            subarea='Robótica',
-            abstract='Desenvolvimento de um robô seguidor de linha com sensor infravermelho e controle PID para otimização de percurso.',
-            has_technical_student=True,
-            has_prototype=True
+            subarea='Robótica'
         ),
         Work(
             title='Horta Urbana Sustentável Automatizada',
-            author='Mariana Costa / Técnico em Meio Ambiente / IFRJ',
+            authors='Mariana Costa, Luiza Ferreira',
+            advisor='Prof. Dra. Ana Paula Costa',
+            type='poster_banner',
             area='Sustentabilidade',
-            subarea='Sustentabilidade',
-            abstract='Projeto de uma horta vertical para espaços urbanos com sistema de irrigação automatizado por umidade do solo.',
-            has_technical_student=True,
-            has_prototype=True
+            subarea='Sustentabilidade'
         ),
         Work(
             title='Impacto das Fake News na Sociedade',
-            author='João Pereira / Licenciatura em Pedagogia / IFRJ',
+            authors='João Pereira',
+            advisor='Prof. Dr. Marcos Almeida',
+            type='oral_presentation',
             area='Pedagógica',
-            subarea='Sociedade',
-            abstract='Estudo sobre a percepção e o impacto da desinformação em comunidades escolares.',
-            has_technical_student=False,
-            has_prototype=False
+            subarea='Sociedade'
         ),
         Work(
             title='Síntese de Bioplástico a partir do Amido de Mandioca',
-            author='Fernanda Lima / Técnico em Química / IFRJ',
+            authors='Fernanda Lima, Rafael Santos, Juliana Costa',
+            advisor='Prof. Dra. Carla Mendes',
+            type='poster_banner',
             area='Química',
-            subarea='Polímeros',
-            abstract='Desenvolvimento de um método de baixo custo para a síntese de plástico biodegradável utilizando amido de mandioca.',
-            has_technical_student=True,
-            has_prototype=True
+            subarea='Polímeros'
         )
     ]
     db.session.add_all(works)

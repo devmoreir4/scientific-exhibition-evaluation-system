@@ -13,12 +13,11 @@ def get_assigned_works():
         {
             'id': w.id,
             'title': w.title,
-            'author': w.author,
+            'authors': w.authors,
+            'advisor': w.advisor,
+            'type': w.type,
             'area': w.area,
-            'subarea': w.subarea,
-            'abstract': w.abstract,
-            'has_technical_student': w.has_technical_student,
-            'has_prototype': w.has_prototype
+            'subarea': w.subarea
         }
         for w in evaluator.works
     ]
@@ -36,10 +35,9 @@ def get_work(work_id):
     return jsonify({'work': {
         'id': work.id,
         'title': work.title,
-        'author': work.author,
+        'authors': work.authors,
+        'advisor': work.advisor,
+        'type': work.type,
         'area': work.area,
-        'subarea': work.subarea,
-        'abstract': work.abstract,
-        'has_technical_student': work.has_technical_student,
-        'has_prototype': work.has_prototype
+        'subarea': work.subarea
     }}), 200 

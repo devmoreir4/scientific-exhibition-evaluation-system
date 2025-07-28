@@ -7,24 +7,22 @@
         <thead>
           <tr>
             <th>Título</th>
-            <th>Autor</th>
+            <th>Autores</th>
+            <th>Orientador</th>
+            <th>Tipo</th>
             <th>Área</th>
             <th>Subárea</th>
-            <th>Resumo</th>
-            <th>Estudante Técnico</th>
-            <th>Protótipo</th>
             <th>Ações</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="work in works" :key="work.id">
             <td>{{ work.title }}</td>
-            <td>{{ work.author }}</td>
+            <td>{{ work.authors }}</td>
+            <td>{{ work.advisor }}</td>
+            <td>{{ getTypeLabel(work.type) }}</td>
             <td>{{ work.area }}</td>
             <td>{{ work.subarea }}</td>
-            <td>{{ work.abstract }}</td>
-            <td>{{ work.has_technical_student ? 'Sim' : 'Não' }}</td>
-            <td>{{ work.has_prototype ? 'Sim' : 'Não' }}</td>
             <td>
               <button class="edit-btn" @click="openModal(work)">Editar</button>
               <button class="remove-btn" @click="removeWork(work.id)">Remover</button>
@@ -41,20 +39,19 @@
         <form @submit.prevent="saveWork">
           <label>Título</label>
           <input v-model="form.title" required />
-          <label>Autor</label>
-          <input v-model="form.author" required />
+          <label>Autores</label>
+          <input v-model="form.authors" required placeholder="Separados por vírgula" />
+          <label>Orientador</label>
+          <input v-model="form.advisor" required />
+          <label>Tipo</label>
+          <select v-model="form.type" required>
+            <option value="poster_banner">Pôster/Banner</option>
+            <option value="oral_presentation">Apresentação Oral</option>
+          </select>
           <label>Área</label>
           <input v-model="form.area" required />
           <label>Subárea</label>
           <input v-model="form.subarea" required />
-          <label>Resumo</label>
-          <textarea v-model="form.abstract" required rows="3" />
-          <label>
-            <input type="checkbox" v-model="form.has_technical_student" /> Estudante Técnico
-          </label>
-          <label>
-            <input type="checkbox" v-model="form.has_prototype" /> Protótipo
-          </label>
           <div class="modal-actions">
             <button type="submit">Salvar</button>
             <button type="button" @click="closeModal">Cancelar</button>
@@ -76,7 +73,22 @@ const error = ref('')
 const showModal = ref(false)
 const editingWork = ref(null)
 const modalError = ref('')
-const form = reactive({ title: '', author: '', area: '', subarea: '', abstract: '', has_technical_student: false, has_prototype: false })
+const form = reactive({ 
+  title: '', 
+  authors: '', 
+  advisor: '', 
+  type: 'poster_banner', 
+  area: '', 
+  subarea: ''
+})
+
+function getTypeLabel(type) {
+  const types = {
+    'poster_banner': 'Pôster/Banner',
+    'oral_presentation': 'Apresentação Oral'
+  }
+  return types[type] || type
+}
 
 function fetchWorks() {
   loading.value = true
@@ -141,10 +153,12 @@ table {
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 1rem;
+  font-size: 0.9rem;
 }
 th, td {
-  padding: 0.7rem 0.5rem;
+  padding: 0.5rem 0.3rem;
   text-align: left;
+  vertical-align: top;
 }
 th {
   background: #CFE3C6;
@@ -208,6 +222,8 @@ tbody tr:nth-child(even) {
   padding: 2rem 1.5rem;
   min-width: 320px;
   max-width: 95vw;
+  max-height: 90vh;
+  overflow-y: auto;
   box-shadow: 0 2px 16px #17635a33;
 }
 .modal h3 {
@@ -219,7 +235,7 @@ tbody tr:nth-child(even) {
   font-weight: 600;
   margin-top: 0.7rem;
 }
-.modal input, .modal textarea {
+.modal input, .modal textarea, .modal select {
   width: 100%;
   padding: 0.5rem 0.7rem;
   border: 1.5px solid #CFE3C6;
@@ -233,12 +249,36 @@ tbody tr:nth-child(even) {
   margin-top: 1rem;
   justify-content: flex-end;
 }
+.modal-actions button {
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  min-width: 100px;
+}
+.modal-actions button[type="submit"] {
+  background: #4CB050;
+  color: #fff;
+}
+.modal-actions button[type="submit"]:hover {
+  background: #17635A;
+}
+.modal-actions button[type="button"] {
+  background: #f0f0f0;
+  color: #666;
+}
+.modal-actions button[type="button"]:hover {
+  background: #e0e0e0;
+  color: #333;
+}
 @media (max-width: 600px) {
   .admin-works, .modal {
     padding: 1rem 0.3rem;
   }
   table, th, td {
-    font-size: 0.95rem;
+    font-size: 0.85rem;
   }
 }
 </style> 

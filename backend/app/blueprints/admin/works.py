@@ -9,7 +9,7 @@ from app.extensions import db
 def list_works():
     works = Work.query.all()
     return jsonify({'works': [
-        {'id': w.id, 'title': w.title, 'author': w.author, 'area': w.area, 'subarea': w.subarea, 'abstract': w.abstract, 'has_technical_student': w.has_technical_student, 'has_prototype': w.has_prototype}
+        {'id': w.id, 'title': w.title, 'authors': w.authors, 'advisor': w.advisor, 'type': w.type, 'area': w.area, 'subarea': w.subarea}
         for w in works
     ]}), 200
 
@@ -31,11 +31,10 @@ def update_work(work_id):
         return jsonify({'msg': 'Trabalho não encontrado.'}), 404
     data = request.get_json()
     work.title = data.get('title', work.title)
-    work.author = data.get('author', work.author)
+    work.authors = data.get('authors', work.authors)
+    work.advisor = data.get('advisor', work.advisor)
+    work.type = data.get('type', work.type)
     work.area = data.get('area', work.area)
     work.subarea = data.get('subarea', work.subarea)
-    work.abstract = data.get('abstract', work.abstract)
-    work.has_technical_student = data.get('has_technical_student', work.has_technical_student)
-    work.has_prototype = data.get('has_prototype', work.has_prototype)
     db.session.commit()
     return jsonify({'msg': 'Trabalho atualizado com sucesso!'}), 200 

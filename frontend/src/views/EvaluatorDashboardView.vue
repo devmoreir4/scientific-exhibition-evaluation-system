@@ -7,7 +7,9 @@
         <thead>
           <tr>
             <th>Título</th>
-            <th>Autor</th>
+            <th>Autores</th>
+            <th>Orientador</th>
+            <th>Tipo</th>
             <th>Área</th>
             <th>Subárea</th>
             <th>Avaliar</th>
@@ -16,7 +18,9 @@
         <tbody>
           <tr v-for="work in works" :key="work.id">
             <td>{{ work.title }}</td>
-            <td>{{ work.author }}</td>
+            <td>{{ work.authors }}</td>
+            <td>{{ work.advisor }}</td>
+            <td>{{ getTypeLabel(work.type) }}</td>
             <td>{{ work.area }}</td>
             <td>{{ work.subarea }}</td>
             <td>
@@ -43,9 +47,9 @@
         </thead>
         <tbody>
           <tr v-for="evaluation in evaluations" :key="evaluation.id">
-            <td>{{ evaluation.work_id }}</td>
+            <td>{{ evaluation.work_title }}</td>
             <td>{{ evaluation.criterion1 }}, {{ evaluation.criterion2 }}, {{ evaluation.criterion3 }}, {{ evaluation.criterion4 }}, {{ evaluation.criterion5 }}</td>
-            <td>{{ evaluation.method }}</td>
+            <td>{{ getMethodLabel(evaluation.method) }}</td>
             <td>
               <router-link :to="`/evaluate/${evaluation.work_id}`" class="view-btn">Ver</router-link>
             </td>
@@ -69,6 +73,22 @@ const worksError = ref('')
 const evaluations = ref([])
 const loadingEvals = ref(true)
 const evalsError = ref('')
+
+function getTypeLabel(type) {
+  const types = {
+    'poster_banner': 'Pôster/Banner',
+    'oral_presentation': 'Apresentação Oral'
+  }
+  return types[type] || type
+}
+
+function getMethodLabel(method) {
+  const methods = {
+    'online': 'Online',
+    'manual_validated': 'Manual Validado'
+  }
+  return methods[method] || method
+}
 
 function fetchWorks() {
   loadingWorks.value = true
@@ -111,10 +131,12 @@ table {
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 1rem;
+  font-size: 0.9rem;
 }
 th, td {
-  padding: 0.7rem 0.5rem;
+  padding: 0.5rem 0.3rem;
   text-align: left;
+  vertical-align: top;
 }
 th {
   background: #CFE3C6;
@@ -158,7 +180,7 @@ tbody tr:nth-child(even) {
     padding: 1rem 0.3rem;
   }
   table, th, td {
-    font-size: 0.95rem;
+    font-size: 0.85rem;
   }
 }
 </style> 

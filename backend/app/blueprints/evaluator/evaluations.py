@@ -45,14 +45,17 @@ def list_my_evaluations():
     evaluations = Evaluation.query.filter_by(evaluator_id=evaluator_id).all()
     result = []
     for ev in evaluations:
+        work = Work.query.get(ev.work_id)
         result.append({
             'id': ev.id,
             'work_id': ev.work_id,
+            'work_title': work.title if work else 'Trabalho não encontrado',
             'criterion1': ev.criterion1,
             'criterion2': ev.criterion2,
             'criterion3': ev.criterion3,
             'criterion4': ev.criterion4,
-            'criterion5': ev.criterion5
+            'criterion5': ev.criterion5,
+            'method': ev.method
         })
     return jsonify({'evaluations': result}), 200
 

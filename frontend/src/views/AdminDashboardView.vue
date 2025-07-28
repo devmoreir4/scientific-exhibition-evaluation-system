@@ -13,6 +13,16 @@
         <router-link to="/admin/works">Ver Trabalhos</router-link>
       </div>
       <div class="card">
+        <div class="card-title">Pôsteres/Banners</div>
+        <div class="card-value">{{ posterCount }}</div>
+        <span class="card-subtitle">de {{ works.length }} trabalhos</span>
+      </div>
+      <div class="card">
+        <div class="card-title">Apresentações Orais</div>
+        <div class="card-value">{{ oralCount }}</div>
+        <span class="card-subtitle">de {{ works.length }} trabalhos</span>
+      </div>
+      <div class="card">
         <div class="card-title">Fichas Manuais</div>
         <div class="card-value">-</div>
         <router-link to="/admin/sheets">Ver Fichas</router-link>
@@ -24,13 +34,21 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import api from '../axios'
 
 const users = ref([])
 const works = ref([])
 const loading = ref(true)
 const error = ref('')
+
+const posterCount = computed(() => {
+  return works.value.filter(w => w.type === 'poster_banner').length
+})
+
+const oralCount = computed(() => {
+  return works.value.filter(w => w.type === 'oral_presentation').length
+})
 
 async function fetchData() {
   loading.value = true
@@ -94,6 +112,12 @@ h2 {
   font-size: 2.2rem;
   font-weight: 900;
   margin-bottom: 0.7rem;
+}
+.card-subtitle {
+  color: #17635A;
+  font-size: 0.9rem;
+  font-weight: 600;
+  opacity: 0.8;
 }
 .card a {
   background: #17635A;

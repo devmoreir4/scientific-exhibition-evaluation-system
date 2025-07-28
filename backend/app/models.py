@@ -27,12 +27,11 @@ class Evaluator(db.Model):
 class Work(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(255), nullable=False)
-    author = db.Column(db.String(255), nullable=False)
+    authors = db.Column(db.String(255), nullable=False)  # autores separados por virgula
+    advisor = db.Column(db.String(255), nullable=False)
+    type = db.Column(db.String(50), nullable=False)  # 'poster_banner' ou 'oral_presentation'
     area = db.Column(db.String(100), nullable=False)
     subarea = db.Column(db.String(100), nullable=False)
-    abstract = db.Column(db.Text, nullable=False)
-    has_technical_student = db.Column(db.Boolean, default=False)
-    has_prototype = db.Column(db.Boolean, default=False)
     evaluations = db.relationship('Evaluation', backref='work', lazy=True)
     evaluators = db.relationship('Evaluator', secondary=work_evaluator_association, back_populates='works')
 
