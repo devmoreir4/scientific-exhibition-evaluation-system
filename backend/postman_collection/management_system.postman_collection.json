@@ -1,6 +1,6 @@
 {
     "info": {
-      "name": "Management System Scientific Exhibition",
+      "name": "Sistema de Avaliação para Mostra Científica",
       "_postman_id": "c1e1e1e1-1234-5678-9101-abcdefabcdef",
       "description": "Coleção de testes para o sistema de avaliação científica",
       "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
@@ -191,6 +191,16 @@
             { "key": "Authorization", "value": "Bearer {{evaluator_token}}" }
           ],
           "url": { "raw": "http://localhost:5000/api/v1/evaluator/works/assigned", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "v1", "evaluator", "works", "assigned"] }
+        }
+      },
+      {
+        "name": "Evaluator - Detalhes de um Trabalho",
+        "request": {
+          "method": "GET",
+          "header": [
+            { "key": "Authorization", "value": "Bearer {{evaluator_token}}" }
+          ],
+          "url": { "raw": "http://localhost:5000/api/v1/evaluator/works/1", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "v1", "evaluator", "works", "1"] }
         }
       },
       {

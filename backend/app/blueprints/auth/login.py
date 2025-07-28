@@ -8,9 +8,9 @@ from app.models import Evaluator, Admin
 @auth_bp.route('/token', methods=['POST'])
 def login():
     data = request.get_json()
-    siape_or_cpf = data.get('siape_or_cpf')
+    siape_or_cpf = (data.get('siape_or_cpf') or '').strip()
     password = data.get('password')
-    evaluator = Evaluator.query.filter_by(siape_or_cpf=siape_or_cpf).first()
+    evaluator = Evaluator.query.filter(Evaluator.siape_or_cpf.ilike(siape_or_cpf)).first()
     if not evaluator:
         return jsonify({'msg': 'Credenciais inválidas.'}), 401
     if evaluator.password_hash:
