@@ -27,6 +27,11 @@
         <div class="card-value">-</div>
         <router-link to="/admin/sheets">Ver Fichas</router-link>
       </div>
+      <div class="card">
+        <div class="card-title">Distribuições</div>
+        <div class="card-value">-</div>
+        <router-link to="/admin/distributions">Ver Distribuições</router-link>
+      </div>
     </div>
     <div v-if="loading" class="loading">Carregando dados...</div>
     <div v-if="error" class="error">{{ error }}</div>

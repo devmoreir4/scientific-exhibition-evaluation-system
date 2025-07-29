@@ -63,6 +63,35 @@ with app.app_context():
             birthdate='08081984',
             area='Ciências Sociais Aplicadas e Ciências Humanas',
             subareas='História, Filosoa e Sociologia; Geografia e Estudos Regionais'
+        ),
+        # precisa ter avaliadores pedagógicos
+        Evaluator(
+            name='Prof. Dr. José Pedagógico',
+            siape_or_cpf='111222333',
+            birthdate='15031975',
+            area='Pedagógica',
+            subareas='Educação, Cidadania e Direitos Humanos; Gestão, Empreendedorismo e Economia'
+        ),
+        Evaluator(
+            name='Prof. Dra. Sandra Pedagógica',
+            siape_or_cpf='444555666',
+            birthdate='22081976',
+            area='Pedagógica',
+            subareas='Educação, Cidadania e Direitos Humanos; Comunicação, Informação e Cultura Digital'
+        ),
+        Evaluator(
+            name='Prof. Dr. Paulo Pedagógico',
+            siape_or_cpf='777888999',
+            birthdate='18051977',
+            area='Pedagógica',
+            subareas='História, Filosoa e Sociologia; Geografia e Estudos Regionais'
+        ),
+        Evaluator(
+            name='Prof. Dra. Fernanda Pedagógica',
+            siape_or_cpf='000111222',
+            birthdate='30091974',
+            area='Pedagógica',
+            subareas='Língua Portuguesa e Produção Textual; Literatura, Leitura e Narrativas'
         )
     ]
 

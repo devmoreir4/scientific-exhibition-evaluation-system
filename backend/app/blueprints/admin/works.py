@@ -1,7 +1,7 @@
 from . import admin_bp
 from flask import jsonify, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from app.models import Work
+from app.models import Work, Evaluator
 from app.extensions import db
 from app.services.csv_importer_service import import_works_from_csv
 import io
@@ -14,6 +14,39 @@ def list_works():
         {'id': w.id, 'title': w.title, 'authors': w.authors, 'advisor': w.advisor, 'type': w.type, 'area': w.area, 'subarea': w.subarea}
         for w in works
     ]}), 200
+
+@admin_bp.route('/works/distributions', methods=['GET'])
+@jwt_required()
+def list_work_distributions():
+    """Lista todas as distribuições de trabalhos com seus avaliadores"""
+    works = Work.query.all()
+    distributions = []
+    
+    for work in works:
+        evaluators = []
+        for evaluator in work.evaluators:
+            evaluators.append({
+                'id': evaluator.id,
+                'name': evaluator.name,
+                'siape_or_cpf': evaluator.siape_or_cpf,
+                'area': evaluator.area,
+                'subareas': evaluator.subareas,
+                'carga': evaluator.carga
+            })
+        
+        distributions.append({
+            'work_id': work.id,
+            'work_title': work.title,
+            'work_authors': work.authors,
+            'work_advisor': work.advisor,
+            'work_type': work.type,
+            'work_area': work.area,
+            'work_subarea': work.subarea,
+            'evaluators': evaluators,
+            'evaluators_count': len(evaluators)
+        })
+    
+    return jsonify({'distributions': distributions}), 200
 
 @admin_bp.route('/works/import-csv', methods=['POST'])
 @jwt_required()

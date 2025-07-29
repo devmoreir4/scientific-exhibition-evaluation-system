@@ -33,6 +33,11 @@ export default [
         component: () => import('./views/AdminWorksView.vue')
       },
       {
+        path: 'distributions',
+        name: 'AdminDistributions',
+        component: () => import('./views/AdminDistributionsView.vue')
+      },
+      {
         path: 'sheets',
         name: 'AdminSheets',
         component: () => import('./views/AdminSheetsView.vue')

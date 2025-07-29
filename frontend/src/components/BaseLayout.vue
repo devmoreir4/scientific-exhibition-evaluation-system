@@ -9,6 +9,7 @@
         <router-link v-if="isAdmin" to="/admin/dashboard">Dashboard Admin</router-link>
         <router-link v-if="isAdmin" to="/admin/users">Avaliadores</router-link>
         <router-link v-if="isAdmin" to="/admin/works">Trabalhos</router-link>
+        <router-link v-if="isAdmin" to="/admin/distributions">Distribuições</router-link>
         <router-link v-if="isAdmin" to="/admin/sheets">Fichas Manuais</router-link>
         <router-link v-if="isEvaluator" to="/dashboard">Dashboard Avaliador</router-link>
         <router-link v-if="isEvaluator" to="/change-password">Trocar Senha</router-link>
