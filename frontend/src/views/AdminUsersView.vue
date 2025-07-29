@@ -41,7 +41,7 @@
           <label>Área</label>
           <input v-model="form.area" required />
           <label>Subáreas</label>
-          <input v-model="form.subareas" required />
+          <input v-model="form.subareas" required placeholder="Separadas por ponto e vírgula (;)" />
           <label>Data de Nascimento</label>
           <input v-model="form.birthdate" required placeholder="DDMMAAAA" />
           <div class="modal-actions">
@@ -172,9 +172,13 @@ tbody tr:nth-child(even) {
   border-radius: 6px;
   padding: 0.3rem 0.8rem;
   font-weight: 600;
-  margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
   cursor: pointer;
   transition: background 0.2s, color 0.2s;
+  min-width: 80px;
+  width: 80px;
+  text-align: center;
+  display: block;
 }
 .edit-btn {
   background: #CFE3C6;

@@ -19,7 +19,7 @@ class Evaluator(db.Model):
     birthdate = db.Column(db.String(8), nullable=False)
     password_hash = db.Column(db.String(128), nullable=True)
     area = db.Column(db.String(100), nullable=False)
-    subareas = db.Column(db.String(255), nullable=True)  # subáreas de interesse, separadas por vírgula
+    subareas = db.Column(db.String(255), nullable=True)  # subáreas de interesse, separadas por ponto e vírgula (;)
     carga = db.Column(db.Integer, default=0)
     evaluations = db.relationship('Evaluation', backref='evaluator', lazy=True)
     works = db.relationship('Work', secondary=work_evaluator_association, back_populates='evaluators')
@@ -27,7 +27,7 @@ class Evaluator(db.Model):
 class Work(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(255), nullable=False)
-    authors = db.Column(db.String(255), nullable=False)  # autores separados por virgula
+    authors = db.Column(db.String(255), nullable=False)  # autores separados por ponto e vírgula (;)
     advisor = db.Column(db.String(255), nullable=False)
     type = db.Column(db.String(50), nullable=False)  # 'poster_banner' ou 'oral_presentation'
     area = db.Column(db.String(100), nullable=False)

@@ -4,6 +4,7 @@ __pycache__/
 .pytest_cache/
 instance/
 .env
+Mostra2024.csv
 
 # ---- frontend ----
 # Logs

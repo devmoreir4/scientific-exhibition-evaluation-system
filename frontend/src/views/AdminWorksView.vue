@@ -1,36 +1,77 @@
 <template>
   <div class="admin-works">
     <h2>Trabalhos</h2>
-    <div v-if="loading" class="loading">Carregando trabalhos...</div>
-    <div v-else>
-      <table>
-        <thead>
-          <tr>
-            <th>Título</th>
-            <th>Autores</th>
-            <th>Orientador</th>
-            <th>Tipo</th>
-            <th>Área</th>
-            <th>Subárea</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="work in works" :key="work.id">
-            <td>{{ work.title }}</td>
-            <td>{{ work.authors }}</td>
-            <td>{{ work.advisor }}</td>
-            <td>{{ getTypeLabel(work.type) }}</td>
-            <td>{{ work.area }}</td>
-            <td>{{ work.subarea }}</td>
-            <td>
-              <button class="edit-btn" @click="openModal(work)">Editar</button>
-              <button class="remove-btn" @click="removeWork(work.id)">Remover</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <div v-if="error" class="error">{{ error }}</div>
+    
+    <!-- Seção de Importação CSV -->
+          <div class="import-section">
+            <h3>Importar Trabalhos</h3>
+            <div class="import-info">
+         </div>
+      
+          <form @submit.prevent="importCsv" class="import-form">
+           <div class="file-input-wrapper">
+             <input type="file" @change="onCsvFileChange" accept=".csv" required id="csv-file-input" />
+             <label for="csv-file-input" class="file-input-label">
+               <span v-if="!selectedFile">Escolher arquivo (.csv)</span>
+               <span v-else>{{ selectedFile.name }}</span>
+             </label>
+           </div>
+           <button type="submit" :disabled="importing">
+             {{ importing ? 'Importando...' : 'Importar CSV' }}
+           </button>
+          </form>
+      
+      <div v-if="importMsg" class="success">{{ importMsg }}</div>
+      <div v-if="importError" class="error">{{ importError }}</div>
+      
+      <!-- Lista de áreas disponíveis -->
+      <details class="areas-list">
+        <summary>Ver áreas e subáreas disponíveis</summary>
+        <div class="areas-content">
+          <div v-for="(subareas, area) in availableAreas" :key="area" class="area-group">
+            <h4>{{ area }}</h4>
+            <ul>
+              <li v-for="subarea in subareas" :key="subarea">{{ subarea }}</li>
+            </ul>
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <!-- Lista de Trabalhos -->
+    <div class="works-section">
+      <h3>Lista de Trabalhos</h3>
+      <div v-if="loading" class="loading">Carregando trabalhos...</div>
+      <div v-else>
+        <table>
+          <thead>
+            <tr>
+              <th>Título</th>
+              <th>Autores</th>
+              <th>Orientador</th>
+              <th>Tipo</th>
+              <th>Área</th>
+              <th>Subárea</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="work in works" :key="work.id">
+              <td>{{ work.title }}</td>
+              <td>{{ work.authors }}</td>
+              <td>{{ work.advisor }}</td>
+              <td>{{ getTypeLabel(work.type) }}</td>
+              <td>{{ work.area }}</td>
+              <td>{{ work.subarea }}</td>
+              <td>
+                <button class="edit-btn" @click="openModal(work)">Editar</button>
+                <button class="remove-btn" @click="removeWork(work.id)">Remover</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div v-if="error" class="error">{{ error }}</div>
+      </div>
     </div>
 
     <div v-if="showModal" class="modal-bg">
@@ -40,7 +81,7 @@
           <label>Título</label>
           <input v-model="form.title" required />
           <label>Autores</label>
-          <input v-model="form.authors" required placeholder="Separados por vírgula" />
+          <input v-model="form.authors" required placeholder="Separados por ponto e vírgula (;)" />
           <label>Orientador</label>
           <input v-model="form.advisor" required />
           <label>Tipo</label>
@@ -82,12 +123,94 @@ const form = reactive({
   subarea: ''
 })
 
+// Variáveis para importação CSV
+const selectedFile = ref(null)
+const importing = ref(false)
+const importMsg = ref('')
+const importError = ref('')
+
+const availableAreas = {
+  'Ciências Agrárias': [
+    'Agricultura e Sustentabilidade no Campo',
+    'Zootecnia e Produção Animal',
+    'Agroindústria e Alimentos',
+    'Recursos Naturais e Meio Ambiente Rural',
+    'Tecnologias e Processos Agrícolas'
+  ],
+  'Ciências Biológicas e Ciências da Saúde': [
+    'Biotecnologia e Microbiologia',
+    'Ecologia e Conservação',
+    'Saúde Coletiva e Educação em Saúde',
+    'Nutrição, Enfermagem e Bem-estar',
+    'Práticas Integrativas e Promoção da Saúde'
+  ],
+  'Ciências Exatas e da Terra e Engenharias': [
+    'Matemática, Física e Química Aplicada',
+    'Tecnologias da Informação e Programação',
+    'Robótica, Automação e Eletrônica',
+    'Engenharia e Energias Renováveis',
+    'Geociências e Sustentabilidade Ambiental'
+  ],
+  'Ciências Sociais Aplicadas e Ciências Humanas': [
+    'História, Filosoa e Sociologia',
+    'Geografia e Estudos Regionais',
+    'Educação, Cidadania e Direitos Humanos',
+    'Gestão, Empreendedorismo e Economia',
+    'Comunicação, Informação e Cultura Digital'
+  ],
+  'Linguística, Letras e Artes': [
+    'Língua Portuguesa e Produção Textual',
+    'Línguas Estrangeiras e Multilinguismo',
+    'Literatura, Leitura e Narrativas',
+    'Artes Visuais, Dança e Teatro',
+    'Música, Cinema e Audiovisual'
+  ]
+}
+
 function getTypeLabel(type) {
   const types = {
     'poster_banner': 'Pôster/Banner',
     'oral_presentation': 'Apresentação Oral'
   }
   return types[type] || type
+}
+
+function onCsvFileChange(e) {
+  selectedFile.value = e.target.files[0]
+  importMsg.value = ''
+  importError.value = ''
+}
+
+function importCsv() {
+  if (!selectedFile.value) return
+  
+  importing.value = true
+  importMsg.value = ''
+  importError.value = ''
+  
+  const formData = new FormData()
+  formData.append('file', selectedFile.value)
+  
+  api.post('/admin/works/import-csv', formData)
+    .then(res => {
+      importMsg.value = res.data.msg
+      if (res.data.imported_count > 0) {
+        fetchWorks()
+      }
+      selectedFile.value = null
+
+      const fileInput = document.getElementById('csv-file-input')
+      if (fileInput) fileInput.value = ''
+    })
+    .catch(e => {
+      importError.value = e.response?.data?.msg || 'Erro ao importar CSV'
+      if (e.response?.data?.errors) {
+        importError.value += '\n\nErros detalhados:\n' + e.response.data.errors.join('\n')
+      }
+    })
+    .finally(() => {
+      importing.value = false
+    })
 }
 
 function fetchWorks() {
@@ -149,6 +272,122 @@ h2 {
   font-size: 1.5rem;
   margin-bottom: 1.2rem;
 }
+h3 {
+  color: #17635A;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+.import-section {
+  background: #F5F6FA;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  border: 1px solid #CFE3C6;
+}
+.import-info {
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  color: #666;
+}
+.import-info p {
+  margin-bottom: 0.5rem;
+}
+.import-form {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+.file-input-wrapper {
+  position: relative;
+  min-width: 200px;
+  height: 38px;
+  border: 1.5px solid #CFE3C6;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  background: #fff;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+.file-input-wrapper:hover {
+  border-color: #4CB050;
+}
+.file-input-wrapper input[type="file"] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+.file-input-label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  color: #17635A;
+  pointer-events: none;
+  font-weight: 500;
+}
+.import-form button {
+  background: #4CB050;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 1.2rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.import-form button:hover {
+  background: #17635A;
+}
+.import-form button:disabled {
+  background: #CFE3C6;
+  color: #17635A;
+  opacity: 0.7;
+}
+.areas-list {
+  margin-top: 1rem;
+}
+.areas-list summary {
+  cursor: pointer;
+  color: #17635A;
+  font-weight: 600;
+  padding: 0.5rem 0;
+}
+.areas-content {
+  margin-top: 1rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+}
+.area-group h4 {
+  color: #17635A;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+}
+.area-group ul {
+  list-style: none;
+  padding-left: 0;
+}
+.area-group li {
+  padding: 0.2rem 0;
+  color: #666;
+  font-size: 0.9rem;
+}
+.works-section {
+  margin-top: 2rem;
+}
 table {
   width: 100%;
   border-collapse: collapse;
@@ -202,10 +441,16 @@ tbody tr:nth-child(even) {
   font-weight: 600;
   margin: 2rem 0;
 }
+.success {
+  color: #4CB050;
+  margin-top: 1rem;
+  font-weight: 600;
+}
 .error {
   color: #b00020;
   margin-top: 1rem;
   font-weight: 600;
+  white-space: pre-line;
 }
 .modal-bg {
   position: fixed;
@@ -276,6 +521,13 @@ tbody tr:nth-child(even) {
 @media (max-width: 600px) {
   .admin-works, .modal {
     padding: 1rem 0.3rem;
+  }
+  .import-form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .areas-content {
+    grid-template-columns: 1fr;
   }
   table, th, td {
     font-size: 0.85rem;
