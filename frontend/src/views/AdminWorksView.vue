@@ -265,7 +265,6 @@ onMounted(fetchWorks)
   border-radius: 12px;
   box-shadow: 0 2px 12px #17635a22;
   padding: 2rem;
-  margin-top: 1rem;
 }
 h2 {
   color: #17635A;

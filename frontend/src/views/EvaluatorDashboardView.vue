@@ -34,7 +34,7 @@
       <div v-if="worksError" class="error">{{ worksError }}</div>
     </div>
 
-    <h2 style="margin-top:2.5rem">Minhas Avaliações</h2>
+    <h2 style="margin-top:1.5rem">Minhas Avaliações</h2>
     <div v-if="loadingEvals" class="loading">Carregando avaliações...</div>
     <div v-else>
       <table v-if="evaluations.length">
@@ -121,7 +121,6 @@ onMounted(() => {
   border-radius: 12px;
   box-shadow: 0 2px 12px #17635a22;
   padding: 2rem;
-  margin-top: 1rem;
 }
 h2 {
   color: #17635A;
@@ -183,7 +182,7 @@ tbody tr:nth-child(even) {
 .loading {
   color: #17635A;
   font-weight: 600;
-  margin: 2rem 0;
+  margin: 1rem 0;
 }
 .error {
   color: #b00020;

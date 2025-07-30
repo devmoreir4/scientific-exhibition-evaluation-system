@@ -6,10 +6,12 @@
       <p>A página que você está procurando não existe ou foi movida.</p>
       <router-link to="/login" class="back-btn">Voltar para o Login</router-link>
     </div>
+    <Footer :full-width="true" />
   </div>
 </template>
 
 <script setup>
+import Footer from '../components/Footer.vue'
 </script>
 
 <style scoped>
@@ -17,9 +19,12 @@
   min-height: 100vh;
   background: linear-gradient(135deg, #CFE3C6 0%, #F5F6FA 100%);
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
+  padding: 2rem 2rem 0 2rem;
+  position: relative;
+  gap: 2rem;
 }
 .not-found-content {
   background: #fff;
@@ -60,5 +65,21 @@
 }
 .back-btn:hover {
   background: #4CB050;
+}
+
+@media (max-width: 500px) {
+  .not-found {
+    padding: 1rem 1rem 0 1rem;
+    gap: 1.5rem;
+  }
+  .not-found-content {
+    padding: 2rem 1rem;
+  }
+  .not-found-content h1 {
+    font-size: 3rem;
+  }
+  .not-found-content h2 {
+    font-size: 1.2rem;
+  }
 }
 </style> 

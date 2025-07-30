@@ -107,7 +107,6 @@ onMounted(() => {
   border-radius: 12px;
   box-shadow: 0 2px 12px #17635a22;
   padding: 2rem;
-  margin-top: 1rem;
 }
 
 h2 {
@@ -242,7 +241,7 @@ h3 {
 
 .refresh-section {
   text-align: center;
-  margin-top: 2rem;
+  margin-top: 1rem;
 }
 
 .refresh-btn {
@@ -269,7 +268,7 @@ h3 {
 .loading {
   color: #17635A;
   font-weight: 600;
-  margin: 2rem 0;
+  margin: 1rem 0;
   text-align: center;
 }
 

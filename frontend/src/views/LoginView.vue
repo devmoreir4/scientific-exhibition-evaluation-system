@@ -24,6 +24,7 @@
         <p v-if="error" class="error">{{ error }}</p>
       </form>
     </div>
+    <Footer :full-width="true" />
   </div>
 </template>
 
@@ -31,6 +32,7 @@
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
+import Footer from '../components/Footer.vue'
 
 const siape_or_cpf = ref('')
 const password = ref('')
@@ -63,10 +65,11 @@ async function onLogin() {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  position: relative;
+  gap: 2rem;
 }
 .login-header {
   text-align: center;
-  margin-bottom: 2rem;
 }
 .login-header h1 {
   color: #17635A;
@@ -163,6 +166,9 @@ button:disabled {
   font-weight: 600;
 }
 @media (max-width: 500px) {
+  .login-bg {
+    gap: 1.5rem;
+  }
   .login-card {
     min-width: 90vw;
     padding: 1.2rem 0.5rem;

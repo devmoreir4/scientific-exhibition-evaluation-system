@@ -101,7 +101,6 @@ onMounted(fetchWork)
   border-radius: 12px;
   box-shadow: 0 2px 12px #17635a22;
   padding: 2rem;
-  margin-top: 1rem;
   max-width: 500px;
   margin-left: auto;
   margin-right: auto;

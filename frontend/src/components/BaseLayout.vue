@@ -21,6 +21,7 @@
     <main>
       <router-view />
     </main>
+    <Footer />
   </div>
 </template>
 
@@ -28,6 +29,7 @@
 import { useAuthStore } from '../stores/auth'
 import { useRouter } from 'vue-router'
 import { computed } from 'vue'
+import Footer from './Footer.vue'
 
 const auth = useAuthStore()
 const router = useRouter()
@@ -47,6 +49,7 @@ function logout() {
   background: linear-gradient(135deg, #CFE3C6 0%, #F5F6FA 100%);
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 header {
   background: #17635A;
@@ -104,11 +107,13 @@ button:hover {
 }
 main {
   flex: 1;
-  padding: 2rem 1rem;
+  padding: 2rem 1rem 2rem 1rem;
   max-width: 1100px;
   margin: 0 auto;
   width: 100%;
+  min-height: 0;
 }
+
 @media (max-width: 700px) {
   header {
     flex-direction: column;
@@ -117,7 +122,7 @@ main {
     padding: 1rem 0.5rem;
   }
   main {
-    padding: 1rem 0.2rem;
+    padding: 1.5rem 0.2rem;
   }
 }
 </style> 
