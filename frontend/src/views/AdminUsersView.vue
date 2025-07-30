@@ -72,7 +72,7 @@ function fetchUsers() {
   error.value = ''
   api.get('/admin/users')
     .then(res => { 
-      console.log('Resposta /admin/users:', res)
+      // console.log('Resposta /admin/users:', res)
       users.value = res.data.users 
     })
     .catch(e => { 

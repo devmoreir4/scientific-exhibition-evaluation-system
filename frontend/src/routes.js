@@ -38,6 +38,16 @@ export default [
         component: () => import('./views/AdminDistributionsView.vue')
       },
       {
+        path: 'monitoring',
+        name: 'AdminMonitoring',
+        component: () => import('./views/AdminMonitoringView.vue')
+      },
+      {
+        path: 'podium',
+        name: 'AdminPodium',
+        component: () => import('./views/AdminPodiumView.vue')
+      },
+      {
         path: 'sheets',
         name: 'AdminSheets',
         component: () => import('./views/AdminSheetsView.vue')

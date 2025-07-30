@@ -13,16 +13,6 @@
         <router-link to="/admin/works">Ver Trabalhos</router-link>
       </div>
       <div class="card">
-        <div class="card-title">Pôsteres/Banners</div>
-        <div class="card-value">{{ posterCount }}</div>
-        <span class="card-subtitle">de {{ works.length }} trabalhos</span>
-      </div>
-      <div class="card">
-        <div class="card-title">Apresentações Orais</div>
-        <div class="card-value">{{ oralCount }}</div>
-        <span class="card-subtitle">de {{ works.length }} trabalhos</span>
-      </div>
-      <div class="card">
         <div class="card-title">Fichas Manuais</div>
         <div class="card-value">-</div>
         <router-link to="/admin/sheets">Ver Fichas</router-link>
@@ -31,6 +21,16 @@
         <div class="card-title">Distribuições</div>
         <div class="card-value">-</div>
         <router-link to="/admin/distributions">Ver Distribuições</router-link>
+      </div>
+      <div class="card">
+        <div class="card-title">Monitoramento</div>
+        <div class="card-value">-</div>
+        <router-link to="/admin/monitoring">Ver Progresso</router-link>
+      </div>
+      <div class="card">
+        <div class="card-title">Pódio</div>
+        <div class="card-value">-</div>
+        <router-link to="/admin/podium">Ver Pódio</router-link>
       </div>
     </div>
     <div v-if="loading" class="loading">Carregando dados...</div>
@@ -46,14 +46,6 @@ const users = ref([])
 const works = ref([])
 const loading = ref(true)
 const error = ref('')
-
-const posterCount = computed(() => {
-  return works.value.filter(w => w.type === 'poster_banner').length
-})
-
-const oralCount = computed(() => {
-  return works.value.filter(w => w.type === 'oral_presentation').length
-})
 
 async function fetchData() {
   loading.value = true

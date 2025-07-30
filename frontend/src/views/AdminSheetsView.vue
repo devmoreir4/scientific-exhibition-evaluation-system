@@ -118,7 +118,7 @@ function distributeWorks() {
   distError.value = ''
   api.post('/admin/works/distribute')
     .then(res => { 
-      console.log('Resposta /admin/works/distribute:', res)
+      // console.log('Resposta /admin/works/distribute:', res)
       distMsg.value = 'Distribuição realizada com sucesso!'; 
     })
     .catch(e => { 
@@ -141,8 +141,8 @@ function processSheetAi() {
   uploadFormData.append('file', file.value)
   api.post('/admin/sheets/process', uploadFormData)
     .then(res => {
-      console.log('Resposta /admin/sheets/process:', res)
-      console.log('Dados extraídos:', res.data)
+      // console.log('Resposta /admin/sheets/process:', res)
+      // console.log('Dados extraídos:', res.data)
       processMsg.value = 'Ficha processada com sucesso!';
       lastSheet.value = res.data
       if (res.data.saved_image) {
@@ -164,7 +164,7 @@ function processSheetAi() {
         formData.scores.push(1)
       }
       
-      console.log('Formulário preenchido:', formData)
+      // console.log('Formulário preenchido:', formData)
     })
     .catch(e => { 
       console.error('Erro /admin/sheets/process:', e, e.response)

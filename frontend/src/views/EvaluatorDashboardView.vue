@@ -24,7 +24,8 @@
             <td>{{ work.area }}</td>
             <td>{{ work.subarea }}</td>
             <td>
-              <router-link :to="`/evaluate/${work.id}`" class="eval-btn">Avaliar</router-link>
+              <router-link v-if="!isWorkEvaluated(work.id)" :to="`/evaluate/${work.id}`" class="eval-btn">Avaliar</router-link>
+              <span v-else class="evaluated-badge">Avaliado</span>
             </td>
           </tr>
         </tbody>
@@ -42,7 +43,6 @@
             <th>Trabalho</th>
             <th>Critérios</th>
             <th>Método</th>
-            <th>Ver</th>
           </tr>
         </thead>
         <tbody>
@@ -50,9 +50,6 @@
             <td>{{ evaluation.work_title }}</td>
             <td>{{ evaluation.criterion1 }}, {{ evaluation.criterion2 }}, {{ evaluation.criterion3 }}, {{ evaluation.criterion4 }}, {{ evaluation.criterion5 }}</td>
             <td>{{ getMethodLabel(evaluation.method) }}</td>
-            <td>
-              <router-link :to="`/evaluate/${evaluation.work_id}`" class="view-btn">Ver</router-link>
-            </td>
           </tr>
         </tbody>
       </table>
@@ -88,6 +85,10 @@ function getMethodLabel(method) {
     'manual_validated': 'Manual Validado'
   }
   return methods[method] || method
+}
+
+function isWorkEvaluated(workId) {
+  return evaluations.value.some(evaluation => evaluation.work_id === workId)
 }
 
 function fetchWorks() {
@@ -146,7 +147,7 @@ th {
 tbody tr:nth-child(even) {
   background: #F5F6FA;
 }
-.eval-btn, .view-btn {
+.eval-btn {
   background: #4CB050;
   color: #fff;
   border: none;
@@ -155,10 +156,29 @@ tbody tr:nth-child(even) {
   font-weight: 600;
   text-decoration: none;
   transition: background 0.2s, color 0.2s;
+  min-width: 80px;
+  width: 80px;
+  text-align: center;
+  display: inline-block;
+  box-sizing: border-box;
 }
-.eval-btn:hover, .view-btn:hover {
+.eval-btn:hover {
   background: #17635A;
   color: #fff;
+}
+.evaluated-badge {
+  background: #CFE3C6;
+  color: #17635A;
+  border: none;
+  border-radius: 6px;
+  padding: 0.3rem 0.8rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  display: inline-block;
+  text-align: center;
+  min-width: 80px;
+  width: 80px;
+  box-sizing: border-box;
 }
 .loading {
   color: #17635A;

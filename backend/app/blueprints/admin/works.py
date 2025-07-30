@@ -5,6 +5,7 @@ from app.models import Work, Evaluator
 from app.extensions import db
 from app.services.csv_importer_service import import_works_from_csv
 import io
+from app.models import Evaluation
 
 @admin_bp.route('/works', methods=['GET'])
 @jwt_required()
@@ -106,3 +107,102 @@ def update_work(work_id):
     work.subarea = data.get('subarea', work.subarea)
     db.session.commit()
     return jsonify({'msg': 'Trabalho atualizado com sucesso!'}), 200 
+
+@admin_bp.route('/works/evaluation-progress', methods=['GET'])
+@jwt_required()
+def get_evaluation_progress():
+    """Retorna estatísticas de progresso das avaliações"""
+    works = Work.query.all()
+    evaluations = Evaluation.query.all()
+    
+    total_works = len(works)
+    total_evaluations = len(evaluations)
+    
+    # calcular avaliações por trabalho
+    works_with_evaluations = {}
+    for work in works:
+        work_evaluations = [e for e in evaluations if e.work_id == work.id]
+        works_with_evaluations[work.id] = {
+            'work_id': work.id,
+            'work_title': work.title,
+            'work_area': work.area,
+            'work_subarea': work.subarea,
+            'total_evaluators': len(work.evaluators),
+            'completed_evaluations': len(work_evaluations),
+            'pending_evaluations': len(work.evaluators) - len(work_evaluations),
+            'progress_percentage': round((len(work_evaluations) / len(work.evaluators)) * 100, 1) if work.evaluators else 0
+        }
+    
+    # estatísticas gerais
+    total_expected_evaluations = sum(len(work.evaluators) for work in works)
+    overall_progress = round((total_evaluations / total_expected_evaluations) * 100, 1) if total_expected_evaluations > 0 else 0
+    
+    return jsonify({
+        'overall_stats': {
+            'total_works': total_works,
+            'total_evaluations': total_evaluations,
+            'total_expected_evaluations': total_expected_evaluations,
+            'overall_progress': overall_progress
+        },
+        'works_progress': list(works_with_evaluations.values())
+    }), 200 
+
+@admin_bp.route('/works/podium', methods=['GET'])
+@jwt_required()
+def get_works_podium():
+    """Retorna o pódio dos trabalhos de cada área baseado nas avaliações"""
+    works = Work.query.all()
+    evaluations = Evaluation.query.all()
+    
+    # agrupar trabalhos por área
+    works_by_area = {}
+    for work in works:
+        if work.area not in works_by_area:
+            works_by_area[work.area] = []
+        works_by_area[work.area].append(work)
+    
+    podium_data = {}
+    
+    for area, area_works in works_by_area.items():
+        # calcular média de cada trabalho na área
+        works_with_scores = []
+        
+        for work in area_works:
+            work_evaluations = [e for e in evaluations if e.work_id == work.id]
+            
+            if work_evaluations:
+                # calcular média dos critérios
+                total_score = 0
+                for evaluation in work_evaluations:
+                    total_score += (evaluation.criterion1 + evaluation.criterion2 + 
+                                  evaluation.criterion3 + evaluation.criterion4 + 
+                                  evaluation.criterion5)
+                
+                average_score = total_score / (len(work_evaluations) * 5)  # 5 critérios por avaliação
+                
+                works_with_scores.append({
+                    'work_id': work.id,
+                    'work_title': work.title,
+                    'work_authors': work.authors,
+                    'work_advisor': work.advisor,
+                    'work_type': work.type,
+                    'work_subarea': work.subarea,
+                    'evaluations_count': len(work_evaluations),
+                    'average_score': round(average_score, 2),
+                    'total_score': total_score
+                })
+        
+        # ordenar por média (decrescente) e pegar top 3
+        works_with_scores.sort(key=lambda x: x['average_score'], reverse=True)
+        top_3 = works_with_scores[:3]
+        
+        podium_data[area] = {
+            'area_name': area,
+            'total_works': len(area_works),
+            'evaluated_works': len(works_with_scores),
+            'podium': top_3
+        }
+    
+    return jsonify({
+        'podium_data': podium_data
+    }), 200 

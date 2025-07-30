@@ -218,7 +218,7 @@ function fetchWorks() {
   error.value = ''
   api.get('/admin/works')
     .then(res => { 
-      console.log('Resposta /admin/works:', res)
+      // console.log('Resposta /admin/works:', res)
       works.value = res.data.works 
     })
     .catch(e => { 
