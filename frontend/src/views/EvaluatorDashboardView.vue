@@ -82,7 +82,7 @@ function getTypeLabel(type) {
 function getMethodLabel(method) {
   const methods = {
     'online': 'Online',
-    'manual_validated': 'Manual Validado'
+    'manual_validated': 'Manual'
   }
   return methods[method] || method
 }
@@ -166,11 +166,7 @@ tbody tr:nth-child(even) {
   color: #fff;
 }
 .evaluated-badge {
-  background: #CFE3C6;
-  color: #17635A;
-  border: none;
-  border-radius: 6px;
-  padding: 0.3rem 0.8rem;
+  color: #4CB050;
   font-weight: 600;
   font-size: 0.9rem;
   display: inline-block;
@@ -178,6 +174,7 @@ tbody tr:nth-child(even) {
   min-width: 80px;
   width: 80px;
   box-sizing: border-box;
+  padding: 0.3rem 0;
 }
 .loading {
   color: #17635A;
@@ -202,4 +199,4 @@ tbody tr:nth-child(even) {
     font-size: 0.85rem;
   }
 }
-</style> 
+</style>

@@ -40,4 +40,4 @@ def get_work(work_id):
         'type': work.type,
         'area': work.area,
         'subarea': work.subarea
-    }}), 200 
+    }}), 200

@@ -82,4 +82,4 @@ export default [
     name: 'NotFound',
     component: () => import('./views/NotFoundView.vue')
   }
-] 
+]

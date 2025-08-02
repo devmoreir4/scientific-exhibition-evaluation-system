@@ -21,4 +21,4 @@ def distribute():
         distribute_works()
         return jsonify({'msg': 'Distribuição realizada com sucesso!'}), 200
     except Exception as e:
-        return jsonify({'msg': f'Erro na distribuição: {str(e)}'}), 500 
+        return jsonify({'msg': f'Erro na distribuição: {str(e)}'}), 500

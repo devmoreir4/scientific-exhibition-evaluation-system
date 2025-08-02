@@ -1,7 +1,7 @@
 <template>
   <div class="admin-distributions">
     <h2>Distribuições de Trabalhos</h2>
-    
+
     <div class="stats-cards">
       <div class="stat-card">
         <div class="stat-title">Total de Trabalhos</div>
@@ -34,7 +34,7 @@
               <span><strong>Subárea:</strong> {{ distribution.work_subarea }}</span>
             </div>
           </div>
-          
+
           <div class="evaluators-section">
             <h4>Avaliadores Atribuídos ({{ distribution.evaluators_count }})</h4>
             <div v-if="distribution.evaluators.length === 0" class="no-evaluators">
@@ -45,9 +45,9 @@
                 <div class="evaluator-info">
                   <span class="evaluator-name">{{ evaluator.name }}</span>
                   <span class="evaluator-details">
-                    SIAPE/CPF: {{ evaluator.siape_or_cpf }} | 
-                    Área: {{ evaluator.area }} | 
-                    Subáreas: {{ evaluator.subareas || 'Não informadas' }} | 
+                    SIAPE/CPF: {{ evaluator.siape_or_cpf }} |
+                    Área: {{ evaluator.area }} |
+                    Subáreas: {{ evaluator.subareas || 'Não informadas' }} |
                     Carga: {{ evaluator.carga }}
                   </span>
                 </div>
@@ -59,7 +59,7 @@
           </div>
         </div>
       </div>
-      
+
       <div v-if="error" class="error">{{ error }}</div>
     </div>
   </div>
@@ -291,17 +291,17 @@ h2 {
   .stats-cards {
     flex-direction: column;
   }
-  
+
   .stat-card {
     min-width: 0;
   }
-  
+
   .evaluator-item {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.5rem;
   }
-  
+
   .evaluator-type {
     align-self: flex-end;
   }
@@ -311,13 +311,13 @@ h2 {
   .admin-distributions {
     padding: 1rem 0.3rem;
   }
-  
+
   .distribution-item {
     padding: 1rem;
   }
-  
+
   .work-details {
     font-size: 0.9rem;
   }
 }
-</style> 
+</style>

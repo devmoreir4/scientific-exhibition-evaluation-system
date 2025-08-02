@@ -31,4 +31,4 @@ def login_admin():
     if not admin or not check_password_hash(admin.password_hash, password):
         return jsonify({'msg': 'Credenciais inválidas.'}), 401
     access_token = create_access_token(identity=f'admin:{admin.id}')
-    return jsonify({'access_token': access_token, 'role': 'admin'}), 200 
+    return jsonify({'access_token': access_token, 'role': 'admin'}), 200

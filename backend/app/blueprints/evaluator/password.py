@@ -28,4 +28,4 @@ def change_password():
         return jsonify({'msg': 'Senha atual incorreta.'}), 401
     evaluator.password_hash = generate_password_hash(new_password)
     db.session.commit()
-    return jsonify({'msg': 'Senha alterada com sucesso!'}), 200 
+    return jsonify({'msg': 'Senha alterada com sucesso!'}), 200

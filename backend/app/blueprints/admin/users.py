@@ -3,9 +3,11 @@ from flask import jsonify, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.models import Evaluator
 from app.extensions import db
+from .misc import admin_required
 
 @admin_bp.route('/users', methods=['GET'])
 @jwt_required()
+@admin_required
 def list_users():
     users = Evaluator.query.all()
     return jsonify({'users': [
@@ -15,6 +17,7 @@ def list_users():
 
 @admin_bp.route('/users/simple', methods=['GET'])
 @jwt_required()
+@admin_required
 def list_users_simple():
     users = Evaluator.query.all()
     return jsonify({'users': [
@@ -24,6 +27,7 @@ def list_users_simple():
 
 @admin_bp.route('/users/<int:user_id>', methods=['DELETE'])
 @jwt_required()
+@admin_required
 def delete_user(user_id):
     user = Evaluator.query.get(user_id)
     if not user:
@@ -34,6 +38,7 @@ def delete_user(user_id):
 
 @admin_bp.route('/users/<int:user_id>', methods=['PUT'])
 @jwt_required()
+@admin_required
 def update_user(user_id):
     user = Evaluator.query.get(user_id)
     if not user:
@@ -45,4 +50,4 @@ def update_user(user_id):
     user.area = data.get('area', user.area)
     user.subareas = data.get('subareas', user.subareas)
     db.session.commit()
-    return jsonify({'msg': 'Usuário atualizado com sucesso!'}), 200 
+    return jsonify({'msg': 'Usuário atualizado com sucesso!'}), 200

@@ -1,7 +1,7 @@
 <template>
   <div class="admin-monitoring">
     <h2>Monitoramento de Avaliações</h2>
-    
+
     <!-- Estatísticas Gerais -->
     <div class="stats-cards">
       <div class="stat-card">
@@ -51,6 +51,12 @@
             <div class="status-info">
               <span v-if="work.pending_evaluations > 0" class="pending">
                 {{ work.pending_evaluations }} avaliação(ões) pendente(s)
+                <div class="pending-evaluators">
+                  <span class="pending-label">Avaliadores pendentes:</span>
+                  <span v-for="evaluator in work.pending_evaluators" :key="evaluator.id" class="evaluator-tag">
+                    {{ evaluator.name }}
+                  </span>
+                </div>
               </span>
               <span v-else class="completed">
                 Todas as avaliações concluídas
@@ -235,6 +241,31 @@ h3 {
   color: #666;
 }
 
+.pending-evaluators {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  align-items: center;
+}
+
+.pending-label {
+  font-size: 0.8rem;
+  color: #888;
+  font-weight: 600;
+  margin-right: 0.5rem;
+}
+
+.evaluator-tag {
+  color: #17635A;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.2rem 0.6rem;
+  border: 1px solid #17635A;
+  border-radius: 12px;
+  background: #F5F6FA;
+}
+
 .completed {
   color: #4CAF50;
 }
@@ -290,13 +321,13 @@ h3 {
   .stats-cards {
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   }
-  
+
   .work-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.5rem;
   }
-  
+
   .work-progress-info {
     text-align: left;
     margin-left: 0;
@@ -307,9 +338,25 @@ h3 {
   .admin-monitoring {
     padding: 1rem 0.3rem;
   }
-  
+
   .stats-cards {
     grid-template-columns: 1fr;
   }
+
+  .pending-evaluators {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.3rem;
+  }
+
+  .pending-label {
+    margin-right: 0;
+    margin-bottom: 0.2rem;
+  }
+
+  .evaluator-tag {
+    font-size: 0.7rem;
+    padding: 0.15rem 0.5rem;
+  }
 }
-</style> 
+</style>

@@ -82,7 +82,7 @@ function submitEvaluation() {
     criterion5: scores.value[4]
   }
   api.post('/evaluator/evaluations', payload)
-    .then(() => { 
+    .then(() => {
       successMsg.value = 'Avaliação enviada com sucesso!'
       setTimeout(() => {
         router.push('/dashboard')
@@ -172,4 +172,4 @@ button:disabled {
   font-weight: 600;
   margin: 2rem 0;
 }
-</style> 
+</style>

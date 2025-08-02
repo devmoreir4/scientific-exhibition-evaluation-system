@@ -21,4 +21,4 @@ def register():
     evaluator = Evaluator(name=name, siape_or_cpf=siape_or_cpf, birthdate=birthdate, area=area, subareas=subareas)
     db.session.add(evaluator)
     db.session.commit()
-    return jsonify({'msg': 'Avaliador cadastrado com sucesso!'}), 201 
+    return jsonify({'msg': 'Avaliador cadastrado com sucesso!'}), 201

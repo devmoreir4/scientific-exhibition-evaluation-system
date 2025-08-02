@@ -6,7 +6,6 @@ from werkzeug.security import generate_password_hash
 app = create_app()
 
 with app.app_context():
-    # Criar avaliadores de exemplo
     evaluators = [
         Evaluator(
             name='Prof. Dr. João Silva',
@@ -64,7 +63,7 @@ with app.app_context():
             area='Ciências Sociais Aplicadas e Ciências Humanas',
             subareas='História, Filosoa e Sociologia; Geografia e Estudos Regionais'
         ),
-        # precisa ter avaliadores pedagógicos
+        # avaliadores pedagógicos
         Evaluator(
             name='Prof. Dr. José Pedagógico',
             siape_or_cpf='111222333',
@@ -105,4 +104,4 @@ with app.app_context():
     else:
         print(f'Já existem {existing_count} avaliadores no sistema. Nenhum avaliador foi criado.')
 
-    print('Script teste de inicialização de avaliadores concluído!') 
+    print('Script teste de inicialização de avaliadores concluído!')

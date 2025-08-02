@@ -82,4 +82,4 @@ import Footer from '../components/Footer.vue'
     font-size: 1.2rem;
   }
 }
-</style> 
+</style>

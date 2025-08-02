@@ -1,7 +1,7 @@
 <template>
   <div class="admin-podium">
     <h2>Pódio dos Trabalhos por Área</h2>
-    
+
     <div v-if="loading" class="loading">Carregando pódio...</div>
     <div v-else>
       <div v-if="Object.keys(podiumData).length === 0" class="empty">
@@ -15,7 +15,7 @@
               <span>{{ areaData.evaluated_works }} de {{ areaData.total_works }} trabalhos avaliados</span>
             </div>
           </div>
-          
+
           <div v-if="areaData.podium.length === 0" class="no-podium">
             Nenhum trabalho desta área foi avaliado ainda.
           </div>
@@ -39,7 +39,7 @@
                 <div class="evaluations-count">{{ areaData.podium[0].evaluations_count }} avaliações</div>
               </div>
             </div>
-            
+
             <!-- 2º Lugar -->
             <div v-if="areaData.podium[1]" class="podium-item second-place">
               <div class="medal">🥈</div>
@@ -59,7 +59,7 @@
                 <div class="evaluations-count">{{ areaData.podium[1].evaluations_count }} avaliações</div>
               </div>
             </div>
-            
+
             <!-- 3º Lugar -->
             <div v-if="areaData.podium[2]" class="podium-item third-place">
               <div class="medal">🥉</div>
@@ -342,11 +342,11 @@ h2 {
     text-align: center;
     gap: 1rem;
   }
-  
+
   .medal, .position {
     min-width: auto;
   }
-  
+
   .score-info {
     min-width: auto;
   }
@@ -356,17 +356,17 @@ h2 {
   .admin-podium {
     padding: 1rem 0.3rem;
   }
-  
+
   .area-podium {
     padding: 1rem;
   }
-  
+
   .podium-item {
     padding: 1rem;
   }
-  
+
   .work-details {
     font-size: 0.85rem;
   }
 }
-</style> 
+</style>

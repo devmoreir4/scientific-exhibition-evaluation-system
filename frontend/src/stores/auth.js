@@ -42,7 +42,7 @@ export const useAuthStore = defineStore('auth', {
     checkAuth() {
       const savedToken = localStorage.getItem('token')
       const savedRole = localStorage.getItem('role')
-      
+
       if (savedToken && savedRole) {
         this.token = savedToken
         this.role = savedRole
@@ -54,4 +54,4 @@ export const useAuthStore = defineStore('auth', {
       }
     }
   }
-}) 
+})

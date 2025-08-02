@@ -71,13 +71,13 @@ function fetchUsers() {
   loading.value = true
   error.value = ''
   api.get('/admin/users')
-    .then(res => { 
+    .then(res => {
       // console.log('Resposta /admin/users:', res)
-      users.value = res.data.users 
+      users.value = res.data.users
     })
-    .catch(e => { 
+    .catch(e => {
       console.error('Erro /admin/users:', e, e.response)
-      error.value = e.response?.data?.msg || JSON.stringify(e.response?.data) || e.message || 'Erro ao buscar avaliadores.' 
+      error.value = e.response?.data?.msg || JSON.stringify(e.response?.data) || e.message || 'Erro ao buscar avaliadores.'
     })
     .finally(() => { loading.value = false })
 }
@@ -278,4 +278,4 @@ tbody tr:nth-child(even) {
     font-size: 0.95rem;
   }
 }
-</style> 
+</style>

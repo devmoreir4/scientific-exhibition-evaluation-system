@@ -74,4 +74,4 @@ def list_evaluations_for_work(work_id):
             'criterion4': ev.criterion4,
             'criterion5': ev.criterion5
         })
-    return jsonify({'evaluations': result}), 200 
+    return jsonify({'evaluations': result}), 200

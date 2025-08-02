@@ -21,13 +21,18 @@
 
     <div v-if="lastSheet" class="sheet-preview">
       <h3>Última Ficha Processada</h3>
-      
+
       <div class="sheet-data">
         <h4>Dados Extraídos (Editáveis)</h4>
         <form @submit.prevent="confirmSheet" class="confirmation-form">
           <div class="form-group">
-            <label>ID do Trabalho:</label>
-            <input type="number" v-model.number="formData.work_id" required min="1" />
+            <label>Trabalho:</label>
+            <select v-model="formData.work_id" required>
+              <option value="">Selecione um trabalho</option>
+              <option v-for="work in works" :key="work.id" :value="work.id">
+                {{ work.id }} - {{ work.title }}
+              </option>
+            </select>
           </div>
           <div class="form-group">
             <label>Avaliador:</label>
@@ -41,14 +46,14 @@
           <div class="form-group">
             <label>Critérios (1-5):</label>
             <div class="criteria-inputs">
-              <input 
-                v-for="(score, index) in formData.scores" 
+              <input
+                v-for="(score, index) in formData.scores"
                 :key="index"
-                type="number" 
-                v-model.number="formData.scores[index]" 
-                min="1" 
-                max="5" 
-                required 
+                type="number"
+                v-model.number="formData.scores[index]"
+                min="1"
+                max="5"
+                required
                 :placeholder="`Critério ${index + 1}`"
               />
             </div>
@@ -60,7 +65,7 @@
           </div>
         </form>
       </div>
-      
+
       <div v-if="confirmMsg" class="success">{{ confirmMsg }}</div>
       <div v-if="confirmError" class="error">{{ confirmError }}</div>
     </div>
@@ -91,9 +96,11 @@ const confirmError = ref('')
 
 const evaluators = ref([])
 const loadingEvaluators = ref(false)
+const works = ref([])
+const loadingWorks = ref(false)
 
 const formData = reactive({
-  work_id: 1,
+  work_id: '',
   evaluator_id: '',
   scores: [1, 1, 1, 1, 1]
 })
@@ -112,18 +119,32 @@ function fetchEvaluators() {
     })
 }
 
+function fetchWorks() {
+  loadingWorks.value = true
+  api.get('/admin/works')
+    .then(res => {
+      works.value = res.data.works
+    })
+    .catch(e => {
+      console.error('Erro ao buscar trabalhos:', e)
+    })
+    .finally(() => {
+      loadingWorks.value = false
+    })
+}
+
 function distributeWorks() {
   distributing.value = true
   distMsg.value = ''
   distError.value = ''
   api.post('/admin/works/distribute')
-    .then(res => { 
+    .then(res => {
       // console.log('Resposta /admin/works/distribute:', res)
-      distMsg.value = 'Distribuição realizada com sucesso!'; 
+      distMsg.value = 'Distribuição realizada com sucesso!';
     })
-    .catch(e => { 
+    .catch(e => {
       console.error('Erro /admin/works/distribute:', e, e.response)
-      distError.value = e.response?.data?.msg || JSON.stringify(e.response?.data) || e.message || 'Erro ao distribuir trabalhos.' 
+      distError.value = e.response?.data?.msg || JSON.stringify(e.response?.data) || e.message || 'Erro ao distribuir trabalhos.'
     })
     .finally(() => { distributing.value = false })
 }
@@ -139,67 +160,71 @@ function processSheetAi() {
   processError.value = ''
   const uploadFormData = new FormData()
   uploadFormData.append('file', file.value)
-  api.post('/admin/sheets/process', uploadFormData)
+  api.post('/admin/sheets/process-ai', uploadFormData)
     .then(res => {
-      // console.log('Resposta /admin/sheets/process:', res)
+      // console.log('Resposta /admin/sheets/process-ai:', res)
       // console.log('Dados extraídos:', res.data)
       processMsg.value = 'Ficha processada com sucesso!';
       lastSheet.value = res.data
       if (res.data.saved_image) {
         lastSheetImgUrl.value = `/uploads/${res.data.saved_image}`
       }
-      
-      // Preencher o formulário com os dados extraídos
-      formData.work_id = parseInt(res.data.extracted_work_id) || 1
+
+      formData.work_id = ''
       formData.evaluator_id = ''
-      
+
       // Converter scores extraídos para números válidos
       const extractedScores = res.data.extracted_scores || []
       formData.scores = extractedScores.map(score => {
         const numScore = parseInt(score)
         return (numScore && numScore >= 1 && numScore <= 5) ? numScore : 1
       })
-      
+
       while (formData.scores.length < 5) {
         formData.scores.push(1)
       }
-      
+
       // console.log('Formulário preenchido:', formData)
     })
-    .catch(e => { 
-      console.error('Erro /admin/sheets/process:', e, e.response)
-      processError.value = e.response?.data?.msg || JSON.stringify(e.response?.data) || e.message || 'Erro ao processar ficha.' 
+    .catch(e => {
+      console.error('Erro /admin/sheets/process-ai:', e, e.response)
+      processError.value = e.response?.data?.msg || JSON.stringify(e.response?.data) || e.message || 'Erro ao processar ficha.'
     })
     .finally(() => { processing.value = false })
 }
 
 function confirmSheet() {
   if (!lastSheet.value) return
-  
+
+  if (!formData.work_id) {
+    confirmError.value = 'Por favor, selecione um trabalho.'
+    return
+  }
+
   if (!formData.evaluator_id) {
     confirmError.value = 'Por favor, selecione um avaliador.'
     return
   }
-  
+
   for (let i = 0; i < formData.scores.length; i++) {
     if (formData.scores[i] < 1 || formData.scores[i] > 5) {
       confirmError.value = `Critério ${i + 1} deve ser entre 1 e 5.`
       return
     }
   }
-  
+
   confirming.value = true
   confirmMsg.value = ''
   confirmError.value = ''
-  
+
   const payload = {
-    work_id: formData.work_id,
-    evaluator_id: formData.evaluator_id,
+    work_id: parseInt(formData.work_id),
+    evaluator_id: parseInt(formData.evaluator_id),
     scores: formData.scores
   }
-  
+
   api.post('/admin/sheets/confirm', payload)
-    .then(() => { 
+    .then(() => {
       confirmMsg.value = 'Avaliação manual confirmada com sucesso!'
       setTimeout(() => {
         router.push('/admin/dashboard')
@@ -211,6 +236,7 @@ function confirmSheet() {
 
 onMounted(() => {
   fetchEvaluators()
+  fetchWorks()
 })
 </script>
 
@@ -405,4 +431,4 @@ h2 {
     justify-content: center;
   }
 }
-</style> 
+</style>

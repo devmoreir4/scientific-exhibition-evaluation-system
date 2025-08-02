@@ -6,16 +6,16 @@ import io
 
 def process_sheet_image_ai(image_bytes):
     GOOGLE_API_KEY = os.environ.get('GOOGLE_API_KEY')
-    
+
     if not GOOGLE_API_KEY:
         raise ValueError("GOOGLE_API_KEY não configurada")
-    
+
     genai.configure(api_key=GOOGLE_API_KEY)
-    
+
     model = genai.GenerativeModel('gemini-1.5-flash')
-    
+
     img = Image.open(io.BytesIO(image_bytes))
-    
+
     prompt = """
     Você é um assistente de IA especialista em extrair dados de formulários de avaliação.
     Analise a imagem da ficha de avaliação preenchida e extraia as seguintes informações:
@@ -31,20 +31,20 @@ def process_sheet_image_ai(image_bytes):
 
     Não inclua nenhuma outra explicação ou texto na sua resposta, apenas o JSON.
     """
-    
+
     try:
         response = model.generate_content([prompt, img])
-        
+
         json_response_text = response.text.strip().replace('```json', '').replace('```', '')
-        
+
         dados_extraidos = json.loads(json_response_text)
-        
+
         return {
             'extracted_work_id': str(dados_extraidos.get('work_id', 'Não encontrado')),
             'extracted_work_evaluator': dados_extraidos.get('evaluator_name', 'Não encontrado'),
             'extracted_scores': dados_extraidos.get('scores', [])
         }
-        
+
     except json.JSONDecodeError as e:
         raise ValueError(f'Erro ao decodificar JSON da resposta da IA: {str(e)}')
     except Exception as e:

@@ -1,13 +1,13 @@
 <template>
   <div class="admin-works">
     <h2>Trabalhos</h2>
-    
+
     <!-- Seção de Importação CSV -->
           <div class="import-section">
             <h3>Importar Trabalhos</h3>
             <div class="import-info">
          </div>
-      
+
           <form @submit.prevent="importCsv" class="import-form">
            <div class="file-input-wrapper">
              <input type="file" @change="onCsvFileChange" accept=".csv" required id="csv-file-input" />
@@ -20,10 +20,10 @@
              {{ importing ? 'Importando...' : 'Importar CSV' }}
            </button>
           </form>
-      
+
       <div v-if="importMsg" class="success">{{ importMsg }}</div>
       <div v-if="importError" class="error">{{ importError }}</div>
-      
+
       <!-- Lista de áreas disponíveis -->
       <details class="areas-list">
         <summary>Ver áreas e subáreas disponíveis</summary>
@@ -114,12 +114,12 @@ const error = ref('')
 const showModal = ref(false)
 const editingWork = ref(null)
 const modalError = ref('')
-const form = reactive({ 
-  title: '', 
-  authors: '', 
-  advisor: '', 
-  type: 'poster_banner', 
-  area: '', 
+const form = reactive({
+  title: '',
+  authors: '',
+  advisor: '',
+  type: 'poster_banner',
+  area: '',
   subarea: ''
 })
 
@@ -183,14 +183,14 @@ function onCsvFileChange(e) {
 
 function importCsv() {
   if (!selectedFile.value) return
-  
+
   importing.value = true
   importMsg.value = ''
   importError.value = ''
-  
+
   const formData = new FormData()
   formData.append('file', selectedFile.value)
-  
+
   api.post('/admin/works/import-csv', formData)
     .then(res => {
       importMsg.value = res.data.msg
@@ -217,13 +217,13 @@ function fetchWorks() {
   loading.value = true
   error.value = ''
   api.get('/admin/works')
-    .then(res => { 
+    .then(res => {
       // console.log('Resposta /admin/works:', res)
-      works.value = res.data.works 
+      works.value = res.data.works
     })
-    .catch(e => { 
+    .catch(e => {
       console.error('Erro /admin/works:', e, e.response)
-      error.value = e.response?.data?.msg || JSON.stringify(e.response?.data) || e.message || 'Erro ao buscar trabalhos.' 
+      error.value = e.response?.data?.msg || JSON.stringify(e.response?.data) || e.message || 'Erro ao buscar trabalhos.'
     })
     .finally(() => { loading.value = false })
 }
@@ -532,4 +532,4 @@ tbody tr:nth-child(even) {
     font-size: 0.85rem;
   }
 }
-</style> 
+</style>

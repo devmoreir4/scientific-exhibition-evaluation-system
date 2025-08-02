@@ -33,8 +33,8 @@ function changePassword() {
     current_password: current.value,
     new_password: newPass.value
   })
-    .then(() => { 
-      successMsg.value = 'Senha alterada com sucesso!' 
+    .then(() => {
+      successMsg.value = 'Senha alterada com sucesso!'
       current.value = ''
       newPass.value = ''
       setTimeout(() => {
@@ -109,4 +109,4 @@ button:disabled {
   margin-top: 1rem;
   font-weight: 600;
 }
-</style> 
+</style>
