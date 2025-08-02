@@ -139,7 +139,6 @@ function distributeWorks() {
   distError.value = ''
   api.post('/admin/works/distribute')
     .then(res => {
-      // console.log('Resposta /admin/works/distribute:', res)
       distMsg.value = 'Distribuição realizada com sucesso!';
     })
     .catch(e => {
@@ -183,8 +182,6 @@ function processSheetAi() {
       while (formData.scores.length < 5) {
         formData.scores.push(1)
       }
-
-      // console.log('Formulário preenchido:', formData)
     })
     .catch(e => {
       console.error('Erro /admin/sheets/process-ai:', e, e.response)
@@ -206,9 +203,22 @@ function confirmSheet() {
     return
   }
 
+  const selectedWork = works.value.find(w => w.id === formData.work_id)
+  if (!selectedWork) {
+    confirmError.value = 'Trabalho selecionado não encontrado na lista.'
+    return
+  }
+
+  const selectedEvaluator = evaluators.value.find(e => e.id === formData.evaluator_id)
+  if (!selectedEvaluator) {
+    confirmError.value = 'Avaliador selecionado não encontrado na lista.'
+    return
+  }
+
   for (let i = 0; i < formData.scores.length; i++) {
-    if (formData.scores[i] < 1 || formData.scores[i] > 5) {
-      confirmError.value = `Critério ${i + 1} deve ser entre 1 e 5.`
+    const score = formData.scores[i]
+    if (!score || isNaN(score) || score < 1 || score > 5) {
+      confirmError.value = `Critério ${i + 1} deve ser um número entre 1 e 5.`
       return
     }
   }

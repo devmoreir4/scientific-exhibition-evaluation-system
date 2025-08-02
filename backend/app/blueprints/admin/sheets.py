@@ -91,6 +91,13 @@ def confirm_sheet():
     if not work:
         return jsonify({'msg': 'Trabalho não encontrado.'}), 404
 
+    works_with_evaluators = Work.query.filter(Work.evaluators.any()).count()
+    if works_with_evaluators == 0:
+        return jsonify({'msg': 'Nenhum trabalho foi distribuído ainda.'}), 400
+
+    if evaluator not in work.evaluators:
+        return jsonify({'msg': 'Este avaliador não foi atribuído para avaliar este trabalho.'}), 403
+
     existing_evaluation = Evaluation.query.filter_by(
         evaluator_id=evaluator_id,
         work_id=work_id
@@ -98,6 +105,10 @@ def confirm_sheet():
 
     if existing_evaluation:
         return jsonify({'msg': 'Este avaliador já avaliou este trabalho.'}), 409
+
+    for i, score in enumerate(scores):
+        if not isinstance(score, (int, float)) or score < 1 or score > 5:
+            return jsonify({'msg': f'Critério {i+1} deve ser um número entre 1 e 5.'}), 400
 
     evaluation = Evaluation(
         criterion1=scores[0],
