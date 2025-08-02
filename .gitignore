@@ -5,6 +5,9 @@ __pycache__/
 instance/
 .env
 Mostra2024.csv
+app/uploads/*
+!app/uploads/.gitkeep
+uploads_local/*
 
 # ---- frontend ----
 # Logs

@@ -1,12 +1,21 @@
 from flask import Flask
 from flask_cors import CORS
 from .extensions import db, jwt
-from .config import Config
+import os
+from .config import DevelopmentConfig, ProductionConfig, TestingConfig
 
 
 def create_app():
     app = Flask(__name__)
-    app.config.from_object(Config)
+
+    config_map = {
+        'development': DevelopmentConfig,
+        'production': ProductionConfig,
+        'testing': TestingConfig
+    }
+
+    config_class = config_map.get(os.environ.get('FLASK_ENV', 'development'))
+    app.config.from_object(config_class)
 
     db.init_app(app)
     jwt.init_app(app)
@@ -21,4 +30,4 @@ def create_app():
     app.register_blueprint(admin_bp, url_prefix='/api/v1/admin')
     app.register_blueprint(evaluator_bp, url_prefix='/api/v1/evaluator')
 
-    return app 
+    return app

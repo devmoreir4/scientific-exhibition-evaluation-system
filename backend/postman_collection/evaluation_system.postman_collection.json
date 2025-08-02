@@ -59,6 +59,16 @@
         }
       },
       {
+        "name": "Admin - Listar Avaliadores (Simplificado)",
+        "request": {
+          "method": "GET",
+          "header": [
+            { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+          ],
+          "url": { "raw": "http://localhost:5000/api/v1/admin/users/simple", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "v1", "admin", "users", "simple"] }
+        }
+      },
+      {
         "name": "Admin - Editar Avaliador",
         "request": {
           "method": "PUT",
@@ -94,6 +104,36 @@
         }
       },
       {
+        "name": "Admin - Listar Distribuições",
+        "request": {
+          "method": "GET",
+          "header": [
+            { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+          ],
+          "url": { "raw": "http://localhost:5000/api/v1/admin/works/distributions", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "v1", "admin", "works", "distributions"] }
+        }
+      },
+      {
+        "name": "Admin - Importar Trabalhos CSV",
+        "request": {
+          "method": "POST",
+          "header": [
+            { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+          ],
+          "body": {
+            "mode": "formdata",
+            "formdata": [
+              {
+                "key": "file",
+                "type": "file",
+                "src": []
+              }
+            ]
+          },
+          "url": { "raw": "http://localhost:5000/api/v1/admin/works/import-csv", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "v1", "admin", "works", "import-csv"] }
+        }
+      },
+      {
         "name": "Admin - Editar Trabalho",
         "request": {
           "method": "PUT",
@@ -116,6 +156,26 @@
             { "key": "Authorization", "value": "Bearer {{admin_token}}" }
           ],
           "url": { "raw": "http://localhost:5000/api/v1/admin/works/1", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "v1", "admin", "works", "1"] }
+        }
+      },
+      {
+        "name": "Admin - Progresso das Avaliações",
+        "request": {
+          "method": "GET",
+          "header": [
+            { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+          ],
+          "url": { "raw": "http://localhost:5000/api/v1/admin/works/evaluation-progress", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "v1", "admin", "works", "evaluation-progress"] }
+        }
+      },
+      {
+        "name": "Admin - Pódio dos Trabalhos",
+        "request": {
+          "method": "GET",
+          "header": [
+            { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+          ],
+          "url": { "raw": "http://localhost:5000/api/v1/admin/works/podium", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "v1", "admin", "works", "podium"] }
         }
       },
       {
