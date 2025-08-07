@@ -221,3 +221,25 @@ def get_works_podium():
     return jsonify({
         'podium_data': podium_data
     }), 200
+
+@admin_bp.route('/works/evaluator/<int:evaluator_id>', methods=['GET'])
+@jwt_required()
+@admin_required
+def get_works_by_evaluator(evaluator_id):
+    evaluator = Evaluator.query.get(evaluator_id)
+    if not evaluator:
+        return jsonify({'msg': 'Avaliador não encontrado.'}), 404
+
+    works = [
+        {
+            'id': w.id,
+            'title': w.title,
+            'authors': w.authors,
+            'advisor': w.advisor,
+            'type': w.type,
+            'area': w.area,
+            'subarea': w.subarea
+        }
+        for w in evaluator.works
+    ]
+    return jsonify({'works': works}), 200

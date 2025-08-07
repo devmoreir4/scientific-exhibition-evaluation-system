@@ -1,8 +1,7 @@
 from . import admin_bp
 from flask import jsonify, request, current_app
 from flask_jwt_extended import jwt_required, get_jwt_identity
-# from app.services.ocr_service import process_sheet_image
-from app.services.ocr_ai_service import process_sheet_image_ai
+from app.services.ai_service import process_sheet_image_ai
 from app.models import Evaluation, Evaluator, Work
 from app.extensions import db
 import os
@@ -19,29 +18,6 @@ def get_next_evaluation_number():
     existing = [f for f in os.listdir(upload_folder) if f.startswith('evaluation_')]
     nums = [int(f.split('_')[1].split('.')[0]) for f in existing if f.split('_')[1].split('.')[0].isdigit()]
     return max(nums, default=0) + 1
-
-# @admin_bp.route('/sheets/process', methods=['POST'])
-# @jwt_required()
-# @admin_required
-# def process_sheet():
-#     if 'file' not in request.files:
-#         return jsonify({'msg': 'Arquivo não enviado.'}), 400
-#     file = request.files['file']
-#     if file.filename == '':
-#         return jsonify({'msg': 'Nenhum arquivo selecionado.'}), 400
-#     image_bytes = file.read()
-#     if not image_bytes:
-#         return jsonify({'msg': 'Arquivo enviado está vazio ou corrompido.'}), 400
-#     ext = os.path.splitext(file.filename or 'sheet.jpg')[1]
-#     numero = get_next_evaluation_number()
-#     filename = f"evaluation_{numero}{ext}"
-#     upload_folder = get_upload_folder()
-#     save_path = os.path.join(upload_folder, filename)
-#     with open(save_path, 'wb') as f:
-#         f.write(image_bytes)
-#     result = process_sheet_image(image_bytes)
-#     result['saved_image'] = filename
-#     return jsonify(result), 200
 
 @admin_bp.route('/sheets/process-ai', methods=['POST'])
 @jwt_required()

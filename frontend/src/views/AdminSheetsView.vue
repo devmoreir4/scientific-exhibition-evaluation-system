@@ -26,20 +26,20 @@
         <h4>Dados Extraídos (Editáveis)</h4>
         <form @submit.prevent="confirmSheet" class="confirmation-form">
           <div class="form-group">
-            <label>Trabalho:</label>
-            <select v-model="formData.work_id" required>
-              <option value="">Selecione um trabalho</option>
-              <option v-for="work in works" :key="work.id" :value="work.id">
-                {{ work.id }} - {{ work.title }}
+            <label>Avaliador:</label>
+            <select v-model="formData.evaluator_id" @change="onEvaluatorChange" required>
+              <option value="">Selecione um avaliador</option>
+              <option v-for="evaluator in evaluators" :key="evaluator.id" :value="evaluator.id">
+                {{ evaluator.name }}
               </option>
             </select>
           </div>
           <div class="form-group">
-            <label>Avaliador:</label>
-            <select v-model="formData.evaluator_id" required>
-              <option value="">Selecione um avaliador</option>
-              <option v-for="evaluator in evaluators" :key="evaluator.id" :value="evaluator.id">
-                {{ evaluator.name }}
+            <label>Trabalho:</label>
+            <select v-model="formData.work_id" required :disabled="!formData.evaluator_id || loadingFilteredWorks">
+              <option value="">{{ loadingFilteredWorks ? 'Carregando...' : 'Selecione um trabalho' }}</option>
+              <option v-for="work in filteredWorks" :key="work.id" :value="work.id">
+                {{ work.id }} - {{ work.title }}
               </option>
             </select>
           </div>
@@ -98,6 +98,8 @@ const evaluators = ref([])
 const loadingEvaluators = ref(false)
 const works = ref([])
 const loadingWorks = ref(false)
+const filteredWorks = ref([])
+const loadingFilteredWorks = ref(false)
 
 const formData = reactive({
   work_id: '',
@@ -133,6 +135,31 @@ function fetchWorks() {
     })
 }
 
+function fetchWorksByEvaluator(evaluatorId) {
+  if (!evaluatorId) {
+    filteredWorks.value = []
+    return
+  }
+
+  loadingFilteredWorks.value = true
+  api.get(`/admin/works/evaluator/${evaluatorId}`)
+    .then(res => {
+      filteredWorks.value = res.data.works
+    })
+    .catch(e => {
+      console.error('Erro ao buscar trabalhos do avaliador:', e)
+      filteredWorks.value = []
+    })
+    .finally(() => {
+      loadingFilteredWorks.value = false
+    })
+}
+
+function onEvaluatorChange() {
+  formData.work_id = ''
+  fetchWorksByEvaluator(formData.evaluator_id)
+}
+
 function distributeWorks() {
   distributing.value = true
   distMsg.value = ''
@@ -163,7 +190,7 @@ function processSheetAi() {
     .then(res => {
       // console.log('Resposta /admin/sheets/process-ai:', res)
       // console.log('Dados extraídos:', res.data)
-      processMsg.value = 'Ficha processada com sucesso!';
+
       lastSheet.value = res.data
       if (res.data.saved_image) {
         lastSheetImgUrl.value = `/uploads/${res.data.saved_image}`
@@ -171,16 +198,29 @@ function processSheetAi() {
 
       formData.work_id = ''
       formData.evaluator_id = ''
+      filteredWorks.value = []
 
-      // Converter scores extraídos para números válidos
       const extractedScores = res.data.extracted_scores || []
       formData.scores = extractedScores.map(score => {
+        if (score === null || score === undefined) {
+          return 1
+        }
         const numScore = parseInt(score)
         return (numScore && numScore >= 1 && numScore <= 5) ? numScore : 1
       })
 
       while (formData.scores.length < 5) {
         formData.scores.push(1)
+      }
+
+      const allNullScores = extractedScores.every(score => score === null || score === undefined)
+
+      if (allNullScores) {
+        processError.value = 'Atenção: Nenhuma marca válida foi encontrada.'
+      } else if (res.data.warning) {
+        processMsg.value = 'Ficha processada, mas com avisos: ' + res.data.warning
+      } else {
+        processMsg.value = 'Ficha processada com sucesso!'
       }
     })
     .catch(e => {

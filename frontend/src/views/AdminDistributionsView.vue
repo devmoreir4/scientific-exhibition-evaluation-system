@@ -38,7 +38,7 @@
           <div class="evaluators-section">
             <h4>Avaliadores Atribuídos ({{ distribution.evaluators_count }})</h4>
             <div v-if="distribution.evaluators.length === 0" class="no-evaluators">
-              <span class="warning">⚠️ Nenhum avaliador atribuído</span>
+              <span class="warning">Nenhum avaliador atribuído</span>
             </div>
             <div v-else class="evaluators-list">
               <div v-for="evaluator in distribution.evaluators" :key="evaluator.id" class="evaluator-item">
