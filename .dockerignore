@@ -1,0 +1,34 @@
+# Git
+.git/
+
+# Documentation
+*.md
+README*
+
+# Environment files
+.env*
+
+# Docker files
+docker-compose*
+Dockerfile*
+.dockerignore
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Scripts
+start.sh
+start.bat
+
+# Data files
+*.csv
+*.xlsx
+uploads_local/

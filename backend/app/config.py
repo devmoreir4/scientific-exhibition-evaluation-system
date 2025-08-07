@@ -4,23 +4,20 @@ from datetime import timedelta
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY')
 
-    DATABASE_TYPE = os.environ.get('DATABASE_TYPE', 'sqlite')
+    # PostgreSQL
+    DB_HOST = os.environ.get('DB_HOST', 'postgres')
+    DB_PORT = os.environ.get('DB_PORT', '5432')
+    DB_NAME = os.environ.get('DB_NAME', 'evaluation_system')
+    DB_USER = os.environ.get('DB_USER', 'postgres')
+    DB_PASSWORD = os.environ.get('DB_PASSWORD', 'postgres123')
 
-    if DATABASE_TYPE == 'postgresql':
-        DB_HOST = os.environ.get('DB_HOST')
-        DB_PORT = os.environ.get('DB_PORT')
-        DB_NAME = os.environ.get('DB_NAME')
-        DB_USER = os.environ.get('DB_USER')
-        DB_PASSWORD = os.environ.get('DB_PASSWORD')
-        SQLALCHEMY_DATABASE_URI = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
-    else:
-        SQLALCHEMY_DATABASE_URI = 'sqlite:///app.db'
-
+    SQLALCHEMY_DATABASE_URI = f"postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+
     JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY')
     JWT_ALGORITHM = os.environ.get('ALGORITHM', 'HS256')
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(
-        minutes=int(os.environ.get('ACCESS_TOKEN_EXPIRE_MINUTES', 30))
+        minutes=int(os.environ.get('ACCESS_TOKEN_EXPIRE_MINUTES', 60))
     )
     GOOGLE_API_KEY = os.environ.get('GOOGLE_API_KEY')
     UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), 'uploads')
@@ -35,4 +32,5 @@ class ProductionConfig(Config):
 
 class TestingConfig(Config):
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
+    DB_NAME = os.environ.get('DB_NAME', 'evaluation_system_test')
+    SQLALCHEMY_DATABASE_URI = f"postgresql://{Config.DB_USER}:{Config.DB_PASSWORD}@{Config.DB_HOST}:{Config.DB_PORT}/{DB_NAME}"

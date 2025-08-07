@@ -9,7 +9,7 @@ work_evaluator_association = db.Table(
 class Admin(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     login = db.Column(db.String(50), unique=True, nullable=False)
-    password_hash = db.Column(db.String(128), nullable=False)
+    password_hash = db.Column(db.String(255), nullable=False)
     name = db.Column(db.String(120), nullable=False)
 
 class Evaluator(db.Model):
@@ -17,7 +17,7 @@ class Evaluator(db.Model):
     name = db.Column(db.String(120), nullable=False)
     siape_or_cpf = db.Column(db.String(20), unique=True, nullable=False)
     birthdate = db.Column(db.String(8), nullable=False)
-    password_hash = db.Column(db.String(128), nullable=True)
+    password_hash = db.Column(db.String(255), nullable=True)
     area = db.Column(db.String(100), nullable=False)
     subareas = db.Column(db.String(255), nullable=True)  # subáreas de interesse, separadas por ponto e vírgula (;)
     carga = db.Column(db.Integer, default=0)

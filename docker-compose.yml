@@ -1,63 +1,77 @@
 services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: evaluation_postgres
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - evaluation_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  adminer:
+    image: adminer:latest
+    container_name: evaluation_adminer
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - evaluation_network
+
   backend:
     build: ./backend
-    ports:
-      - "5000:5000"
+    container_name: evaluation_backend
     environment:
       - FLASK_APP=run.py
-      - FLASK_RUN_HOST=0.0.0.0
-      - FLASK_ENV=${FLASK_ENV:-development}
-      - DATABASE_TYPE=${DATABASE_TYPE:-sqlite}
-      - DB_HOST=postgres
-      - DB_PORT=5432
+      - FLASK_ENV=${FLASK_ENV}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
       - DB_NAME=${DB_NAME}
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
       - SECRET_KEY=${SECRET_KEY}
       - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - ACCESS_TOKEN_EXPIRE_MINUTES=${ACCESS_TOKEN_EXPIRE_MINUTES}
+      - ALGORITHM=${ALGORITHM}
       - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - ADMIN_LOGIN=${ADMIN_LOGIN}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD}
     volumes:
-      - ./backend:/app
-      # - uploads_data:/app/app/uploads
-      - ./uploads_local:/app/app/uploads
-    # depends_on:
-    #   - postgres
+      - ./backend/app/uploads:/app/app/uploads
+    ports:
+      - "5000:5000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - evaluation_network
     restart: unless-stopped
 
   frontend:
     build: ./frontend
+    container_name: evaluation_frontend
     ports:
       - "4173:4173"
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
-    restart: unless-stopped
     depends_on:
       - backend
-
-  postgres:
-    image: postgres:15-alpine
-    environment:
-      - POSTGRES_DB=${DB_NAME}
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
+    networks:
+      - evaluation_network
     restart: unless-stopped
-    profiles:
-      - postgresql
-
-  adminer:
-    image: adminer
-    ports:
-      - "8080:8080"
-    restart: unless-stopped
-    depends_on:
-      - postgres
 
 volumes:
   postgres_data:
-  # uploads_data:
-  uploads_local:
+
+networks:
+  evaluation_network:
+    driver: bridge

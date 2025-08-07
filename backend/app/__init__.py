@@ -19,7 +19,14 @@ def create_app():
 
     db.init_app(app)
     jwt.init_app(app)
-    CORS(app)
+
+    CORS(app, resources={
+        r"/api/*": {
+            "origins": ["http://localhost:4173", "http://127.0.0.1:4173"],
+            "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+            "allow_headers": ["Content-Type", "Authorization"]
+        }
+    })
 
     # blueprints
     from .blueprints.auth import auth_bp
