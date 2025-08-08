@@ -48,9 +48,4 @@ button, input, textarea, select {
   font-family: inherit;
   font-size: inherit;
 }
-
-.container, .section, .card, .form {
-  max-width: 100%;
-  overflow-x: hidden;
-}
 </style>

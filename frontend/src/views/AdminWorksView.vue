@@ -70,6 +70,14 @@
             </tr>
           </tbody>
         </table>
+
+        <Pagination
+          v-if="pagination && pagination.total > 0"
+          :pagination="pagination"
+          @page-change="onPageChange"
+          @per-page-change="onPerPageChange"
+        />
+
         <div v-if="error" class="error">{{ error }}</div>
       </div>
     </div>
@@ -107,10 +115,14 @@
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
 import api from '../axios'
+import Pagination from '../components/Pagination.vue'
 
 const works = ref([])
 const loading = ref(true)
 const error = ref('')
+const pagination = ref(null)
+const currentPage = ref(1)
+const currentPerPage = ref(20)
 const showModal = ref(false)
 const editingWork = ref(null)
 const modalError = ref('')
@@ -123,7 +135,6 @@ const form = reactive({
   subarea: ''
 })
 
-// Variáveis para importação CSV
 const selectedFile = ref(null)
 const importing = ref(false)
 const importMsg = ref('')
@@ -216,15 +227,32 @@ function importCsv() {
 function fetchWorks() {
   loading.value = true
   error.value = ''
-  api.get('/admin/works')
+  const params = new URLSearchParams({
+    page: currentPage.value.toString(),
+    per_page: currentPerPage.value.toString()
+  })
+
+  api.get(`/admin/works?${params}`)
     .then(res => {
       works.value = res.data.works
+      pagination.value = res.data.pagination
     })
     .catch(e => {
       console.error('Erro /admin/works:', e, e.response)
       error.value = e.response?.data?.msg || JSON.stringify(e.response?.data) || e.message || 'Erro ao buscar trabalhos.'
     })
     .finally(() => { loading.value = false })
+}
+
+function onPageChange(page) {
+  currentPage.value = page
+  fetchWorks()
+}
+
+function onPerPageChange(perPage) {
+  currentPerPage.value = perPage
+  currentPage.value = 1
+  fetchWorks()
 }
 
 function openModal(work) {

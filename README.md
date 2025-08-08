@@ -1,190 +1,122 @@
 # Sistema de Avaliação para Mostra Científica
 
-Sistema completo para gerenciamento e avaliação de trabalhos científicos, desenvolvido com **Flask** (backend) e **Vue.js** (frontend).
+Sistema para gerenciamento, distribuição e avaliação de trabalhos científicos em mostras e feiras de ciência.
 
-## 🚀 Funcionalidades
+## 🚀 Visão Geral
 
-### **Administração**
-- ✅ Gestão completa de avaliadores (CRUD)
-- ✅ Importação de trabalhos via CSV
-- ✅ Distribuição automática inteligente de trabalhos
-- ✅ Processamento de fichas com OCR e IA
-- ✅ Monitoramento de progresso das avaliações
-- ✅ Dashboard com estatísticas e relatórios
+Este sistema oferece uma solução completa para organizadores de mostras científicas, permitindo:
 
-### **Avaliação**
-- ✅ Sistema de login seguro com JWT
-- ✅ Interface intuitiva para avaliação online
-- ✅ Critérios múltiplos (1-5 pontos)
-- ✅ Validação de distribuição de trabalhos
-- ✅ Histórico de avaliações realizadas
+- **Cadastro e gerenciamento** de avaliadores e trabalhos
+- **Distribuição automática** de trabalhos entre avaliadores
+- **Avaliação online** com critérios padronizados
+- **Monitoramento em tempo real** do progresso das avaliações
+- **Geração de pódio** automático
+- **Processamento de fichas** com IA
 
-### **Tecnologias Avançadas**
-- ✅ **OCR Tradicional**: Extração de dados de fichas físicas
-- ✅ **IA Generativa**: Processamento inteligente com Google AI
-- ✅ **Distribuição Inteligente**: Algoritmo que considera expertise e conflitos
-- ✅ **Validação Robusta**: Múltiplas camadas de verificação
+## 🛠️ Stack Tecnológica
 
-## 🏗️ Arquitetura
+### Backend
+- **Framework**: Flask
+- **ORM**: SQLAlchemy
+- **Autenticação**: Flask-JWT-Extended
+- **Banco de Dados**: PostgreSQL
+- **IA**: Google Gemini API
+- **Documentação**: Swagger
 
-```
-scientific-exhibition-evaluation-system/
-├── backend/                 # API Flask
-│   ├── app/
-│   │   ├── blueprints/     # Rotas da API
-│   │   ├── services/       # Lógica de negócio
-│   │   └── models.py       # Modelos do banco
-│   └── requirements.txt
-├── frontend/               # SPA Vue.js
-│   ├── src/
-│   │   ├── views/         # Páginas da aplicação
-│   │   ├── stores/        # Gerenciamento de estado
-│   │   └── routes.js      # Configuração de rotas
-│   └── package.json
-└── docker-compose.yml     # Orquestração dos containers
-```
+### Frontend
+- **Framework**: Vue 3.4.0
+- **Build Tool**: Vite 5.0.0
+- **Gerenciamento de Estado**: Pinia 2.1.0
+- **Roteamento**: Vue Router 4.2.0
+- **HTTP Client**: Axios 1.6.0
 
-## 🐳 Executando com Docker
+### Infraestrutura
+- **Containerização**: Docker & Docker Compose
+- **Banco de Dados**: PostgreSQL 15-alpine
+- **Interface DB**: Adminer
+- **Proxy/Web Server**: Nginx (via Docker)
 
-### **Pré-requisitos**
-- Docker
-- Docker Compose
+## 🔧 Instalação e Execução
 
-### **1. Clone o repositório**
+### Pré-requisitos
+- Docker e Docker Compose
+- Node.js 20+ (para desenvolvimento local)
+- Python 3.11+ (para desenvolvimento local)
+
+### Execução com Docker
+
+1. **Clone o repositório**
 ```bash
-git clone <url-do-repositorio>
+git clone https://github.com/devmoreir4/scientific-exhibition-evaluation-system.git
 cd scientific-exhibition-evaluation-system
 ```
 
-### **2. Configure as variáveis de ambiente**
-Crie um arquivo `.env` na raiz do projeto:
+2. **Configure as variáveis de ambiente**
+    - Renomeie o arquivo `.env.example` para `.env` e adicione suas informações
+
+3. **Execute os serviços**
 ```bash
-# Configurações do Banco
-DB_NAME=scientific_exhibition
-DB_USER=postgres
-DB_PASSWORD=sua_senha_segura
-
-# Chaves de Segurança
-SECRET_KEY=sua_chave_secreta_aqui
-JWT_SECRET_KEY=sua_jwt_secret_aqui
-
-# API do Google (opcional, para IA)
-GOOGLE_API_KEY=sua_chave_google_aqui
-
-# Ambiente
-FLASK_ENV=development
-```
-
-### **3. Execute os containers**
-```bash
-# Executar todos os serviços
 docker-compose up -d
-
-# Ou para ver os logs em tempo real
-docker-compose up
 ```
 
-### **4. Acesse a aplicação**
+4. **Acesse a aplicação**
 - **Frontend**: http://localhost:4173
-- **Backend API**: http://localhost:5000
-- **Documentação API**: http://localhost:5000/apidocs/
+- **API**: http://localhost:5000/api/v1
 - **Adminer (DB)**: http://localhost:8080
+- **Documentação API**: http://localhost:5000/api/v1/docs
 
-### **5. Comandos úteis**
-```bash
-# Parar todos os serviços
-docker-compose down
+### Desenvolvimento Local
 
-# Reconstruir containers
-docker-compose up --build
-
-# Ver logs de um serviço específico
-docker-compose logs backend
-docker-compose logs frontend
-```
-
-## 🔧 Desenvolvimento Local
-
-### **Backend (Flask)**
+#### Backend (SQLite)
 ```bash
 cd backend
 python -m venv venv
-source venv/bin/activate  # Linux/Mac
-# ou
-venv\Scripts\activate     # Windows
+# Windows
+venv\Scripts\activate
+# Linux/Mac
+source venv/bin/activate
 
 pip install -r requirements.txt
+python init_db_local.py
+set FLASK_ENV=local  # Windows
+export FLASK_ENV=local  # Linux/Mac
 python run.py
 ```
 
-### **Frontend (Vue.js)**
+#### Frontend
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
 
-## 📊 Estrutura de Dados
+## 📊 Funcionalidades Principais
 
-### **Formatos de Separação**
-- **Autores**: Separados por ponto e vírgula (;)
-- **Subáreas**: Separadas por ponto e vírgula (;)
+### Para Administradores
+- **Gestão de Usuários**: Cadastro, edição e remoção de avaliadores
+- **Gestão de Trabalhos**: Importação CSV, edição e remoção
+- **Distribuição**: Algoritmo automático de distribuição de trabalhos
+- **Monitoramento**: Acompanhamento do progresso das avaliações
+- **Pódio**: Geração automática de rankings
+- **Processamento de Fichas**: IA para extrair notas de imagens
 
-> **Nota**: O uso de ponto e vírgula (;) como separador evita conflitos com vírgulas que podem aparecer nos nomes das subáreas.
+### Para Avaliadores
+- **Dashboard**: Visão geral dos trabalhos atribuídos
+- **Avaliação**: Formulário com 5 critérios (1-5 pontos)
+- **Histórico**: Visualização de avaliações realizadas
+- **Alteração de Senha**: Gerenciamento de credenciais
 
-### **Tipos de Avaliador**
-- **Pedagógico**: Avaliadores com área contendo "pedag"
-- **Técnico**: Demais avaliadores
+## 📈 Monitoramento
 
-### **Critérios de Avaliação**
-1. Critério 1 (1-5 pontos)
-2. Critério 2 (1-5 pontos)
-3. Critério 3 (1-5 pontos)
-4. Critério 4 (1-5 pontos)
-5. Critério 5 (1-5 pontos)
+O sistema oferece dashboards em tempo real para:
+- Progresso das avaliações
+- Distribuição de trabalhos
+- Performance dos avaliadores
+- Rankings e pódios
 
-## 🔐 Segurança
+## 🤖 Integração com IA
 
-- **Autenticação JWT**: Tokens seguros para todas as operações
-- **Validação de Distribuição**: Apenas avaliadores distribuídos podem avaliar
-- **Prevenção de Duplicatas**: Sistema impede avaliações duplicadas
-- **Validação de Scores**: Critérios devem estar entre 1-5
-
-## 📚 Documentação
-
-- **[API Documentation](backend/API_DOCUMENTATION.md)**: Documentação completa da API
-- **[Frontend README](frontend/README.md)**: Guia do frontend Vue.js
-
-## 🚀 Deploy
-
-### **Produção**
-```bash
-# Configurar variáveis de produção
-export FLASK_ENV=production
-```
-
-### **Variáveis de Ambiente de Produção**
-```bash
-FLASK_ENV=production
-SECRET_KEY=<chave_secreta_forte>
-JWT_SECRET_KEY=<jwt_secret_forte>
-DB_NAME=scientific_exhibition_prod
-DB_USER=postgres
-DB_PASSWORD=<senha_forte>
-```
-
-## 🤝 Contribuição
-
-1. Fork o projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
-3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
-4. Push para a branch (`git push origin feature/AmazingFeature`)
-5. Abra um Pull Request
-
-## 📄 Licença
-
-Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalhes.
-
----
-
-**Desenvolvido com ❤️ para Mostras Científicas**
+Opcionalmente, o sistema pode processar fichas de avaliação:
+- Upload de imagem da ficha
+- Extração automática das notas
+- Confirmação manual pelo admin

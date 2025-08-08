@@ -2,7 +2,7 @@ from app.models import Evaluation, Work, Evaluator
 from app.extensions import db
 
 
-def calculate_evaluation_progress():
+def calculate_evaluation_progress(page=1, per_page=20):
     works = Work.query.all()
     evaluations = Evaluation.query.all()
 
@@ -45,6 +45,12 @@ def calculate_evaluation_progress():
     if total_expected_evaluations > 0:
         overall_progress = round((total_evaluations / total_expected_evaluations) * 100, 1)
 
+    # Pagination of works
+    all_works_progress = list(works_with_evaluations.values())
+    start_idx = (page - 1) * per_page
+    end_idx = start_idx + per_page
+    paginated_works = all_works_progress[start_idx:end_idx]
+
     return {
         'overall_stats': {
             'total_works': total_works,
@@ -52,7 +58,17 @@ def calculate_evaluation_progress():
             'total_expected_evaluations': total_expected_evaluations,
             'overall_progress': overall_progress
         },
-        'works_progress': list(works_with_evaluations.values())
+        'works_progress': paginated_works,
+        'pagination': {
+            'page': page,
+            'per_page': per_page,
+            'pages': (len(all_works_progress) + per_page - 1) // per_page,
+            'total': len(all_works_progress),
+            'has_prev': page > 1,
+            'has_next': end_idx < len(all_works_progress),
+            'prev_num': page - 1 if page > 1 else None,
+            'next_num': page + 1 if end_idx < len(all_works_progress) else None
+        }
     }
 
 
@@ -73,7 +89,6 @@ def calculate_work_average_score(work_evaluations):
 
 
 def generate_works_podium():
-    """Gera o pódio dos melhores trabalhos por área"""
     works = Work.query.all()
     evaluations = Evaluation.query.all()
 

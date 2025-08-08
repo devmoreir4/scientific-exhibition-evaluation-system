@@ -18,7 +18,7 @@
               <td class="work-authors">{{ work.authors }}</td>
               <td class="work-action">
                 <router-link v-if="!isWorkEvaluated(work.id)" :to="`/evaluate/${work.id}`" class="eval-btn">Avaliar</router-link>
-                <span v-else class="evaluated-badge">Avaliado</span>
+                <span v-else class="evaluated-text">Avaliado</span>
               </td>
             </tr>
           </tbody>
@@ -184,7 +184,7 @@ tbody tr:hover {
 }
 
 .work-action {
-  text-align: center;
+  text-align: left;
   min-width: 100px;
 }
 
@@ -200,7 +200,8 @@ tbody tr:hover {
   min-width: 80px;
   width: 80px;
   text-align: center;
-  display: inline-block;
+  display: block;
+  margin: 0 auto;
   box-sizing: border-box;
   font-size: 0.85rem;
 }
@@ -210,16 +211,11 @@ tbody tr:hover {
   color: #fff;
 }
 
-.evaluated-badge {
+.evaluated-text {
   color: #4CB050;
   font-weight: 600;
-  font-size: 0.85rem;
-  display: inline-block;
-  text-align: center;
-  min-width: 80px;
-  width: 80px;
-  box-sizing: border-box;
-  padding: 0.4rem 0;
+  justify-content: center;
+  display: flex;
 }
 
 .loading {
@@ -326,8 +322,7 @@ tbody tr:hover {
     max-width: 250px;
   }
 
-  .eval-btn,
-  .evaluated-badge {
+  .eval-btn {
     min-width: 70px;
     width: 70px;
     font-size: 0.8rem;
@@ -372,8 +367,7 @@ tbody tr:hover {
     max-width: 200px;
   }
 
-  .eval-btn,
-  .evaluated-badge {
+  .eval-btn {
     min-width: 60px;
     width: 60px;
     font-size: 0.75rem;

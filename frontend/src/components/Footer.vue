@@ -2,11 +2,6 @@
   <footer :class="['standalone-footer', { 'full-width': fullWidth }]">
     <div class="footer-content">
       <div class="footer-section">
-        <h4>XIII Mostra do Conhecimento</h4>
-        <p>e VI Feira de Oportunidades</p>
-        <p class="footer-date">29/09 a 04/10 de 2025</p>
-      </div>
-      <div class="footer-section">
         <h4>Sistema de Avaliação</h4>
         <p>Plataforma digital para avaliação de trabalhos científicos</p>
         <p class="footer-version">Versão 1.0</p>
@@ -36,7 +31,7 @@ defineProps({
 .standalone-footer {
   background: #17635A;
   color: #fff;
-  padding: 1.5rem 1rem 0.8rem 1rem;
+  padding: 1rem 0.8rem 0.6rem 0.8rem;
   margin-top: auto;
   width: 100%;
   position: relative;
@@ -54,9 +49,9 @@ defineProps({
   margin: 0 auto;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 1rem;
-  padding: 0 1rem;
+  gap: 1rem;
+  margin-bottom: 0.6rem;
+  padding: 0 0.8rem;
 }
 
 .footer-section {
@@ -65,22 +60,16 @@ defineProps({
 
 .footer-section h4 {
   color: #CFE3C6;
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 700;
-  margin-bottom: 0.6rem;
+  margin-bottom: 0.4rem;
 }
 
 .footer-section p {
   color: #fff;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   line-height: 1.4;
-  margin-bottom: 0.4rem;
-}
-
-.footer-date {
-  color: #CFE3C6 !important;
-  font-weight: 600;
-  font-size: 0.95rem !important;
+  margin-bottom: 0.3rem;
 }
 
 .footer-version {
@@ -96,13 +85,13 @@ defineProps({
 
 .footer-bottom {
   border-top: 1px solid #4CB050;
-  padding-top: 0.8rem;
+  padding-top: 0.6rem;
   text-align: center;
 }
 
 .footer-bottom p {
   color: #CFE3C6;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   margin: 0;
 }
 
@@ -132,12 +121,12 @@ defineProps({
 
 @media (max-width: 480px) {
   .standalone-footer {
-    padding: 1.2rem 0.5rem 0.6rem 0.5rem;
+    padding: 0.9rem 0.5rem 0.5rem 0.5rem;
   }
 
   .footer-content {
-    gap: 0.8rem;
-    margin-bottom: 0.6rem;
+    gap: 0.6rem;
+    margin-bottom: 0.5rem;
     padding: 0 1.5rem;
   }
 
@@ -157,23 +146,23 @@ defineProps({
   }
 
   .footer-bottom {
-    padding-top: 0.6rem;
+    padding-top: 0.5rem;
   }
 
   .footer-bottom p {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
   }
 }
 
 @media (max-width: 360px) {
   .standalone-footer {
-    padding: 1rem 0.5rem 0.5rem 0.5rem;
+    padding: 0.8rem 0.5rem 0.4rem 0.5rem;
   }
 
   .footer-content {
     padding: 0 1rem;
-    gap: 0.6rem;
-    margin-bottom: 0.5rem;
+    gap: 0.5rem;
+    margin-bottom: 0.4rem;
   }
 
   .footer-section {
@@ -191,7 +180,7 @@ defineProps({
   }
 
   .footer-bottom {
-    padding-top: 0.5rem;
+    padding-top: 0.4rem;
   }
 }
 </style>

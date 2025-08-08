@@ -1,57 +1,61 @@
-import { defineStore } from 'pinia'
-import api from '../axios'
+import { defineStore } from "pinia";
+import api from "../axios";
 
-export const useAuthStore = defineStore('auth', {
+export const useAuthStore = defineStore("auth", {
   state: () => ({
-    token: localStorage.getItem('token') || '',
-    role: localStorage.getItem('role') || '',
+    token: localStorage.getItem("token") || "",
+    role: localStorage.getItem("role") || "",
     user: null,
     loading: false,
-    error: null
+    error: null,
   }),
   actions: {
     async login({ siape_or_cpf, password, isAdmin }) {
-      this.loading = true
-      this.error = null
+      this.loading = true;
+      this.error = null;
       try {
-        const url = isAdmin ? '/auth/admin/token' : '/auth/token'
+        const url = isAdmin ? "/auth/admin/token" : "/auth/token";
         const payload = isAdmin
           ? { login: siape_or_cpf, password }
-          : { siape_or_cpf, password }
-        const { data } = await api.post(url, payload)
-        this.token = data.access_token
-        this.role = data.role || (isAdmin ? 'admin' : 'evaluator')
-        localStorage.setItem('token', this.token)
-        localStorage.setItem('role', this.role)
-        return true
+          : { siape_or_cpf, password };
+        const { data } = await api.post(url, payload);
+        this.token = data.access_token;
+        this.role = data.role || (isAdmin ? "admin" : "evaluator");
+        localStorage.setItem("token", this.token);
+        localStorage.setItem("role", this.role);
+        return true;
       } catch (e) {
-        console.error('Erro ao fazer login:', e, e.response)
-        this.error = e.response?.data?.msg || JSON.stringify(e.response?.data) || e.message || 'Erro ao fazer login.'
-        return false
+        console.error("Erro ao fazer login:", e, e.response);
+        this.error =
+          e.response?.data?.msg ||
+          JSON.stringify(e.response?.data) ||
+          e.message ||
+          "Erro ao fazer login.";
+        return false;
       } finally {
-        this.loading = false
+        this.loading = false;
       }
     },
     logout() {
-      this.token = ''
-      this.role = ''
-      this.user = null
-      localStorage.removeItem('token')
-      localStorage.removeItem('role')
+      this.token = "";
+      this.role = "";
+      this.user = null;
+      localStorage.removeItem("token");
+      localStorage.removeItem("role");
     },
     checkAuth() {
-      const savedToken = localStorage.getItem('token')
-      const savedRole = localStorage.getItem('role')
+      const savedToken = localStorage.getItem("token");
+      const savedRole = localStorage.getItem("role");
 
       if (savedToken && savedRole) {
-        this.token = savedToken
-        this.role = savedRole
-        return true
+        this.token = savedToken;
+        this.role = savedRole;
+        return true;
       } else {
-        this.token = ''
-        this.role = ''
-        return false
+        this.token = "";
+        this.role = "";
+        return false;
       }
-    }
-  }
-})
+    },
+  },
+});

@@ -158,6 +158,4 @@ h2 {
   border-radius: 6px;
   text-align: center;
 }
-
-
 </style>

@@ -1,85 +1,85 @@
-import BaseLayout from './components/BaseLayout.vue'
+import BaseLayout from "./components/BaseLayout.vue";
 
 export default [
   {
-    path: '/login',
-    name: 'Login',
-    component: () => import('./views/LoginView.vue'),
-    meta: { public: true }
+    path: "/login",
+    name: "Login",
+    component: () => import("./views/LoginView.vue"),
+    meta: { public: true },
   },
   {
-    path: '/',
-    redirect: '/login'
+    path: "/",
+    redirect: "/login",
   },
   // Rotas protegidas (admin)
   {
-    path: '/admin',
+    path: "/admin",
     component: BaseLayout,
     meta: { requiresAuth: true, admin: true },
     children: [
       {
-        path: 'dashboard',
-        name: 'AdminDashboard',
-        component: () => import('./views/AdminDashboardView.vue')
+        path: "dashboard",
+        name: "AdminDashboard",
+        component: () => import("./views/AdminDashboardView.vue"),
       },
       {
-        path: 'users',
-        name: 'AdminUsers',
-        component: () => import('./views/AdminUsersView.vue')
+        path: "users",
+        name: "AdminUsers",
+        component: () => import("./views/AdminUsersView.vue"),
       },
       {
-        path: 'works',
-        name: 'AdminWorks',
-        component: () => import('./views/AdminWorksView.vue')
+        path: "works",
+        name: "AdminWorks",
+        component: () => import("./views/AdminWorksView.vue"),
       },
       {
-        path: 'distributions',
-        name: 'AdminDistributions',
-        component: () => import('./views/AdminDistributionsView.vue')
+        path: "distributions",
+        name: "AdminDistributions",
+        component: () => import("./views/AdminDistributionsView.vue"),
       },
       {
-        path: 'monitoring',
-        name: 'AdminMonitoring',
-        component: () => import('./views/AdminMonitoringView.vue')
+        path: "monitoring",
+        name: "AdminMonitoring",
+        component: () => import("./views/AdminMonitoringView.vue"),
       },
       {
-        path: 'podium',
-        name: 'AdminPodium',
-        component: () => import('./views/AdminPodiumView.vue')
+        path: "podium",
+        name: "AdminPodium",
+        component: () => import("./views/AdminPodiumView.vue"),
       },
       {
-        path: 'sheets',
-        name: 'AdminSheets',
-        component: () => import('./views/AdminSheetsView.vue')
-      }
-    ]
+        path: "sheets",
+        name: "AdminSheets",
+        component: () => import("./views/AdminSheetsView.vue"),
+      },
+    ],
   },
   // Rotas protegidas (avaliador)
   {
-    path: '/',
+    path: "/",
     component: BaseLayout,
     meta: { requiresAuth: true, evaluator: true },
     children: [
       {
-        path: 'dashboard',
-        name: 'EvaluatorDashboard',
-        component: () => import('./views/EvaluatorDashboardView.vue')
+        path: "dashboard",
+        name: "EvaluatorDashboard",
+        component: () => import("./views/EvaluatorDashboardView.vue"),
       },
       {
-        path: 'evaluate/:work_id',
-        name: 'EvaluationForm',
-        component: () => import('./views/EvaluationFormView.vue')
+        path: "evaluate/:work_id",
+        name: "EvaluationForm",
+        component: () => import("./views/EvaluationFormView.vue"),
       },
       {
-        path: 'change-password',
-        name: 'ChangePassword',
-        component: () => import('./views/ChangePasswordView.vue')
-      }
-    ]
+        path: "change-password",
+        name: "ChangePassword",
+        component: () => import("./views/ChangePasswordView.vue"),
+      },
+    ],
   },
   {
-    path: '/:pathMatch(.*)*',
-    name: 'NotFound',
-    component: () => import('./views/NotFoundView.vue')
-  }
-]
+    path: "/:pathMatch(.*)*",
+    name: "NotFound",
+    component: () => import("./views/NotFoundView.vue"),
+  },
+];

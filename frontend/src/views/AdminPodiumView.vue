@@ -334,6 +334,4 @@ h2 {
   font-style: italic;
   text-align: center;
 }
-
-
 </style>

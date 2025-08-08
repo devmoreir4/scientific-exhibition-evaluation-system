@@ -9,6 +9,7 @@
           <tr>
             <th>Nome</th>
             <th>SIAPE/CPF</th>
+            <th>Data de Nascimento</th>
             <th>Área</th>
             <th>Subáreas</th>
             <th>Ações</th>
@@ -18,6 +19,7 @@
           <tr v-for="user in users" :key="user.id">
             <td>{{ user.name }}</td>
             <td>{{ user.siape_or_cpf }}</td>
+            <td>{{ user.birthdate }}</td>
             <td>{{ user.area }}</td>
             <td>{{ user.subareas }}</td>
             <td>
@@ -27,6 +29,14 @@
           </tr>
         </tbody>
       </table>
+
+      <Pagination
+        v-if="pagination && pagination.total > 0"
+        :pagination="pagination"
+        @page-change="onPageChange"
+        @per-page-change="onPerPageChange"
+      />
+
       <div v-if="error" class="error">{{ error }}</div>
     </div>
 
@@ -85,10 +95,14 @@
 <script setup>
 import { ref, reactive, onMounted } from 'vue'
 import api from '../axios'
+import Pagination from '../components/Pagination.vue'
 
 const users = ref([])
 const loading = ref(true)
 const error = ref('')
+const pagination = ref(null)
+const currentPage = ref(1)
+const currentPerPage = ref(20)
 const showModal = ref(false)
 const editingUser = ref(null)
 const modalError = ref('')
@@ -103,15 +117,32 @@ const loadingSubareas = ref(false)
 function fetchUsers() {
   loading.value = true
   error.value = ''
-  api.get('/admin/users')
+  const params = new URLSearchParams({
+    page: currentPage.value.toString(),
+    per_page: currentPerPage.value.toString()
+  })
+
+  api.get(`/admin/users?${params}`)
     .then(res => {
       users.value = res.data.users
+      pagination.value = res.data.pagination
     })
     .catch(e => {
       console.error('Erro /admin/users:', e, e.response)
       error.value = e.response?.data?.msg || JSON.stringify(e.response?.data) || e.message || 'Erro ao buscar avaliadores.'
     })
     .finally(() => { loading.value = false })
+}
+
+function onPageChange(page) {
+  currentPage.value = page
+  fetchUsers()
+}
+
+function onPerPageChange(perPage) {
+  currentPerPage.value = perPage
+  currentPage.value = 1
+  fetchUsers()
 }
 
 function fetchAreas() {
@@ -152,7 +183,6 @@ function openModal(user = null) {
 
   if (user) {
     Object.assign(form, user)
-    // Converter string de subáreas para array
     selectedSubareas.value = user.subareas ? user.subareas.split(';').map(s => s.trim()) : []
     if (user.area) {
       fetchSubareas(user.area)

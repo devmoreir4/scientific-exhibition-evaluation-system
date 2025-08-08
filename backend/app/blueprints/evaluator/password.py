@@ -1,6 +1,7 @@
 from . import evaluator_bp
 from flask import jsonify, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from flasgger import swag_from
 from app.services.auth_service import (
     get_evaluator_by_id, validate_password_change,
     change_evaluator_password, is_password_strong
@@ -8,6 +9,52 @@ from app.services.auth_service import (
 
 @evaluator_bp.route('/change-password', methods=['PUT'])
 @jwt_required()
+@swag_from({
+    'tags': ['Avaliador'],
+    'summary': 'Alterar senha',
+    'description': 'Permite ao avaliador alterar sua senha',
+    'security': [{'Bearer': []}],
+    'parameters': [
+        {
+            'name': 'body',
+            'in': 'body',
+            'required': True,
+            'schema': {
+                'type': 'object',
+                'required': ['current_password', 'new_password'],
+                'properties': {
+                    'current_password': {
+                        'type': 'string',
+                        'description': 'Senha atual do avaliador',
+                        'example': '01011980'
+                    },
+                    'new_password': {
+                        'type': 'string',
+                        'description': 'Nova senha (mínimo 6 caracteres)',
+                        'example': 'minha_nova_senha123'
+                    }
+                }
+            }
+        }
+    ],
+    'responses': {
+        200: {
+            'description': 'Senha alterada com sucesso',
+            'schema': {
+                'type': 'object',
+                'properties': {
+                    'msg': {
+                        'type': 'string',
+                        'example': 'Senha alterada com sucesso!'
+                    }
+                }
+            }
+        },
+        400: {'description': 'Dados inválidos ou senha fraca'},
+        401: {'description': 'Senha atual incorreta'},
+        404: {'description': 'Avaliador não encontrado'}
+    }
+})
 def change_password():
     evaluator_id = int(get_jwt_identity())
 

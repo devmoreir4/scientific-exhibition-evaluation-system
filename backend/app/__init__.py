@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_cors import CORS
+from flasgger import Swagger
 from .extensions import db, jwt
 import os
 from .config import DevelopmentConfig, ProductionConfig, LocalDevelopmentConfig
@@ -19,6 +20,47 @@ def create_app():
 
     db.init_app(app)
     jwt.init_app(app)
+
+    # Swagger
+    swagger_config = {
+        "headers": [],
+        "specs": [
+            {
+                "endpoint": 'api_docs',
+                "route": '/api/v1/docs.json',
+                "rule_filter": lambda rule: True,
+                "model_filter": lambda tag: True,
+            }
+        ],
+        "static_url_path": "/flasgger_static",
+        "swagger_ui": True,
+        "specs_route": "/api/v1/docs/"
+    }
+
+    swagger_template = {
+        "swagger": "2.0",
+        "info": {
+            "title": "Sistema de Avaliação para Mostra Científica",
+            "description": "API REST completa para gerenciamento, distribuição e avaliação de trabalhos científicos",
+            "version": "1.0.0"
+        },
+        "host": "localhost:5000",
+        "basePath": "/api/v1",
+        "schemes": ["http"],
+        "securityDefinitions": {
+            "Bearer": {
+                "type": "apiKey",
+                "name": "Authorization",
+                "in": "header",
+                "description": "Token JWT no formato: Bearer {token}"
+            }
+        },
+        "security": [{"Bearer": []}],
+        "consumes": ["application/json"],
+        "produces": ["application/json"]
+    }
+
+    Swagger(app, config=swagger_config, template=swagger_template)
 
     CORS(app, resources={
         r"/api/*": {

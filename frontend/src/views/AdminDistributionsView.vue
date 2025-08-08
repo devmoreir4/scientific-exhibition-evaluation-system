@@ -60,6 +60,14 @@
         </div>
       </div>
 
+
+      <Pagination
+        v-if="pagination && pagination.total > 0"
+        :pagination="pagination"
+        @page-change="onPageChange"
+        @per-page-change="onPerPageChange"
+      />
+
       <div v-if="error" class="error">{{ error }}</div>
     </div>
   </div>
@@ -68,10 +76,14 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import api from '../axios'
+import Pagination from '../components/Pagination.vue'
 
 const distributions = ref([])
 const loading = ref(true)
 const error = ref('')
+const pagination = ref(null)
+const currentPage = ref(1)
+const currentPerPage = ref(20)
 
 const distributedWorks = computed(() => {
   return distributions.value.filter(d => d.evaluators_count > 0).length
@@ -101,14 +113,31 @@ async function fetchDistributions() {
   loading.value = true
   error.value = ''
   try {
-    const response = await api.get('/admin/works/distributions')
+    const params = new URLSearchParams({
+      page: currentPage.value.toString(),
+      per_page: currentPerPage.value.toString()
+    })
+
+    const response = await api.get(`/admin/works/distributions?${params}`)
     distributions.value = response.data.distributions || []
+    pagination.value = response.data.pagination
   } catch (e) {
     console.error('Erro ao buscar distribuições:', e, e.response)
     error.value = e.response?.data?.msg || 'Erro ao carregar distribuições.'
   } finally {
     loading.value = false
   }
+}
+
+function onPageChange(page) {
+  currentPage.value = page
+  fetchDistributions()
+}
+
+function onPerPageChange(perPage) {
+  currentPerPage.value = perPage
+  currentPage.value = 1
+  fetchDistributions()
 }
 
 onMounted(fetchDistributions)
@@ -287,6 +316,4 @@ h2 {
   font-style: italic;
   text-align: center;
 }
-
-
 </style>

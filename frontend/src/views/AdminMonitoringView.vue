@@ -70,6 +70,13 @@
             </div>
           </div>
         </div>
+
+        <Pagination
+          v-if="pagination && pagination.total > 0"
+          :pagination="pagination"
+          @page-change="onPageChange"
+          @per-page-change="onPerPageChange"
+        />
       </div>
     </div>
 
@@ -86,12 +93,16 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import api from '../axios'
+import Pagination from '../components/Pagination.vue'
 
 const overallStats = ref({})
 const worksProgress = ref([])
 const loading = ref(true)
 const error = ref('')
 const isDistributed = ref(false)
+const pagination = ref(null)
+const currentPage = ref(1)
+const currentPerPage = ref(20)
 
 async function fetchMonitoringData() {
   loading.value = true
@@ -100,15 +111,32 @@ async function fetchMonitoringData() {
     const distributionResponse = await api.get('/admin/works/distribution-status')
     isDistributed.value = distributionResponse.data.distributed
 
-    const response = await api.get('/admin/works/evaluation-progress')
+    const params = new URLSearchParams({
+      page: currentPage.value.toString(),
+      per_page: currentPerPage.value.toString()
+    })
+
+    const response = await api.get(`/admin/works/evaluation-progress?${params}`)
     overallStats.value = response.data.overall_stats
     worksProgress.value = response.data.works_progress
+    pagination.value = response.data.pagination
   } catch (e) {
     console.error('Erro ao buscar dados de monitoramento:', e)
     error.value = e.response?.data?.msg || 'Erro ao carregar dados de monitoramento.'
   } finally {
     loading.value = false
   }
+}
+
+function onPageChange(page) {
+  currentPage.value = page
+  fetchMonitoringData()
+}
+
+function onPerPageChange(perPage) {
+  currentPerPage.value = perPage
+  currentPage.value = 1
+  fetchMonitoringData()
 }
 
 onMounted(() => {
@@ -330,6 +358,4 @@ h3 {
   font-style: italic;
   text-align: center;
 }
-
-
 </style>
