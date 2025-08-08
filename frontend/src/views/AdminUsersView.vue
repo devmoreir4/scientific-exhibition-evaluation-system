@@ -39,9 +39,36 @@
           <label>SIAPE/CPF</label>
           <input v-model="form.siape_or_cpf" required />
           <label>Área</label>
-          <input v-model="form.area" required />
-          <label>Subáreas</label>
-          <input v-model="form.subareas" required placeholder="Separadas por ponto e vírgula (;)" />
+          <select v-model="form.area" @change="onAreaChange" required>
+            <option value="">Selecione uma área</option>
+            <option v-for="area in availableAreas" :key="area" :value="area">{{ area }}</option>
+          </select>
+                    <label>
+            Subáreas de Interesse
+            <span v-if="form.area === 'Pedagógica'" class="hint">(pode avaliar qualquer subárea)</span>
+          </label>
+          <div v-if="form.area && availableSubareas.length > 0" class="subareas-select">
+            <select multiple v-model="selectedSubareas" size="6" class="multi-select">
+              <option v-for="subarea in availableSubareas" :key="subarea" :value="subarea">
+                {{ subarea }}
+              </option>
+            </select>
+            <div class="select-help">
+              💡 Segure Ctrl/Cmd para selecionar múltiplas subáreas
+            </div>
+            <div v-if="selectedSubareas.length > 0" class="selected-preview">
+              <strong>Selecionadas ({{ selectedSubareas.length }}):</strong>
+              <div class="selected-tags">
+                <span v-for="subarea in selectedSubareas" :key="subarea" class="tag">
+                  {{ subarea }}
+                  <button type="button" @click="removeSubarea(subarea)" class="tag-remove">×</button>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div v-else-if="form.area && availableSubareas.length === 0" class="info">
+            Selecione uma área para ver as subáreas disponíveis
+          </div>
           <label>Data de Nascimento</label>
           <input v-model="form.birthdate" required placeholder="DDMMAAAA" />
           <div class="modal-actions">
@@ -67,12 +94,17 @@ const editingUser = ref(null)
 const modalError = ref('')
 const form = reactive({ name: '', siape_or_cpf: '', area: '', subareas: '', birthdate: '' })
 
+const availableAreas = ref([])
+const availableSubareas = ref([])
+const selectedSubareas = ref([])
+const loadingAreas = ref(false)
+const loadingSubareas = ref(false)
+
 function fetchUsers() {
   loading.value = true
   error.value = ''
   api.get('/admin/users')
     .then(res => {
-      // console.log('Resposta /admin/users:', res)
       users.value = res.data.users
     })
     .catch(e => {
@@ -82,13 +114,53 @@ function fetchUsers() {
     .finally(() => { loading.value = false })
 }
 
+function fetchAreas() {
+  loadingAreas.value = true
+  api.get('/admin/areas')
+    .then(res => {
+      availableAreas.value = res.data.areas
+    })
+    .catch(e => {
+      console.error('Erro ao buscar áreas:', e)
+      modalError.value = 'Erro ao carregar áreas'
+    })
+    .finally(() => { loadingAreas.value = false })
+}
+
+function fetchSubareas(area) {
+  if (!area) {
+    availableSubareas.value = []
+    return
+  }
+
+  loadingSubareas.value = true
+  api.get(`/admin/areas/${encodeURIComponent(area)}/subareas`)
+    .then(res => {
+      availableSubareas.value = res.data.subareas
+    })
+    .catch(e => {
+      console.error('Erro ao buscar subáreas:', e)
+      availableSubareas.value = []
+    })
+    .finally(() => { loadingSubareas.value = false })
+}
+
 function openModal(user = null) {
   showModal.value = true
   editingUser.value = user
+  fetchAreas()
+
   if (user) {
     Object.assign(form, user)
+    // Converter string de subáreas para array
+    selectedSubareas.value = user.subareas ? user.subareas.split(';').map(s => s.trim()) : []
+    if (user.area) {
+      fetchSubareas(user.area)
+    }
   } else {
     Object.assign(form, { name: '', siape_or_cpf: '', area: '', subareas: '', birthdate: '' })
+    selectedSubareas.value = []
+    availableSubareas.value = []
   }
   modalError.value = ''
 }
@@ -97,11 +169,35 @@ function closeModal() {
   showModal.value = false
   editingUser.value = null
   modalError.value = ''
+  selectedSubareas.value = []
+  availableSubareas.value = []
+}
+
+function onAreaChange() {
+  selectedSubareas.value = []
+  fetchSubareas(form.area)
+}
+
+function removeSubarea(subarea) {
+  const index = selectedSubareas.value.indexOf(subarea)
+  if (index > -1) {
+    selectedSubareas.value.splice(index, 1)
+  }
 }
 
 function saveUser() {
   modalError.value = ''
-  const payload = { ...form }
+
+  if (selectedSubareas.value.length === 0) {
+    modalError.value = 'Selecione pelo menos uma subárea'
+    return
+  }
+
+  const payload = {
+    ...form,
+    subareas: selectedSubareas.value.join(';')
+  }
+
   if (editingUser.value) {
     api.put(`/admin/users/${editingUser.value.id}`, payload)
       .then(() => { fetchUsers(); closeModal() })
@@ -134,6 +230,7 @@ h2 {
   color: #17635A;
   font-size: 1.5rem;
   margin-bottom: 1.2rem;
+  text-align: center;
 }
 .add-btn {
   background: #4CB050;
@@ -218,8 +315,10 @@ tbody tr:nth-child(even) {
   background: #fff;
   border-radius: 12px;
   padding: 2rem 1.5rem;
-  min-width: 320px;
-  max-width: 95vw;
+  min-width: 450px;
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow-y: auto;
   box-shadow: 0 2px 16px #17635a33;
 }
 .modal h3 {
@@ -231,13 +330,104 @@ tbody tr:nth-child(even) {
   font-weight: 600;
   margin-top: 0.7rem;
 }
-.modal input {
+.modal input, .modal select {
   width: 100%;
   padding: 0.5rem 0.7rem;
   border: 1.5px solid #CFE3C6;
   border-radius: 7px;
   margin-bottom: 0.5rem;
   font-size: 1rem;
+}
+.subareas-select {
+  margin-bottom: 1rem;
+}
+.multi-select {
+  width: 100%;
+  border: 1.5px solid #CFE3C6;
+  border-radius: 7px;
+  padding: 0.5rem;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  background: #fff;
+  resize: vertical;
+  min-height: 120px;
+}
+.multi-select option {
+  padding: 0.3rem 0.5rem;
+  border-radius: 4px;
+  margin: 1px 0;
+}
+.multi-select option:checked {
+  background: #4CB050 !important;
+  color: white !important;
+}
+.select-help {
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: 0.3rem;
+  text-align: center;
+  font-style: italic;
+}
+.selected-preview {
+  margin-top: 0.8rem;
+  padding: 0.8rem;
+  background: #F5F6FA;
+  border-radius: 6px;
+  border: 1px solid #CFE3C6;
+}
+.selected-preview strong {
+  color: #17635A;
+  font-size: 0.9rem;
+}
+.selected-tags {
+  margin-top: 0.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+.tag {
+  display: inline-flex;
+  align-items: center;
+  background: #4CB050;
+  color: white;
+  padding: 0.2rem 0.5rem;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+.tag-remove {
+  background: none;
+  border: none;
+  color: white;
+  margin-left: 0.3rem;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1rem;
+  line-height: 1;
+  padding: 0;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.tag-remove:hover {
+  background: rgba(255,255,255,0.2);
+}
+.hint {
+  font-size: 0.8rem;
+  color: #666;
+  font-weight: normal;
+  font-style: italic;
+}
+.info {
+  color: #666;
+  font-style: italic;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem;
+  background: #F5F6FA;
+  border-radius: 6px;
 }
 .modal-actions {
   display: flex;
@@ -270,12 +460,5 @@ tbody tr:nth-child(even) {
   background: #e0e0e0;
   color: #333;
 }
-@media (max-width: 600px) {
-  .admin-users, .modal {
-    padding: 1rem 0.3rem;
-  }
-  table, th, td {
-    font-size: 0.95rem;
-  }
-}
+
 </style>

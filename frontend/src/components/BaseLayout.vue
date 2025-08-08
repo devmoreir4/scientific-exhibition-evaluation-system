@@ -6,15 +6,11 @@
         <span class="event-sub">e VI Feira de Oportunidades</span>
       </div>
       <nav>
-        <router-link v-if="isAdmin" to="/admin/dashboard">Dashboard Admin</router-link>
-        <!-- <router-link v-if="isAdmin" to="/admin/users">Avaliadores</router-link> -->
-        <!-- <router-link v-if="isAdmin" to="/admin/works">Trabalhos</router-link> -->
+        <router-link v-if="isAdmin" to="/admin/dashboard">Dashboard</router-link>
         <router-link v-if="isAdmin" to="/admin/distributions">Distribuições</router-link>
         <router-link v-if="isAdmin" to="/admin/monitoring">Monitoramento</router-link>
-        <!-- <router-link v-if="isAdmin" to="/admin/podium">Pódio</router-link> -->
-        <!-- <router-link v-if="isAdmin" to="/admin/sheets">Fichas Manuais</router-link> -->
-        <router-link v-if="isEvaluator" to="/dashboard">Dashboard Avaliador</router-link>
-        <router-link v-if="isEvaluator" to="/change-password">Trocar Senha</router-link>
+        <router-link v-if="isEvaluator" to="/dashboard">Dashboard</router-link>
+        <router-link v-if="isEvaluator" to="/change-password">Alterar Senha</router-link>
         <button @click="logout">Sair</button>
       </nav>
     </header>

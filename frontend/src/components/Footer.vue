@@ -24,7 +24,6 @@
 </template>
 
 <script setup>
-// Props para controlar o comportamento do footer
 defineProps({
   fullWidth: {
     type: Boolean,
@@ -37,9 +36,11 @@ defineProps({
 .standalone-footer {
   background: #17635A;
   color: #fff;
-  padding: 2rem 1rem 1rem 1rem;
+  padding: 1.5rem 1rem 0.8rem 1rem;
   margin-top: auto;
   width: 100%;
+  position: relative;
+  bottom: 0;
 }
 
 .standalone-footer.full-width {
@@ -53,22 +54,27 @@ defineProps({
   margin: 0 auto;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2rem;
-  margin-bottom: 1.5rem;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+  padding: 0 1rem;
+}
+
+.footer-section {
+  text-align: center;
 }
 
 .footer-section h4 {
   color: #CFE3C6;
   font-size: 1.1rem;
   font-weight: 700;
-  margin-bottom: 0.8rem;
+  margin-bottom: 0.6rem;
 }
 
 .footer-section p {
   color: #fff;
   font-size: 0.9rem;
-  line-height: 1.5;
-  margin-bottom: 0.5rem;
+  line-height: 1.4;
+  margin-bottom: 0.4rem;
 }
 
 .footer-date {
@@ -90,7 +96,7 @@ defineProps({
 
 .footer-bottom {
   border-top: 1px solid #4CB050;
-  padding-top: 1rem;
+  padding-top: 0.8rem;
   text-align: center;
 }
 
@@ -100,16 +106,92 @@ defineProps({
   margin: 0;
 }
 
-@media (max-width: 700px) {
-  .standalone-footer {
-    padding: 1.5rem 0.5rem 1rem 0.5rem;
-  }
+@media (max-width: 830px) {
   .footer-content {
     grid-template-columns: 1fr;
-    gap: 1.5rem;
+    gap: 1.2rem;
+    text-align: center;
+    padding: 0 2rem;
+    margin-bottom: 0.8rem;
   }
+
   .footer-section {
     text-align: center;
+  }
+
+  .footer-section h4 {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .footer-section p {
+    font-size: 0.85rem;
+    margin-bottom: 0.3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .standalone-footer {
+    padding: 1.2rem 0.5rem 0.6rem 0.5rem;
+  }
+
+  .footer-content {
+    gap: 0.8rem;
+    margin-bottom: 0.6rem;
+    padding: 0 1.5rem;
+  }
+
+  .footer-section {
+    text-align: center;
+  }
+
+  .footer-section h4 {
+    font-size: 0.95rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .footer-section p {
+    font-size: 0.8rem;
+    margin-bottom: 0.2rem;
+    line-height: 1.3;
+  }
+
+  .footer-bottom {
+    padding-top: 0.6rem;
+  }
+
+  .footer-bottom p {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .standalone-footer {
+    padding: 1rem 0.5rem 0.5rem 0.5rem;
+  }
+
+  .footer-content {
+    padding: 0 1rem;
+    gap: 0.6rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .footer-section {
+    text-align: center;
+  }
+
+  .footer-section h4 {
+    font-size: 0.9rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .footer-section p {
+    font-size: 0.75rem;
+    margin-bottom: 0.2rem;
+  }
+
+  .footer-bottom {
+    padding-top: 0.5rem;
   }
 }
 </style>

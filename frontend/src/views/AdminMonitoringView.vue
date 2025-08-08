@@ -2,7 +2,6 @@
   <div class="admin-monitoring">
     <h2>Monitoramento de Avaliações</h2>
 
-    <!-- Estatísticas Gerais -->
     <div class="stats-cards">
       <div class="stat-card">
         <div class="stat-title">Total de Trabalhos</div>
@@ -25,13 +24,17 @@
       </div>
     </div>
 
-    <!-- Lista de Trabalhos com Progresso -->
     <div class="works-progress-section">
       <h3>Progresso por Trabalho</h3>
       <div v-if="loading" class="loading">Carregando dados de monitoramento...</div>
       <div v-else>
         <div v-if="worksProgress.length === 0" class="empty">
-          Nenhum trabalho encontrado. Distribua os trabalhos primeiro.
+          <span v-if="!isDistributed">
+            Nenhum trabalho encontrado. Realize a distribuição primeiro.
+          </span>
+          <span v-else>
+            Nenhum trabalho distribuído encontrado.
+          </span>
         </div>
         <div v-else class="works-list">
           <div v-for="work in worksProgress" :key="work.work_id" class="work-item">
@@ -49,7 +52,10 @@
               <div class="progress-fill" :style="{ width: work.progress_percentage + '%' }"></div>
             </div>
             <div class="status-info">
-              <span v-if="work.pending_evaluations > 0" class="pending">
+              <span v-if="!isDistributed" class="not-distributed">
+                Trabalhos ainda não distribuídos
+              </span>
+              <span v-else-if="work.pending_evaluations > 0" class="pending">
                 {{ work.pending_evaluations }} avaliação(ões) pendente(s)
                 <div class="pending-evaluators">
                   <span class="pending-label">Avaliadores pendentes:</span>
@@ -67,7 +73,6 @@
       </div>
     </div>
 
-    <!-- Botão de Atualização -->
     <div class="refresh-section">
       <button @click="fetchMonitoringData" :disabled="loading" class="refresh-btn">
         {{ loading ? 'Atualizando...' : 'Atualizar Dados' }}
@@ -86,11 +91,15 @@ const overallStats = ref({})
 const worksProgress = ref([])
 const loading = ref(true)
 const error = ref('')
+const isDistributed = ref(false)
 
 async function fetchMonitoringData() {
   loading.value = true
   error.value = ''
   try {
+    const distributionResponse = await api.get('/admin/works/distribution-status')
+    isDistributed.value = distributionResponse.data.distributed
+
     const response = await api.get('/admin/works/evaluation-progress')
     overallStats.value = response.data.overall_stats
     worksProgress.value = response.data.works_progress
@@ -119,6 +128,7 @@ h2 {
   color: #17635A;
   font-size: 1.5rem;
   margin-bottom: 2rem;
+  text-align: center;
 }
 
 h3 {
@@ -270,6 +280,10 @@ h3 {
   color: #4CAF50;
 }
 
+.not-distributed {
+  color: #666;
+}
+
 .refresh-section {
   text-align: center;
   margin-top: 1rem;
@@ -317,46 +331,5 @@ h3 {
   text-align: center;
 }
 
-@media (max-width: 900px) {
-  .stats-cards {
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  }
 
-  .work-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
-  }
-
-  .work-progress-info {
-    text-align: left;
-    margin-left: 0;
-  }
-}
-
-@media (max-width: 600px) {
-  .admin-monitoring {
-    padding: 1rem 0.3rem;
-  }
-
-  .stats-cards {
-    grid-template-columns: 1fr;
-  }
-
-  .pending-evaluators {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.3rem;
-  }
-
-  .pending-label {
-    margin-right: 0;
-    margin-bottom: 0.2rem;
-  }
-
-  .evaluator-tag {
-    font-size: 0.7rem;
-    padding: 0.15rem 0.5rem;
-  }
-}
 </style>

@@ -1,7 +1,14 @@
 <template>
   <div class="admin-sheets">
     <h2>Distribuição de Trabalhos</h2>
-    <button class="distribute-btn" @click="distributeWorks" :disabled="distributing">{{ distributing ? 'Distribuindo...' : 'Distribuir Trabalhos' }}</button>
+    <button class="distribute-btn" @click="distributeWorks" :disabled="distributing || isDistributed || checkingStatus">
+      {{
+        checkingStatus ? 'Verificando Status...' :
+        distributing ? 'Distribuindo...' :
+        isDistributed ? 'Distribuição Realizada' :
+        'Distribuir Trabalhos'
+      }}
+    </button>
     <div v-if="distMsg" class="success">{{ distMsg }}</div>
     <div v-if="distError" class="error">{{ distError }}</div>
 
@@ -39,7 +46,7 @@
             <select v-model="formData.work_id" required :disabled="!formData.evaluator_id || loadingFilteredWorks">
               <option value="">{{ loadingFilteredWorks ? 'Carregando...' : 'Selecione um trabalho' }}</option>
               <option v-for="work in filteredWorks" :key="work.id" :value="work.id">
-                {{ work.id }} - {{ work.title }}
+                {{ work.title }}
               </option>
             </select>
           </div>
@@ -82,6 +89,8 @@ const router = useRouter()
 const distributing = ref(false)
 const distMsg = ref('')
 const distError = ref('')
+const isDistributed = ref(false)
+const checkingStatus = ref(false)
 
 const processing = ref(false)
 const processMsg = ref('')
@@ -160,13 +169,30 @@ function onEvaluatorChange() {
   fetchWorksByEvaluator(formData.evaluator_id)
 }
 
+function checkDistributionStatus() {
+  checkingStatus.value = true
+  return api.get('/admin/works/distribution-status')
+    .then(res => {
+      isDistributed.value = res.data.distributed
+    })
+    .catch(e => {
+      console.error('Erro ao verificar status da distribuição:', e)
+      // erro = não distribuído
+      isDistributed.value = false
+    })
+    .finally(() => {
+      checkingStatus.value = false
+    })
+}
+
 function distributeWorks() {
   distributing.value = true
   distMsg.value = ''
   distError.value = ''
   api.post('/admin/works/distribute')
     .then(res => {
-      distMsg.value = 'Distribuição realizada com sucesso!';
+      distMsg.value = 'Distribuição realizada com sucesso!'
+      isDistributed.value = true
     })
     .catch(e => {
       console.error('Erro /admin/works/distribute:', e, e.response)
@@ -284,7 +310,9 @@ function confirmSheet() {
     .finally(() => { confirming.value = false })
 }
 
-onMounted(() => {
+onMounted(async () => {
+  await checkDistributionStatus()
+
   fetchEvaluators()
   fetchWorks()
 })
@@ -301,6 +329,7 @@ h2 {
   color: #17635A;
   font-size: 1.5rem;
   margin-bottom: 1.2rem;
+  text-align: center;
 }
 .distribute-btn {
   background: #4CB050;
@@ -312,6 +341,9 @@ h2 {
   margin-bottom: 1.2rem;
   cursor: pointer;
   transition: background 0.2s;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 .distribute-btn:hover {
   background: #17635A;
@@ -323,9 +355,12 @@ h2 {
 }
 .upload-form {
   display: flex;
+  flex-direction: column;
   gap: 1rem;
   align-items: center;
   margin-bottom: 1.2rem;
+  max-width: 400px;
+  margin: auto;
 }
 
 .upload-form button {
@@ -337,6 +372,9 @@ h2 {
   font-weight: 700;
   cursor: pointer;
   transition: background 0.2s;
+  width: 100%;
+  max-width: 180px;
+  height: 38px;
 }
 .upload-form button:disabled {
   background: #CFE3C6;
@@ -395,11 +433,19 @@ h2 {
   color: #4CB050;
   margin-top: 1rem;
   font-weight: 600;
+  text-align: center;
+  padding: 0.8rem;
+  background: rgba(76, 176, 80, 0.1);
+  border-radius: 6px;
 }
 .error {
   color: #b00020;
   margin-top: 1rem;
   font-weight: 600;
+  text-align: center;
+  padding: 0.8rem;
+  background: rgba(176, 0, 32, 0.1);
+  border-radius: 6px;
 }
 .sheet-preview {
   margin-top: 2rem;
@@ -473,12 +519,5 @@ h2 {
   color: #17635A;
   opacity: 0.7;
 }
-@media (max-width: 600px) {
-  .admin-sheets {
-    padding: 1rem 0.3rem;
-  }
-  .criteria-inputs {
-    justify-content: center;
-  }
-}
+
 </style>

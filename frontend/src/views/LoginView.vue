@@ -1,29 +1,65 @@
 <template>
-  <div class="login-bg">
-    <div class="login-header">
-      <h1>XIII Mostra do Conhecimento</h1>
-      <h2>e VI Feira de Oportunidades</h2>
-      <div class="login-date">29/09 a 04/10 de 2025</div>
-    </div>
-    <div class="login-card">
-      <h3>Entrar no sistema</h3>
-      <form @submit.prevent="onLogin" autocomplete="off">
-        <label for="siape_or_cpf">SIAPE ou CPF</label>
-        <input v-model="siape_or_cpf" id="siape_or_cpf" required type="text" autocomplete="off" />
-        <label for="password">Senha</label>
-        <input v-model="password" id="password" type="password" required autocomplete="off" />
-        <div class="user-type">
-          <label>
-            <input type="radio" value="evaluator" v-model="userType" /> Avaliador
-          </label>
-          <label>
-            <input type="radio" value="admin" v-model="userType" /> Administrador
-          </label>
-        </div>
-        <button :disabled="loading">Entrar</button>
-        <p v-if="error" class="error">{{ error }}</p>
-      </form>
-    </div>
+  <div class="login-container">
+    <header class="login-header">
+      <h1 class="login-title">XIII Mostra do Conhecimento</h1>
+      <h2 class="login-subtitle">e VI Feira de Oportunidades</h2>
+    </header>
+
+    <main class="login-main">
+      <div class="login-card">
+        <h3 class="card-title">Entrar no sistema</h3>
+
+        <form class="login-form" @submit.prevent="onLogin" autocomplete="off">
+          <div class="form-field">
+            <label for="siape_or_cpf" class="form-label">SIAPE ou CPF</label>
+            <input
+              v-model="siape_or_cpf"
+              id="siape_or_cpf"
+              required
+              type="text"
+              autocomplete="off"
+              class="form-input"
+            />
+          </div>
+
+          <div class="form-field">
+            <label for="password" class="form-label">Senha</label>
+            <input
+              v-model="password"
+              id="password"
+              type="password"
+              required
+              autocomplete="off"
+              class="form-input"
+            />
+          </div>
+
+          <div class="form-field">
+            <div class="user-type">
+              <label class="radio-label">
+                <input type="radio" value="evaluator" v-model="userType" class="radio-input" />
+                <span class="radio-text">Avaliador</span>
+              </label>
+              <label class="radio-label">
+                <input type="radio" value="admin" v-model="userType" class="radio-input" />
+                <span class="radio-text">Administrador</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-field">
+            <button type="submit" :disabled="loading" class="submit-button">
+              Entrar
+            </button>
+          </div>
+
+          <div v-if="error" class="error-container">
+            <p class="error-message">{{ error }}</p>
+          </div>
+        </form>
+      </div>
+    </main>
+
     <Footer :full-width="true" />
   </div>
 </template>
@@ -58,7 +94,7 @@ async function onLogin() {
 </script>
 
 <style scoped>
-.login-bg {
+.login-container {
   min-height: 100vh;
   background: linear-gradient(135deg, #CFE3C6 0%, #F5F6FA 100%);
   display: flex;
@@ -67,120 +103,346 @@ async function onLogin() {
   justify-content: center;
   position: relative;
   gap: 2rem;
+  padding: 1rem 1rem 0 1rem;
+  box-sizing: border-box;
 }
+
 .login-header {
   text-align: center;
+  max-width: 600px;
+  width: 100%;
 }
-.login-header h1 {
+
+.login-title {
   color: #17635A;
   font-size: 2.2rem;
   font-weight: 900;
   margin-bottom: 0.2rem;
   letter-spacing: 2px;
+  line-height: 1.2;
 }
-.login-header h2 {
+
+.login-subtitle {
   color: #4CB050;
   font-size: 1.3rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
   letter-spacing: 1px;
+  line-height: 1.3;
 }
-.login-date {
-  background: #17635A;
-  color: #fff;
-  display: inline-block;
-  padding: 0.3rem 1.2rem;
-  border-radius: 20px;
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin-top: 0.5rem;
+
+.login-main {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
+
 .login-card {
   background: #fff;
   border-radius: 16px;
   box-shadow: 0 4px 24px #17635a22;
   padding: 2.5rem 2rem 2rem 2rem;
   min-width: 320px;
-  max-width: 350px;
+  max-width: 400px;
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: stretch;
+  box-sizing: border-box;
 }
-.login-card h3 {
+
+.card-title {
   color: #17635A;
   margin-bottom: 1.5rem;
   text-align: center;
   font-weight: 800;
   font-size: 1.3rem;
 }
-form {
+
+.login-form {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
-label {
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-label {
   color: #17635A;
   font-weight: 600;
   margin-bottom: 0.2rem;
+  font-size: 0.95rem;
 }
-input[type="text"],
-input[type="password"] {
-  padding: 0.6rem 0.8rem;
+
+.form-input {
+  padding: 0.8rem 1rem;
   border: 1.5px solid #CFE3C6;
   border-radius: 8px;
   font-size: 1rem;
   outline: none;
   transition: border 0.2s;
+  width: 100%;
+  box-sizing: border-box;
 }
-input:focus {
+
+.form-input:focus {
   border-color: #17635A;
+  box-shadow: 0 0 0 3px rgba(23, 99, 90, 0.1);
 }
+
 .user-type {
   display: flex;
   gap: 1.5rem;
   justify-content: center;
   margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
 }
-button {
+
+.radio-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-size: 0.95rem;
+  white-space: nowrap;
+}
+
+.radio-input {
+  width: auto;
+  margin: 0;
+}
+
+.radio-text {
+  color: #17635A;
+  font-weight: 600;
+}
+
+.submit-button {
   background: #17635A;
   color: #fff;
   font-weight: 700;
   border: none;
   border-radius: 8px;
-  padding: 0.7rem 0;
+  padding: 0.8rem 0;
   font-size: 1.1rem;
   cursor: pointer;
   margin-top: 0.5rem;
   transition: background 0.2s;
+  width: 100%;
 }
-button:disabled {
+
+.submit-button:hover:not(:disabled) {
+  background: #4CB050;
+}
+
+.submit-button:disabled {
   background: #4CB050;
   opacity: 0.7;
   cursor: not-allowed;
 }
-.error {
-  color: #b00020;
+
+.error-container {
   margin-top: 0.5rem;
+}
+
+.error-message {
+  color: #b00020;
   text-align: center;
   font-weight: 600;
+  font-size: 0.9rem;
+  padding: 0.5rem;
+  background: rgba(176, 0, 32, 0.1);
+  border-radius: 6px;
 }
-@media (max-width: 500px) {
-  .login-bg {
+
+@media (max-width: 768px) {
+  .login-container {
     gap: 1.5rem;
+    padding: 1rem;
   }
+
+  .login-title {
+    font-size: 1.8rem;
+  }
+
+  .login-subtitle {
+    font-size: 1.1rem;
+  }
+
   .login-card {
-    min-width: 90vw;
-    padding: 1.2rem 0.5rem;
+    max-width: 450px;
+    padding: 2rem 1.5rem;
   }
-  .login-header h1 {
-    font-size: 1.3rem;
+
+  .card-title {
+    font-size: 1.2rem;
   }
-  .login-header h2 {
+}
+
+@media (max-width: 480px) {
+  .login-container {
+    gap: 1rem;
+    padding: 1rem 1rem 0 1rem;
+    justify-content: flex-start;
+    padding-top: 2rem;
+    min-height: 100vh;
+    box-sizing: border-box;
+  }
+
+  .login-header {
+    margin-bottom: 1rem;
+    padding: 0 1rem;
+  }
+
+  .login-title {
+    font-size: 1.4rem;
+    letter-spacing: 1px;
+  }
+
+  .login-subtitle {
+    font-size: 0.95rem;
+    letter-spacing: 0.5px;
+  }
+
+  .login-card {
+    width: 100%;
+    max-width: 350px;
+    padding: 1.5rem 1rem;
+    border-radius: 12px;
+    margin: 0 auto;
+    box-sizing: border-box;
+  }
+
+  .card-title {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+  }
+
+  .login-form {
+    gap: 0.8rem;
+  }
+
+  .form-input {
+    padding: 0.7rem 0.8rem;
+    font-size: 0.95rem;
+  }
+
+  .user-type {
+    gap: 1rem;
+    margin-bottom: 0.3rem;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .radio-label {
+    font-size: 0.9rem;
+    white-space: nowrap;
+    min-width: fit-content;
+  }
+
+  .submit-button {
+    padding: 0.7rem 0;
     font-size: 1rem;
   }
-  .login-date {
+
+  .form-label {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .login-container {
+    padding: 0.5rem 0.5rem 0 0.5rem;
+    min-height: 100vh;
+  }
+
+  .login-header {
+    padding: 0 0.5rem;
+  }
+
+  .login-title {
+    font-size: 1.2rem;
+  }
+
+  .login-subtitle {
+    font-size: 0.85rem;
+  }
+
+  .login-card {
+    width: 100%;
+    max-width: 320px;
+    padding: 1.2rem 0.8rem;
+    margin: 0 auto;
+    box-sizing: border-box;
+  }
+
+  .card-title {
+    font-size: 1rem;
+  }
+
+  .form-input {
+    padding: 0.6rem 0.7rem;
+    font-size: 0.9rem;
+  }
+
+  .user-type {
+    flex-direction: row;
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .radio-label {
+    white-space: nowrap;
+    min-width: fit-content;
+  }
+
+  .submit-button {
+    padding: 0.6rem 0;
     font-size: 0.95rem;
+  }
+}
+
+@media (max-height: 600px) and (orientation: landscape) {
+  .login-container {
+    gap: 1rem;
+    padding: 0.5rem;
+  }
+
+  .login-title {
+    font-size: 1.2rem;
+    margin-bottom: 0.1rem;
+  }
+
+  .login-subtitle {
+    font-size: 0.9rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .login-card {
+    padding: 1.2rem 1rem;
+  }
+
+  .card-title {
+    font-size: 1rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .login-form {
+    gap: 0.6rem;
+  }
+
+  .form-input {
+    padding: 0.5rem 0.7rem;
+  }
+
+  .submit-button {
+    padding: 0.5rem 0;
   }
 }
 </style>

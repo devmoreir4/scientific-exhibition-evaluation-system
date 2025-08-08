@@ -43,7 +43,7 @@
           ],
           "body": {
             "mode": "raw",
-            "raw": "{\n  \"name\": \"Novo Avaliador\",\n  \"siape_or_cpf\": \"11122233344\",\n  \"birthdate\": \"15031990\",\n  \"area\": \"Química\",\n  \"subareas\": \"Polímeros, Sustentabilidade\"\n}"
+            "raw": "{\n  \"name\": \"Novo Avaliador\",\n  \"siape_or_cpf\": \"11122233344\",\n  \"birthdate\": \"15031990\",\n  \"area\": \"Química\",\n  \"subareas\": \"Polímeros;Sustentabilidade\"\n}"
           },
           "url": { "raw": "http://localhost:5000/api/v1/auth/register", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "v1", "auth", "register"] }
         }
@@ -78,7 +78,7 @@
           ],
           "body": {
             "mode": "raw",
-            "raw": "{\n  \"name\": \"Nome Editado\",\n  \"siape_or_cpf\": \"11122233344\",\n  \"birthdate\": \"15031990\",\n  \"area\": \"Computação\",\n  \"subareas\": \"Inteligência Artificial, Machine Learning\"\n}"
+            "raw": "{\n  \"name\": \"Nome Editado\",\n  \"siape_or_cpf\": \"11122233344\",\n  \"birthdate\": \"15031990\",\n  \"area\": \"Computação\",\n  \"subareas\": \"Inteligência Artificial;Machine Learning\"\n}"
           },
           "url": { "raw": "http://localhost:5000/api/v1/admin/users/1", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "v1", "admin", "users", "1"] }
         }
@@ -196,6 +196,46 @@
             { "key": "Authorization", "value": "Bearer {{admin_token}}" }
           ],
           "url": { "raw": "http://localhost:5000/api/v1/admin/works/distribute", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "v1", "admin", "works", "distribute"] }
+        }
+      },
+      {
+        "name": "Admin - Status da Distribuição",
+        "request": {
+          "method": "GET",
+          "header": [
+            { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+          ],
+          "url": { "raw": "http://localhost:5000/api/v1/admin/works/distribution-status", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "v1", "admin", "works", "distribution-status"] }
+        }
+      },
+      {
+        "name": "Admin - Reset Distribuição (Emergência)",
+        "request": {
+          "method": "POST",
+          "header": [
+            { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+          ],
+          "url": { "raw": "http://localhost:5000/api/v1/admin/works/reset-distribution", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "v1", "admin", "works", "reset-distribution"] }
+        }
+      },
+      {
+        "name": "Admin - Listar Áreas",
+        "request": {
+          "method": "GET",
+          "header": [
+            { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+          ],
+          "url": { "raw": "http://localhost:5000/api/v1/admin/areas", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "v1", "admin", "areas"] }
+        }
+      },
+      {
+        "name": "Admin - Listar Subáreas por Área",
+        "request": {
+          "method": "GET",
+          "header": [
+            { "key": "Authorization", "value": "Bearer {{admin_token}}" }
+          ],
+          "url": { "raw": "http://localhost:5000/api/v1/admin/areas/Ciências Agrárias/subareas", "protocol": "http", "host": ["localhost"], "port": "5000", "path": ["api", "v1", "admin", "areas", "Ciências Agrárias", "subareas"] }
         }
       },
       {

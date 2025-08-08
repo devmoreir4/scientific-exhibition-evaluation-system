@@ -87,7 +87,6 @@ def process_sheet_image_ai(image_bytes):
 
         dados_extraidos = json.loads(json_response_text)
 
-        # Validar os scores extraídos
         scores = dados_extraidos.get('scores', [])
         validated_scores = validate_scores(scores)
 

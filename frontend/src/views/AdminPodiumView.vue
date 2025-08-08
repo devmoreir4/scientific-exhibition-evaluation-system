@@ -84,7 +84,6 @@
       </div>
     </div>
 
-    <!-- Botão de Atualização -->
     <div class="refresh-section">
       <button @click="fetchPodiumData" :disabled="loading" class="refresh-btn">
         {{ loading ? 'Atualizando...' : 'Atualizar Pódio' }}
@@ -336,37 +335,5 @@ h2 {
   text-align: center;
 }
 
-@media (max-width: 900px) {
-  .podium-item {
-    flex-direction: column;
-    text-align: center;
-    gap: 1rem;
-  }
 
-  .medal, .position {
-    min-width: auto;
-  }
-
-  .score-info {
-    min-width: auto;
-  }
-}
-
-@media (max-width: 600px) {
-  .admin-podium {
-    padding: 1rem 0.3rem;
-  }
-
-  .area-podium {
-    padding: 1rem;
-  }
-
-  .podium-item {
-    padding: 1rem;
-  }
-
-  .work-details {
-    font-size: 0.85rem;
-  }
-}
 </style>

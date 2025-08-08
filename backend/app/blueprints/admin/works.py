@@ -4,6 +4,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.models import Work, Evaluator
 from app.extensions import db
 from app.services.csv_importer_service import import_works_from_csv
+from app.services.evaluation_service import calculate_evaluation_progress, generate_works_podium
 import io
 from app.models import Evaluation
 from .misc import admin_required
@@ -34,7 +35,7 @@ def list_work_distributions():
                 'siape_or_cpf': evaluator.siape_or_cpf,
                 'area': evaluator.area,
                 'subareas': evaluator.subareas,
-                'carga': evaluator.carga
+                'workload': evaluator.workload
             })
 
         distributions.append({
@@ -117,110 +118,15 @@ def update_work(work_id):
 @jwt_required()
 @admin_required
 def get_evaluation_progress():
-    works = Work.query.all()
-    evaluations = Evaluation.query.all()
-
-    total_works = len(works)
-    total_evaluations = len(evaluations)
-
-    works_with_evaluations = {}
-    for work in works:
-        work_evaluations = [e for e in evaluations if e.work_id == work.id]
-        evaluated_evaluator_ids = [e.evaluator_id for e in work_evaluations]
-
-        # identificar avaliadores que ainda não avaliaram
-        pending_evaluators = []
-        for evaluator in work.evaluators:
-            if evaluator.id not in evaluated_evaluator_ids:
-                pending_evaluators.append({
-                    'id': evaluator.id,
-                    'name': evaluator.name,
-                    'siape_or_cpf': evaluator.siape_or_cpf
-                })
-
-        works_with_evaluations[work.id] = {
-            'work_id': work.id,
-            'work_title': work.title,
-            'work_area': work.area,
-            'work_subarea': work.subarea,
-            'total_evaluators': len(work.evaluators),
-            'completed_evaluations': len(work_evaluations),
-            'pending_evaluations': len(work.evaluators) - len(work_evaluations),
-            'progress_percentage': round((len(work_evaluations) / len(work.evaluators)) * 100, 1) if work.evaluators else 0,
-            'pending_evaluators': pending_evaluators
-        }
-
-    # estatísticas gerais
-    total_expected_evaluations = sum(len(work.evaluators) for work in works)
-    overall_progress = round((total_evaluations / total_expected_evaluations) * 100, 1) if total_expected_evaluations > 0 else 0
-
-    return jsonify({
-        'overall_stats': {
-            'total_works': total_works,
-            'total_evaluations': total_evaluations,
-            'total_expected_evaluations': total_expected_evaluations,
-            'overall_progress': overall_progress
-        },
-        'works_progress': list(works_with_evaluations.values())
-    }), 200
+    progress_data = calculate_evaluation_progress()
+    return jsonify(progress_data), 200
 
 @admin_bp.route('/works/podium', methods=['GET'])
 @jwt_required()
 @admin_required
 def get_works_podium():
-    works = Work.query.all()
-    evaluations = Evaluation.query.all()
-
-    works_by_area = {}
-    for work in works:
-        if work.area not in works_by_area:
-            works_by_area[work.area] = []
-        works_by_area[work.area].append(work)
-
-    podium_data = {}
-
-    for area, area_works in works_by_area.items():
-        # calcular média de cada trabalho na área
-        works_with_scores = []
-
-        for work in area_works:
-            work_evaluations = [e for e in evaluations if e.work_id == work.id]
-
-            if work_evaluations:
-                # calcular média dos critérios
-                total_score = 0
-                for evaluation in work_evaluations:
-                    total_score += (evaluation.criterion1 + evaluation.criterion2 +
-                                  evaluation.criterion3 + evaluation.criterion4 +
-                                  evaluation.criterion5)
-
-                average_score = total_score / (len(work_evaluations) * 5)
-
-                works_with_scores.append({
-                    'work_id': work.id,
-                    'work_title': work.title,
-                    'work_authors': work.authors,
-                    'work_advisor': work.advisor,
-                    'work_type': work.type,
-                    'work_subarea': work.subarea,
-                    'evaluations_count': len(work_evaluations),
-                    'average_score': round(average_score, 2),
-                    'total_score': total_score
-                })
-
-        works_with_scores.sort(key=lambda x: x['average_score'], reverse=True)
-        top_3 = works_with_scores[:3]
-
-        podium_data[area] = {
-            'area_name': area,
-            'total_works': len(area_works),
-            'evaluated_works': len(works_with_scores),
-            'podium': top_3
-        }
-
-    return jsonify({
-        'podium_data': podium_data
-    }), 200
+    podium_data = generate_works_podium()
+    return jsonify({'podium_data': podium_data}), 200
 
 @admin_bp.route('/works/evaluator/<int:evaluator_id>', methods=['GET'])
 @jwt_required()

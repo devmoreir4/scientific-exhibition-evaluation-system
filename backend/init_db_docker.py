@@ -20,14 +20,14 @@ def wait_for_postgres():
                 password=os.environ.get('DB_PASSWORD', 'postgres123')
             )
             conn.close()
-            print(f"PostgreSQL está pronto! (tentativa {i+1})")
+            print(f"PostgreSQL is ready! (attempt {i+1})")
             return True
         except psycopg2.OperationalError as e:
-            print(f"Aguardando PostgreSQL... (tentativa {i+1}/{max_retries})")
+            print(f"Waiting for PostgreSQL... (attempt {i+1}/{max_retries})")
             if i < max_retries - 1:
                 time.sleep(retry_interval)
             else:
-                print("Falha ao conectar ao PostgreSQL após todas as tentativas.")
+                print("Failed to connect to PostgreSQL after all attempts.")
                 return False
 
     return False
@@ -35,13 +35,13 @@ def wait_for_postgres():
 app = create_app()
 
 if __name__ == "__main__":
-    print("Aguardando PostgreSQL estar pronto...")
+    print("Waiting for PostgreSQL to be ready...")
     if wait_for_postgres():
         with app.app_context():
-            print("Criando todas as tabelas via SQLAlchemy...")
+            print("Creating all tables via SQLAlchemy...")
             db.create_all()
 
-            print("Verificando admin padrão...")
+            print("Checking default admin...")
 
             admin_login = os.environ.get('ADMIN_LOGIN', 'admin')
             admin_password = os.environ.get('ADMIN_PASSWORD', 'admin123')
@@ -50,16 +50,16 @@ if __name__ == "__main__":
             if not admin:
                 admin = Admin(
                     login=admin_login,
-                    name='Administrador',
+                    name='Administrator',
                     password_hash=generate_password_hash(admin_password)
                 )
                 db.session.add(admin)
                 db.session.commit()
-                print(f'Admin padrão criado: login={admin_login}, senha={admin_password}')
+                print(f'Default admin created: login={admin_login}, password={admin_password}')
             else:
-                print(f'Admin já existe no sistema (login: {admin_login})')
+                print(f'Admin already exists in system (login: {admin_login})')
 
-            print('Banco de dados inicializado com sucesso!')
+            print('Database initialized successfully!')
     else:
-        print("Falha na inicialização do banco de dados.")
+        print("Database initialization failed.")
         exit(1)

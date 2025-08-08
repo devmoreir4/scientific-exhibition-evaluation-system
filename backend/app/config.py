@@ -4,7 +4,6 @@ from datetime import timedelta
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY')
 
-    # PostgreSQL
     DB_HOST = os.environ.get('DB_HOST', 'postgres')
     DB_PORT = os.environ.get('DB_PORT', '5432')
     DB_NAME = os.environ.get('DB_NAME', 'evaluation_system')
@@ -30,7 +29,7 @@ class ProductionConfig(Config):
     DEBUG = False
     FLASK_ENV = 'production'
 
-class TestingConfig(Config):
-    TESTING = True
-    DB_NAME = os.environ.get('DB_NAME', 'evaluation_system_test')
-    SQLALCHEMY_DATABASE_URI = f"postgresql://{Config.DB_USER}:{Config.DB_PASSWORD}@{Config.DB_HOST}:{Config.DB_PORT}/{DB_NAME}"
+class LocalDevelopmentConfig(Config):
+    DEBUG = True
+    FLASK_ENV = 'development'
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///local_evaluation_system.db'

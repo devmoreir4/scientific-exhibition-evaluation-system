@@ -48,7 +48,7 @@
                     SIAPE/CPF: {{ evaluator.siape_or_cpf }} |
                     Área: {{ evaluator.area }} |
                     Subáreas: {{ evaluator.subareas || 'Não informadas' }} |
-                    Carga: {{ evaluator.carga }}
+                    Carga: {{ evaluator.workload }}
                   </span>
                 </div>
                 <div class="evaluator-type" :class="getEvaluatorTypeClass(evaluator.area)">
@@ -126,6 +126,7 @@ h2 {
   color: #17635A;
   font-size: 1.5rem;
   margin-bottom: 2rem;
+  text-align: center;
 }
 
 .stats-cards {
@@ -287,37 +288,5 @@ h2 {
   text-align: center;
 }
 
-@media (max-width: 900px) {
-  .stats-cards {
-    flex-direction: column;
-  }
 
-  .stat-card {
-    min-width: 0;
-  }
-
-  .evaluator-item {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
-  }
-
-  .evaluator-type {
-    align-self: flex-end;
-  }
-}
-
-@media (max-width: 600px) {
-  .admin-distributions {
-    padding: 1rem 0.3rem;
-  }
-
-  .distribution-item {
-    padding: 1rem;
-  }
-
-  .work-details {
-    font-size: 0.9rem;
-  }
-}
 </style>

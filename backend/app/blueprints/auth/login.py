@@ -1,34 +1,52 @@
 from . import auth_bp
 from flask import request, jsonify
-from werkzeug.security import check_password_hash
-from flask_jwt_extended import create_access_token
-from app.extensions import db
-from app.models import Evaluator, Admin
+from app.services.auth_service import (
+    authenticate_evaluator, authenticate_admin,
+    generate_access_token, validate_login_credentials
+)
 
 @auth_bp.route('/token', methods=['POST'])
 def login():
     data = request.get_json()
-    siape_or_cpf = (data.get('siape_or_cpf') or '').strip()
+
+    # Validate login credentials
+    is_valid, errors = validate_login_credentials(data, 'evaluator')
+    if not is_valid:
+        return jsonify({'msg': '; '.join(errors)}), 400
+
+    # Authenticate evaluator
+    siape_or_cpf = data.get('siape_or_cpf')
     password = data.get('password')
-    evaluator = Evaluator.query.filter(Evaluator.siape_or_cpf.ilike(siape_or_cpf)).first()
+
+    evaluator, error_msg = authenticate_evaluator(siape_or_cpf, password)
+
     if not evaluator:
-        return jsonify({'msg': 'Credenciais inválidas.'}), 401
-    if evaluator.password_hash:
-        if not check_password_hash(evaluator.password_hash, password):
-            return jsonify({'msg': 'Credenciais inválidas.'}), 401
-    else:
-        if evaluator.birthdate != password:
-            return jsonify({'msg': 'Credenciais inválidas.'}), 401
-    access_token = create_access_token(identity=str(evaluator.id))
+        return jsonify({'msg': error_msg}), 401
+
+    # Generate access token
+    access_token = generate_access_token(evaluator, 'evaluator')
+
     return jsonify({'access_token': access_token, 'role': 'evaluator'}), 200
 
 @auth_bp.route('/admin/token', methods=['POST'])
 def login_admin():
     data = request.get_json()
+
+    # Validate login credentials
+    is_valid, errors = validate_login_credentials(data, 'admin')
+    if not is_valid:
+        return jsonify({'msg': '; '.join(errors)}), 400
+
+    # Authenticate admin
     login = data.get('login')
     password = data.get('password')
-    admin = Admin.query.filter_by(login=login).first()
-    if not admin or not check_password_hash(admin.password_hash, password):
-        return jsonify({'msg': 'Credenciais inválidas.'}), 401
-    access_token = create_access_token(identity=f'admin:{admin.id}')
+
+    admin, error_msg = authenticate_admin(login, password)
+
+    if not admin:
+        return jsonify({'msg': error_msg}), 401
+
+    # Generate access token
+    access_token = generate_access_token(admin, 'admin')
+
     return jsonify({'access_token': access_token, 'role': 'admin'}), 200

@@ -218,7 +218,6 @@ function fetchWorks() {
   error.value = ''
   api.get('/admin/works')
     .then(res => {
-      // console.log('Resposta /admin/works:', res)
       works.value = res.data.works
     })
     .catch(e => {
@@ -270,6 +269,7 @@ h2 {
   color: #17635A;
   font-size: 1.5rem;
   margin-bottom: 1.2rem;
+  text-align: center;
 }
 h3 {
   color: #17635A;
@@ -517,19 +517,5 @@ tbody tr:nth-child(even) {
   background: #e0e0e0;
   color: #333;
 }
-@media (max-width: 600px) {
-  .admin-works, .modal {
-    padding: 1rem 0.3rem;
-  }
-  .import-form {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .areas-content {
-    grid-template-columns: 1fr;
-  }
-  table, th, td {
-    font-size: 0.85rem;
-  }
-}
+
 </style>
