@@ -98,9 +98,15 @@
             <option value="oral_presentation">Apresentação Oral</option>
           </select>
           <label>Área</label>
-          <input v-model="form.area" required />
+          <select v-model="form.area" @change="onAreaChange" required>
+            <option value="">Selecione uma área</option>
+            <option v-for="area in availableAreasList" :key="area" :value="area">{{ area }}</option>
+          </select>
           <label>Subárea</label>
-          <input v-model="form.subarea" required />
+          <select v-model="form.subarea" required>
+            <option value="">Selecione uma subárea</option>
+            <option v-for="subarea in availableSubareasList" :key="subarea" :value="subarea">{{ subarea }}</option>
+          </select>
           <div class="modal-actions">
             <button type="submit">Salvar</button>
             <button type="button" @click="closeModal">Cancelar</button>
@@ -163,7 +169,7 @@ const availableAreas = {
     'Geociências e Sustentabilidade Ambiental'
   ],
   'Ciências Sociais Aplicadas e Ciências Humanas': [
-    'História, Filosoa e Sociologia',
+    'História, Filosofia e Sociologia',
     'Geografia e Estudos Regionais',
     'Educação, Cidadania e Direitos Humanos',
     'Gestão, Empreendedorismo e Economia',
@@ -178,12 +184,53 @@ const availableAreas = {
   ]
 }
 
+const availableAreasList = ref([])
+const availableSubareasList = ref([])
+const loadingAreas = ref(false)
+const loadingSubareas = ref(false)
+
 function getTypeLabel(type) {
   const types = {
     'poster_banner': 'Pôster/Banner',
     'oral_presentation': 'Apresentação Oral'
   }
   return types[type] || type
+}
+
+function fetchAreas() {
+  loadingAreas.value = true
+  api.get('/admin/areas')
+    .then(res => {
+      availableAreasList.value = res.data.areas
+    })
+    .catch(e => {
+      console.error('Erro ao buscar áreas:', e)
+      modalError.value = 'Erro ao carregar áreas'
+    })
+    .finally(() => { loadingAreas.value = false })
+}
+
+function fetchSubareas(area) {
+  if (!area) {
+    availableSubareasList.value = []
+    return
+  }
+
+  loadingSubareas.value = true
+  api.get(`/admin/areas/${encodeURIComponent(area)}/subareas`)
+    .then(res => {
+      availableSubareasList.value = res.data.subareas
+    })
+    .catch(e => {
+      console.error('Erro ao buscar subáreas:', e)
+      availableSubareasList.value = []
+    })
+    .finally(() => { loadingSubareas.value = false })
+}
+
+function onAreaChange() {
+  form.subarea = ''
+  fetchSubareas(form.area)
 }
 
 function onCsvFileChange(e) {
@@ -260,12 +307,20 @@ function openModal(work) {
   editingWork.value = work
   Object.assign(form, work)
   modalError.value = ''
+
+  fetchAreas()
+
+  if (work && work.area) {
+    fetchSubareas(work.area)
+  }
 }
 
 function closeModal() {
   showModal.value = false
   editingWork.value = null
   modalError.value = ''
+  availableAreasList.value = []
+  availableSubareasList.value = []
 }
 
 function saveWork() {

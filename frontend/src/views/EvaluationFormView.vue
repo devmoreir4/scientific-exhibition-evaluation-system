@@ -13,9 +13,16 @@
       <form @submit.prevent="submitEvaluation">
         <div v-for="(criterion, index) in criteria" :key="index" class="criterion">
           <label :for="'criterion' + (index + 1)">{{ criterion }}</label>
-          <input :id="'criterion' + (index + 1)" type="number" min="1" max="5" step="1" v-model.number="scores[index]" required />
+          <select :id="'criterion' + (index + 1)" v-model="scores[index]" required>
+            <option value="">Selecione uma nota</option>
+            <option value="1">1 - Ruim</option>
+            <option value="2">2 - Regular</option>
+            <option value="3">3 - Bom</option>
+            <option value="4">4 - Ótimo</option>
+            <option value="5">5 - Excelente</option>
+          </select>
         </div>
-        <button type="submit" :disabled="submitting">{{ submitting ? 'Enviando...' : 'Enviar Avaliação' }}</button>
+        <button type="submit" :disabled="submitting || !isFormValid">{{ submitting ? 'Enviando...' : 'Enviar Avaliação' }}</button>
         <div v-if="successMsg" class="success">{{ successMsg }}</div>
         <div v-if="errorMsg" class="error">{{ errorMsg }}</div>
       </form>
@@ -25,7 +32,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import api from '../axios'
 
@@ -34,7 +41,7 @@ const router = useRouter()
 const workId = route.params.work_id
 const work = ref(null)
 const loadingWork = ref(true)
-const scores = ref([1,1,1,1,1])
+const scores = ref(['', '', '', '', ''])
 const submitting = ref(false)
 const successMsg = ref('')
 const errorMsg = ref('')
@@ -46,6 +53,10 @@ const criteria = [
   'Criatividade e originalidade da proposta:',
   'Expressão oral (volume, clareza e pausa) e domínio do assunto (conceitos, linguagem e termos técnicos):'
 ]
+
+const isFormValid = computed(() => {
+  return scores.value.every(score => score !== '')
+})
 
 function getTypeLabel(type) {
   const types = {
@@ -75,11 +86,11 @@ function submitEvaluation() {
   errorMsg.value = ''
   const payload = {
     work_id: Number(workId),
-    criterion1: scores.value[0],
-    criterion2: scores.value[1],
-    criterion3: scores.value[2],
-    criterion4: scores.value[3],
-    criterion5: scores.value[4]
+    criterion1: Number(scores.value[0]),
+    criterion2: Number(scores.value[1]),
+    criterion3: Number(scores.value[2]),
+    criterion4: Number(scores.value[3]),
+    criterion5: Number(scores.value[4])
   }
   api.post('/evaluator/evaluations', payload)
     .then(() => {
@@ -109,9 +120,11 @@ onMounted(fetchWork)
 
 h2 {
   color: #17635A;
-  font-size: 1.5rem;
-  margin-bottom: 1.2rem;
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  font-weight: 800;
   text-align: center;
+  letter-spacing: 0.5px;
 }
 
 .work-info {
@@ -146,7 +159,7 @@ form {
   font-size: 0.95rem;
 }
 
-.criterion input {
+.criterion select {
   width: 100%;
   padding: 0.8rem 1rem;
   border: 1.5px solid #CFE3C6;
@@ -154,12 +167,25 @@ form {
   font-size: 1rem;
   box-sizing: border-box;
   transition: border 0.2s;
+  background: #fff;
+  color: #17635A;
+  cursor: pointer;
 }
 
-.criterion input:focus {
+.criterion select:focus {
   border-color: #17635A;
   outline: none;
   box-shadow: 0 0 0 3px rgba(23, 99, 90, 0.1);
+}
+
+.criterion select:hover {
+  border-color: #17635A;
+}
+
+.criterion select option {
+  padding: 0.5rem;
+  background: #fff;
+  color: #17635A;
 }
 
 button {
@@ -235,7 +261,7 @@ button:disabled {
     font-size: 0.9rem;
   }
 
-  .criterion input {
+  .criterion select {
     padding: 0.7rem 0.8rem;
     font-size: 0.95rem;
   }
@@ -273,7 +299,7 @@ button:disabled {
     margin-bottom: 0.4rem;
   }
 
-  .criterion input {
+  .criterion select {
     padding: 0.6rem 0.7rem;
     font-size: 0.9rem;
   }
@@ -313,7 +339,7 @@ button:disabled {
     font-size: 0.8rem;
   }
 
-  .criterion input {
+  .criterion select {
     padding: 0.5rem 0.6rem;
     font-size: 0.85rem;
   }

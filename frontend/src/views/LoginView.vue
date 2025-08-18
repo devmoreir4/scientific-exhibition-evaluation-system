@@ -100,9 +100,7 @@ async function onLogin() {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   position: relative;
-  gap: 2rem;
   padding: 1rem 1rem 0 1rem;
   box-sizing: border-box;
 }
@@ -111,6 +109,8 @@ async function onLogin() {
   text-align: center;
   max-width: 600px;
   width: 100%;
+  margin: 2rem 0 1rem 0;
+  flex-shrink: 0;
 }
 
 .login-title {
@@ -136,6 +136,8 @@ async function onLogin() {
   display: flex;
   justify-content: center;
   align-items: center;
+  flex: 1;
+  margin-bottom: 2rem;
 }
 
 .login-card {
@@ -274,6 +276,14 @@ async function onLogin() {
     font-size: 1.1rem;
   }
 
+  .login-header {
+    margin: 1.5rem 0 0.8rem 0;
+  }
+
+  .login-main {
+    margin-bottom: 1.5rem;
+  }
+
   .login-card {
     max-width: 450px;
     padding: 2rem 1.5rem;
@@ -295,7 +305,7 @@ async function onLogin() {
   }
 
   .login-header {
-    margin-bottom: 1rem;
+    margin: 1rem 0 0.5rem 0;
     padding: 0 1rem;
   }
 
@@ -307,6 +317,10 @@ async function onLogin() {
   .login-subtitle {
     font-size: 0.95rem;
     letter-spacing: 0.5px;
+  }
+
+  .login-main {
+    margin-bottom: 1.2rem;
   }
 
   .login-card {
@@ -357,11 +371,12 @@ async function onLogin() {
 
 @media (max-width: 360px) {
   .login-container {
-    padding: 0.5rem 0.5rem 0 0.5rem;
-    min-height: 100vh;
+    padding: 0.8rem 0.5rem 0 0.5rem;
+    padding-top: 1.5rem;
   }
 
   .login-header {
+    margin: 0.8rem 0 0.4rem 0;
     padding: 0 0.5rem;
   }
 
@@ -371,6 +386,10 @@ async function onLogin() {
 
   .login-subtitle {
     font-size: 0.85rem;
+  }
+
+  .login-main {
+    margin-bottom: 1rem;
   }
 
   .login-card {
@@ -410,8 +429,12 @@ async function onLogin() {
 
 @media (max-height: 600px) and (orientation: landscape) {
   .login-container {
-    gap: 1rem;
     padding: 0.5rem;
+    padding-top: 1rem;
+  }
+
+  .login-header {
+    margin: 0.5rem 0 0.3rem 0;
   }
 
   .login-title {
@@ -422,6 +445,10 @@ async function onLogin() {
   .login-subtitle {
     font-size: 0.9rem;
     margin-bottom: 0.3rem;
+  }
+
+  .login-main {
+    margin-bottom: 0.8rem;
   }
 
   .login-card {

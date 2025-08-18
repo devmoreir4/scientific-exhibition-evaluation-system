@@ -50,56 +50,71 @@ function logout() {
 header {
   background: #17635A;
   color: #fff;
-  padding: 1rem 2rem;
+  padding: 2rem 3rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
+  box-shadow: 0 2px 12px rgba(23, 99, 90, 0.15);
+  gap: 2rem;
 }
 .logo-area {
   display: flex;
   flex-direction: column;
+  gap: 0.4rem;
 }
 .event-title {
-  font-size: 1.3rem;
+  font-size: 1.4rem;
   font-weight: 900;
-  letter-spacing: 1px;
+  letter-spacing: 1.2px;
+  line-height: 1.2;
 }
 .event-sub {
-  font-size: 0.95rem;
+  font-size: 1rem;
   color: #CFE3C6;
   font-weight: 600;
+  letter-spacing: 0.5px;
 }
 nav {
   display: flex;
-  gap: 1.2rem;
+  gap: 2rem;
   align-items: center;
 }
 nav a {
   color: #fff;
   text-decoration: none;
   font-weight: 600;
-  padding: 0.3rem 0.7rem;
-  border-radius: 6px;
-  transition: background 0.2s;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  font-size: 0.95rem;
+  letter-spacing: 0.3px;
 }
 nav a.router-link-exact-active, nav a:hover {
   background: #4CB050;
   color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(76, 176, 80, 0.3);
 }
 button {
-  background: #fff;
-  color: #17635A;
-  border: none;
-  border-radius: 6px;
-  padding: 0.3rem 0.9rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: background 0.2s, color 0.2s;
-}
-button:hover {
-  background: #4CB050;
   color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  font-size: 0.95rem;
+  letter-spacing: 0.3px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #DC3545;
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
 }
 main {
   flex: 1;
@@ -114,11 +129,40 @@ main {
   header {
     flex-direction: column;
     align-items: flex-start;
-    gap: 1rem;
-    padding: 1rem 0.5rem;
+    gap: 1.5rem;
+    padding: 1.5rem 1.5rem;
   }
+
+  .logo-area {
+    gap: 0.3rem;
+  }
+
+  .event-title {
+    font-size: 1.3rem;
+    letter-spacing: 1px;
+  }
+
+  .event-sub {
+    font-size: 0.95rem;
+  }
+
+  nav {
+    gap: 1.2rem;
+    flex-wrap: wrap;
+  }
+
+  nav a {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  button {
+    padding: 0.5rem 1.2rem;
+    font-size: 0.9rem;
+  }
+
   main {
-    padding: 1.5rem 0.2rem;
+    padding: 1.5rem 0.8rem;
   }
 }
 </style>

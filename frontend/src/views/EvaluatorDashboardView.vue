@@ -4,25 +4,16 @@
     <div v-if="loadingWorks" class="loading">Carregando trabalhos...</div>
     <div v-else>
       <div v-if="works.length" class="works-container">
-        <table class="works-table">
-          <thead>
-            <tr>
-              <th>Título</th>
-              <th>Autores</th>
-              <th>Avaliar</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="work in works" :key="work.id">
-              <td class="work-title">{{ work.title }}</td>
-              <td class="work-authors">{{ work.authors }}</td>
-              <td class="work-action">
-                <router-link v-if="!isWorkEvaluated(work.id)" :to="`/evaluate/${work.id}`" class="eval-btn">Avaliar</router-link>
-                <span v-else class="evaluated-text">Avaliado</span>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="works-grid">
+          <div v-for="work in works" :key="work.id" class="work-card">
+            <div class="work-title">{{ work.title }}</div>
+            <div class="work-authors">{{ work.authors }}</div>
+            <div class="work-action">
+              <router-link v-if="!isWorkEvaluated(work.id)" :to="`/evaluate/${work.id}`" class="eval-btn">Avaliar</router-link>
+              <span v-else class="evaluated-text">Avaliado</span>
+            </div>
+          </div>
+        </div>
       </div>
       <div v-else class="empty">Nenhum trabalho atribuído.</div>
       <div v-if="worksError" class="error">{{ worksError }}</div>
@@ -32,22 +23,12 @@
     <div v-if="loadingEvals" class="loading">Carregando avaliações...</div>
     <div v-else>
       <div v-if="evaluations.length" class="evaluations-container">
-        <table class="evaluations-table">
-          <thead>
-            <tr>
-              <th>Trabalho</th>
-              <th>Critérios</th>
-              <th>Método</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="evaluation in evaluations" :key="evaluation.id">
-              <td class="eval-work-title">{{ evaluation.work_title }}</td>
-              <td class="eval-criteria">{{ evaluation.criterion1 }}, {{ evaluation.criterion2 }}, {{ evaluation.criterion3 }}, {{ evaluation.criterion4 }}, {{ evaluation.criterion5 }}</td>
-              <td class="eval-method">{{ getMethodLabel(evaluation.method) }}</td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="evaluations-grid">
+          <div v-for="evaluation in evaluations" :key="evaluation.id" class="evaluation-card">
+            <div class="eval-work-title">{{ evaluation.work_title }}</div>
+            <div class="eval-method">{{ getMethodLabel(evaluation.method) }}</div>
+          </div>
+        </div>
       </div>
       <div v-else class="empty">Nenhuma avaliação realizada.</div>
       <div v-if="evalsError" class="error">{{ evalsError }}</div>
@@ -106,116 +87,162 @@ onMounted(() => {
 <style scoped>
 .evaluator-dashboard {
   background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 2px 12px #17635a22;
-  padding: 2rem;
-  margin: 1rem;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(23, 99, 90, 0.12);
+  padding: 2.5rem;
+  margin: 2rem auto;
+  width: 85%;
+  max-width: 1100px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  min-height: 85vh;
+  position: relative;
+  border: 1px solid rgba(23, 99, 90, 0.08);
 }
 
 h2 {
   color: #17635A;
-  font-size: 1.5rem;
-  margin-bottom: 1.2rem;
-  font-weight: 700;
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  font-weight: 800;
+  text-align: center;
+  flex-shrink: 0;
+  letter-spacing: 0.5px;
 }
 
 .section-title {
-  margin-top: 2rem;
+  margin-top: 2.5rem;
+  flex-shrink: 0;
 }
 
 .works-container,
 .evaluations-container {
-  overflow-x: auto;
+  margin-bottom: 1.5rem;
+  flex: 1;
+}
+
+.works-grid,
+.evaluations-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 1.5rem;
   margin-bottom: 1rem;
 }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 1rem;
-  font-size: 0.9rem;
-  min-width: 400px;
+.work-card,
+.evaluation-card {
+  background: #fff;
+  border: 1px solid #E8F5E8;
+  border-radius: 16px;
+  padding: 1.8rem;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  min-height: 120px;
+  box-shadow: 0 4px 20px rgba(23, 99, 90, 0.08);
+  transition: all 0.3s ease;
+  border-left: 4px solid #4CB050;
 }
 
-th, td {
-  padding: 0.8rem 0.5rem;
-  text-align: left;
-  vertical-align: top;
-  border-bottom: 1px solid #eee;
+.evaluation-card {
+  justify-content: flex-start;
+  min-height: 100px;
 }
 
-th {
-  background: #CFE3C6;
-  color: #17635A;
-  font-weight: 800;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
-
-tbody tr:nth-child(even) {
-  background: #F5F6FA;
-}
-
-tbody tr:hover {
-  background: #e8f5e8;
+.work-card:hover,
+.evaluation-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(23, 99, 90, 0.12);
+  border-color: #CFE3C6;
 }
 
 .work-title,
 .eval-work-title {
-  font-weight: 600;
-  max-width: 400px;
+  color: #17635A;
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin-bottom: 0.8rem;
+  line-height: 1.4;
   word-wrap: break-word;
+  position: relative;
+  z-index: 1;
 }
 
 .work-authors {
-  max-width: 300px;
+  color: #555;
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+  line-height: 1.3;
   word-wrap: break-word;
+  font-weight: 500;
 }
 
 .eval-method {
-  max-width: 200px;
-  word-wrap: break-word;
+  color: #4CB050;
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: rgba(76, 176, 80, 0.1);
+  padding: 0.3rem 0.6rem;
+  border-radius: 6px;
+  display: inline-block;
+  width: fit-content;
 }
 
 .eval-criteria {
-  max-width: 400px;
+  color: #555;
+  font-size: 0.9rem;
+  line-height: 1.4;
   word-wrap: break-word;
+  background: #FAFFFA;
+  padding: 0.8rem;
+  border-radius: 8px;
+  border-left: 3px solid #CFE3C6;
 }
 
 .work-action {
-  text-align: left;
-  min-width: 100px;
+  margin-top: 1rem;
+  text-align: center;
 }
 
 .eval-btn {
   background: #4CB050;
   color: #fff;
   border: none;
-  border-radius: 6px;
-  padding: 0.4rem 0.8rem;
+  border-radius: 10px;
+  padding: 0.7rem 1.4rem;
   font-weight: 600;
   text-decoration: none;
-  transition: background 0.2s, color 0.2s;
+  transition: all 0.2s ease;
+  display: inline-block;
+  font-size: 0.9rem;
   min-width: 80px;
-  width: 80px;
+  margin-top: auto;
+  align-self: center;
   text-align: center;
-  display: block;
-  margin: 0 auto;
-  box-sizing: border-box;
-  font-size: 0.85rem;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(76, 176, 80, 0.2);
 }
 
 .eval-btn:hover {
   background: #17635A;
-  color: #fff;
+  box-shadow: 0 4px 12px rgba(76, 176, 80, 0.3);
 }
 
 .evaluated-text {
   color: #4CB050;
   font-weight: 600;
-  justify-content: center;
-  display: flex;
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 0.6rem 1.2rem;
+  background: rgba(76, 176, 80, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(76, 176, 80, 0.2);
 }
 
 .loading {
@@ -224,15 +251,20 @@ tbody tr:hover {
   margin: 1rem 0;
   text-align: center;
   padding: 1rem;
+  background: rgba(23, 99, 90, 0.05);
+  border-radius: 8px;
+  border: 1px solid rgba(23, 99, 90, 0.1);
 }
 
 .error {
   color: #b00020;
   margin-top: 1rem;
   font-weight: 600;
-  padding: 0.5rem;
-  background: rgba(176, 0, 32, 0.1);
-  border-radius: 6px;
+  padding: 1rem;
+  background: rgba(176, 0, 32, 0.05);
+  border-radius: 8px;
+  border: 1px solid rgba(176, 0, 32, 0.1);
+  text-align: center;
 }
 
 .empty {
@@ -240,55 +272,140 @@ tbody tr:hover {
   margin: 1.5rem 0;
   font-style: italic;
   text-align: center;
-  padding: 1rem;
+  padding: 2rem;
+  background: rgba(136, 136, 136, 0.05);
+  border-radius: 8px;
+  border: 1px solid rgba(136, 136, 136, 0.1);
 }
 
 @media (max-width: 1024px) {
   .evaluator-dashboard {
-    padding: 1.5rem;
-    margin: 0.5rem;
+    padding: 2rem;
+    margin: 1.5rem auto;
+    width: 90%;
+    min-height: 80vh;
   }
 
   h2 {
-    font-size: 1.3rem;
+    font-size: 1.6rem;
+    margin-bottom: 1.3rem;
   }
 
-  table {
-    font-size: 0.85rem;
-    min-width: 300px;
+  .section-title {
+    margin-top: 2rem;
   }
 
-  th, td {
-    padding: 0.6rem 0.4rem;
+  .works-container,
+  .evaluations-container {
+    margin-bottom: 1.3rem;
+  }
+
+  .works-grid,
+  .evaluations-grid {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.3rem;
+  }
+
+  .work-card,
+  .evaluation-card {
+    padding: 1.3rem;
   }
 
   .work-title,
   .eval-work-title {
-    max-width: 300px;
+    font-size: 1rem;
+    margin-bottom: 0.7rem;
   }
 
   .work-authors {
-    max-width: 250px;
+    font-size: 0.9rem;
+    margin-bottom: 0.8rem;
   }
 
   .eval-method {
-    max-width: 150px;
+    font-size: 0.85rem;
   }
 
   .eval-criteria {
-    max-width: 300px;
+    font-size: 0.85rem;
   }
 }
 
 @media (max-width: 768px) {
   .evaluator-dashboard {
-    padding: 1rem;
-    margin: 0.5rem;
-    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 1rem auto;
+    border-radius: 14px;
+    min-height: 75vh;
+    width: 92%;
   }
 
   h2 {
-    font-size: 1.2rem;
+    font-size: 1.4rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .section-title {
+    margin-top: 1.8rem;
+  }
+
+  .works-container,
+  .evaluations-container {
+    margin-bottom: 1.2rem;
+  }
+
+  .works-grid,
+  .evaluations-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .work-card,
+  .evaluation-card {
+    padding: 1.2rem;
+  }
+
+  .work-title,
+  .eval-work-title {
+    font-size: 1rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .work-authors {
+    font-size: 0.9rem;
+    margin-bottom: 0.7rem;
+  }
+
+  .eval-method {
+    font-size: 0.8rem;
+  }
+
+  .eval-criteria {
+    font-size: 0.8rem;
+  }
+
+  .eval-btn {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+    min-width: 80px;
+  }
+
+  .evaluated-text {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .evaluator-dashboard {
+    padding: 1rem;
+    margin: 1rem auto;
+    min-height: 70vh;
+    width: 94%;
+  }
+
+  h2 {
+    font-size: 1.3rem;
     margin-bottom: 1rem;
   }
 
@@ -296,82 +413,50 @@ tbody tr:hover {
     margin-top: 1.5rem;
   }
 
-  table {
-    font-size: 0.8rem;
-    min-width: 250px;
+  .works-container,
+  .evaluations-container {
+    margin-bottom: 1rem;
   }
 
-  th, td {
-    padding: 0.5rem 0.3rem;
+  .works-grid,
+  .evaluations-grid {
+    gap: 0.8rem;
   }
 
-  .work-title,
-  .eval-work-title {
-    max-width: 250px;
-  }
-
-  .work-authors {
-    max-width: 200px;
-  }
-
-  .eval-method {
-    max-width: 120px;
-  }
-
-  .eval-criteria {
-    max-width: 250px;
-  }
-
-  .eval-btn {
-    min-width: 70px;
-    width: 70px;
-    font-size: 0.8rem;
-    padding: 0.3rem 0.6rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .evaluator-dashboard {
-    padding: 0.8rem;
-    margin: 0.3rem;
-  }
-
-  h2 {
-    font-size: 1.1rem;
-    margin-bottom: 0.8rem;
-  }
-
-  table {
-    font-size: 0.75rem;
-    min-width: 200px;
-  }
-
-  th, td {
-    padding: 0.4rem 0.2rem;
+  .work-card,
+  .evaluation-card {
+    padding: 1rem;
+    border-radius: 10px;
   }
 
   .work-title,
   .eval-work-title {
-    max-width: 200px;
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
   }
 
   .work-authors {
-    max-width: 150px;
+    font-size: 0.85rem;
+    margin-bottom: 0.6rem;
   }
 
   .eval-method {
-    max-width: 100px;
+    font-size: 0.75rem;
   }
 
   .eval-criteria {
-    max-width: 200px;
+    font-size: 0.75rem;
   }
 
   .eval-btn {
-    min-width: 60px;
-    width: 60px;
-    font-size: 0.75rem;
-    padding: 0.25rem 0.5rem;
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+    min-width: 80px;
+  }
+
+  .evaluated-text {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
   }
 
   .loading,
@@ -379,6 +464,77 @@ tbody tr:hover {
   .empty {
     font-size: 0.9rem;
     padding: 0.8rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .evaluator-dashboard {
+    padding: 0.8rem;
+    margin: 0.8rem auto;
+    min-height: 65vh;
+    width: 96%;
+  }
+
+  h2 {
+    font-size: 1.2rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .section-title {
+    margin-top: 1.3rem;
+  }
+
+  .works-container,
+  .evaluations-container {
+    margin-bottom: 0.8rem;
+  }
+
+  .works-grid,
+  .evaluations-grid {
+    gap: 0.6rem;
+  }
+
+  .work-card,
+  .evaluation-card {
+    padding: 0.8rem;
+    border-radius: 8px;
+  }
+
+  .work-title,
+  .eval-work-title {
+    font-size: 0.9rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .work-authors {
+    font-size: 0.8rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .eval-method {
+    font-size: 0.7rem;
+  }
+
+  .eval-criteria {
+    font-size: 0.7rem;
+  }
+
+  .eval-btn {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+    min-width: 80px;
+  }
+
+  .evaluated-text {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.9rem;
+  }
+
+  .loading,
+  .error,
+  .empty {
+    font-size: 0.85rem;
+    padding: 0.7rem;
   }
 }
 </style>
