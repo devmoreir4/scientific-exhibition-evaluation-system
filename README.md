@@ -34,7 +34,7 @@ Este sistema oferece uma solução completa para organizadores de mostras cient�
 - **Containerização**: Docker & Docker Compose
 - **Banco de Dados**: PostgreSQL 15-alpine
 - **Interface DB**: Adminer
-- **Proxy/Web Server**: Nginx (via Docker)
+- **Proxy/Web Server**: Nginx
 
 ## 🔧 Instalação e Execução
 
@@ -60,10 +60,10 @@ docker-compose up -d
 ```
 
 4. **Acesse a aplicação**
-- **Frontend**: http://localhost:4173
-- **API**: http://localhost:5000/api/v1
+- **Frontend**: http://localhost (via Nginx)
+- **API**: http://localhost/api/v1 (via Nginx)
 - **Adminer (DB)**: http://localhost:8080
-- **Documentação API**: http://localhost:5000/api/v1/docs
+- **Documentação API**: http://localhost/api/v1/docs (via Nginx)
 
 ### Desenvolvimento Local
 
