@@ -2,7 +2,7 @@
 
 Sistema para gerenciamento, distribuição e avaliação de trabalhos científicos em mostras e feiras de ciência.
 
-## 🚀 Visão Geral
+## Visão Geral
 
 Este sistema oferece uma solução completa para organizadores de mostras científicas, permitindo:
 
@@ -13,7 +13,7 @@ Este sistema oferece uma solução completa para organizadores de mostras cient�
 - **Geração de pódio** automático
 - **Processamento de fichas** com IA
 
-## 🛠️ Stack Tecnológica
+## Stack Tecnológica
 
 ### Backend
 - **Framework**: Flask
@@ -34,14 +34,13 @@ Este sistema oferece uma solução completa para organizadores de mostras cient�
 - **Containerização**: Docker & Docker Compose
 - **Banco de Dados**: PostgreSQL 15-alpine
 - **Interface DB**: Adminer
-- **Proxy/Web Server**: Nginx
 
-## 🔧 Instalação e Execução
+## Instalação e Execução
 
 ### Pré-requisitos
 - Docker e Docker Compose
-- Node.js 20+ (para desenvolvimento local)
-- Python 3.11+ (para desenvolvimento local)
+- Node.js 20+ (desenvolvimento local)
+- Python 3.11+ (desenvolvimento local)
 
 ### Execução com Docker
 
@@ -56,14 +55,20 @@ cd scientific-exhibition-evaluation-system
 
 3. **Execute os serviços**
 ```bash
-docker-compose up -d
+docker-compose up --build
 ```
 
-4. **Acesse a aplicação**
-- **Frontend**: http://localhost (via Nginx)
-- **API**: http://localhost/api/v1 (via Nginx)
+4. **Cadastrar avaliadores de exemplo (opcional)**
+Se quiser cadastrar avaliadores de exemplo no banco, execute o comando abaixo após o backend estar rodando:
+```bash
+docker exec -it evaluation_backend python init_evaluators.py
+```
+
+5. **Acesse a aplicação**
+- **Frontend**: http://localhost:4173
+- **API**: http://localhost:5000/api/v1
 - **Adminer (DB)**: http://localhost:8080
-- **Documentação API**: http://localhost/api/v1/docs (via Nginx)
+- **Documentação API**: http://localhost:5000/api/v1/docs
 
 ### Desenvolvimento Local
 
@@ -90,7 +95,7 @@ npm install
 npm run dev
 ```
 
-## 📊 Funcionalidades Principais
+## Funcionalidades Principais
 
 ### Para Administradores
 - **Gestão de Usuários**: Cadastro, edição e remoção de avaliadores
@@ -106,7 +111,7 @@ npm run dev
 - **Histórico**: Visualização de avaliações realizadas
 - **Alteração de Senha**: Gerenciamento de credenciais
 
-## 📈 Monitoramento
+## Monitoramento
 
 O sistema oferece dashboards em tempo real para:
 - Progresso das avaliações
@@ -114,7 +119,7 @@ O sistema oferece dashboards em tempo real para:
 - Performance dos avaliadores
 - Rankings e pódios
 
-## 🤖 Integração com IA
+## Integração com IA
 
 Opcionalmente, o sistema pode processar fichas de avaliação:
 - Upload de imagem da ficha

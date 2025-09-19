@@ -2,7 +2,7 @@
 
 Interface moderna e responsiva para gerenciamento e avaliação de trabalhos científicos.
 
-## 🛠️ Stack Tecnológica
+## Stack Tecnológica
 
 ### Core
 - **Framework**: Vue 3.4.0
@@ -15,7 +15,7 @@ Interface moderna e responsiva para gerenciamento e avaliação de trabalhos cie
 - **API**: Comunicação com backend Flask
 - **Autenticação**: JWT Tokens
 
-## 📱 Páginas e Funcionalidades
+## Páginas e Funcionalidades
 
 ### Páginas Públicas
 - **LoginView**: Autenticação de usuários
@@ -34,7 +34,7 @@ Interface moderna e responsiva para gerenciamento e avaliação de trabalhos cie
 - **EvaluationFormView**: Formulário de avaliação
 - **ChangePasswordView**: Alteração de senha
 
-## 🚀 Instalação e Execução
+## Instalação e Execução
 
 ### Pré-requisitos
 - Node.js 20+
@@ -77,7 +77,7 @@ docker-compose up -d frontend
 2. **Acesse a aplicação**
 - **Frontend**: http://localhost:4173
 
-## 🏗️ Build e Deploy
+## Build e Deploy
 
 ### Build de Produção
 ```bash
@@ -97,7 +97,7 @@ npm run build
 # Copie para seu servidor web
 ```
 
-## 📊 Funcionalidades por Tipo de Usuário
+## Funcionalidades por Tipo de Usuário
 
 ### Administrador
 - **Dashboard**: Visão geral do sistema

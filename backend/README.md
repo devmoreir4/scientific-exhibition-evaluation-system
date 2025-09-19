@@ -2,7 +2,7 @@
 
 API REST completa para gerenciamento, distribuição e avaliação de trabalhos científicos.
 
-## 🛠️ Stack Tecnológica
+## Stack Tecnológica
 
 - **Framework**: Flask 3.1.1
 - **ORM**: SQLAlchemy 2.0.41
@@ -13,7 +13,7 @@ API REST completa para gerenciamento, distribuição e avaliação de trabalhos 
 - **Processamento de Imagens**: Google Gemini API
 - **Documentação**: Swagger
 
-## 🔌 Endpoints da API
+## Endpoints da API
 
 ### Autenticação (`/api/v1/auth`)
 | Método | Endpoint | Descrição |
@@ -77,7 +77,7 @@ API REST completa para gerenciamento, distribuição e avaliação de trabalhos 
 | `GET` | `/evaluator/evaluations/work/{id}` | Avaliações de um trabalho específico |
 | `PUT` | `/evaluator/change-password` | Alterar senha |
 
-## 🚀 Instalação e Execução
+## Instalação e Execução
 
 ### Com Docker
 
@@ -129,7 +129,7 @@ python init_db_local.py
 python run.py
 ```
 
-## 📚 Documentação da API
+## Documentação da API
 
 ### Swagger
 A documentação automática está disponível em: http://localhost:5000/api/v1/docs

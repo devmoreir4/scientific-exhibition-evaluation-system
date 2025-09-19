@@ -26,7 +26,6 @@ Thumbs.db
 
 # Scripts
 start.sh
-start.bat
 
 # Data files
 *.csv

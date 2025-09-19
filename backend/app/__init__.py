@@ -32,7 +32,7 @@ def create_app():
                 "model_filter": lambda tag: True,
             }
         ],
-        "static_url_path": "/api/v1/flasgger_static",
+        "static_url_path": "/flasgger_static",
         "swagger_ui": True,
         "specs_route": "/api/v1/docs/"
     }
@@ -44,7 +44,7 @@ def create_app():
             "description": "API REST completa para gerenciamento, distribuição e avaliação de trabalhos científicos",
             "version": "1.0.0"
         },
-        "host": "localhost",
+        "host": "localhost:5000",
         "basePath": "/api/v1",
         "schemes": ["http"],
         "securityDefinitions": {
@@ -62,21 +62,19 @@ def create_app():
 
     Swagger(app, config=swagger_config, template=swagger_template)
 
-    # CORS is handled by Nginx proxy
-    # CORS(app, resources={
-    #     r"/api/*": {
-    #         "origins": [
-    #             "http://localhost:4173",
-    #             "http://127.0.0.1:4173",
-    #             "http://10.0.0.11:4173"
-    #         ],
-    #         "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    #         "allow_headers": ["Content-Type", "Authorization"],
-    #         "supports_credentials": True
-    #     }
-    # })
+    CORS(app, resources={
+        r"/api/*": {
+            "origins": [
+                "http://localhost:4173",
+                "http://127.0.0.1:4173",
+                "http://10.0.0.11:4173"
+            ],
+            "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+            "allow_headers": ["Content-Type", "Authorization"],
+            "supports_credentials": True
+        }
+    })
 
-    # blueprints
     from .blueprints.auth import auth_bp
     from .blueprints.admin import admin_bp
     from .blueprints.evaluator import evaluator_bp
