@@ -2,7 +2,7 @@ import pandas as pd
 from app.models import Work
 from app.extensions import db
 
-# Mapeamento de áreas e subáreas
+
 VALID_AREAS = {
     'Ciências Agrárias',
     'Ciências Biológicas e Ciências da Saúde',
@@ -34,7 +34,7 @@ VALID_SUBAREAS = {
     'Geociências e Sustentabilidade Ambiental',
 
     # Ciências Sociais Aplicadas e Ciências Humanas
-    'História, Filosoa e Sociologia',
+    'História, Filosofia e Sociologia',
     'Geografia e Estudos Regionais',
     'Educação, Cidadania e Direitos Humanos',
     'Gestão, Empreendedorismo e Economia',
@@ -48,12 +48,9 @@ VALID_SUBAREAS = {
     'Música, Cinema e Audiovisual'
 }
 
+
 def import_works_from_csv(file_stream):
-    """
-    Importa trabalhos de um arquivo CSV
-    Formato esperado: Nº,Orientador,Autores,Título,Área - Subárea,Tipo
-    (Campo Nº é opcional e será ignorado)
-    """
+    # formato esperado: Nº,Orientador,Autores,Título,Área - Subárea,Tipo
     try:
         df = pd.read_csv(
             file_stream,
@@ -79,13 +76,9 @@ def import_works_from_csv(file_stream):
             'imported_count': 0
         }
 
-def process_works_dataframe(df):
-    """
-    Processa um DataFrame do pandas (CSV)
-    """
-    try:
 
-        # debug
+def process_works_dataframe(df):
+    try:
         print(f"Colunas detectadas: {list(df.columns)}")
         print(f"Número de colunas: {len(df.columns)}")
 
@@ -127,7 +120,6 @@ def process_works_dataframe(df):
                         area = ''
                         subarea = area_subarea_value
 
-                # Validar campos obrigatórios (incluindo NaN do pandas)
                 if not title or title == 'nan' or title == 'None' or pd.isna(row.get(column_mapping['titulo'])):
                     errors.append(f"Linha {line_number}: Título é obrigatório")
                     continue
@@ -140,7 +132,6 @@ def process_works_dataframe(df):
                     errors.append(f"Linha {line_number}: Orientador é obrigatório")
                     continue
 
-                # Validar área e subárea
                 if not area:
                     errors.append(f"Linha {line_number}: Área é obrigatória (valor da coluna: '{area_subarea_value}')")
                     continue
@@ -189,7 +180,7 @@ def process_works_dataframe(df):
         else:
             return {
                 'success': False,
-                'message': f'Erros encontrados durante a importação:',
+                'message': 'Erros encontrados durante a importação:',
                 'errors': errors,
                 'imported_count': 0
             }

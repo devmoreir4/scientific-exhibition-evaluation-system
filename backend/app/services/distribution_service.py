@@ -1,6 +1,7 @@
 from app.models import Work, Evaluator, work_evaluator_association, db
 import random
 
+
 def distribute_works():
     works = Work.query.all()
 

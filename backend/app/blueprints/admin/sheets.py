@@ -1,11 +1,9 @@
 from . import admin_bp
 from flask import jsonify, request, current_app
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required
 from flasgger import swag_from
 from app.services.ai_service import process_sheet_image_ai
 from app.services.evaluation_service import validate_manual_evaluation_data, create_manual_evaluation
-from app.models import Evaluation, Evaluator, Work
-from app.extensions import db
 import os
 from .misc import admin_required
 
@@ -15,11 +13,15 @@ def get_upload_folder():
     os.makedirs(folder, exist_ok=True)
     return folder
 
+
 def get_next_evaluation_number():
     upload_folder = get_upload_folder()
-    existing = [f for f in os.listdir(upload_folder) if f.startswith('evaluation_')]
-    nums = [int(f.split('_')[1].split('.')[0]) for f in existing if f.split('_')[1].split('.')[0].isdigit()]
+    existing = [f for f in os.listdir(
+        upload_folder) if f.startswith('evaluation_')]
+    nums = [int(f.split('_')[1].split('.')[0])
+            for f in existing if f.split('_')[1].split('.')[0].isdigit()]
     return max(nums, default=0) + 1
+
 
 @admin_bp.route('/sheets/process-ai', methods=['POST'])
 @jwt_required()
@@ -91,6 +93,7 @@ def process_sheet_ai():
         return jsonify({'msg': str(e)}), 400
     except Exception as e:
         return jsonify({'msg': f'Erro interno: {str(e)}'}), 500
+
 
 @admin_bp.route('/sheets/confirm', methods=['POST'])
 @jwt_required()

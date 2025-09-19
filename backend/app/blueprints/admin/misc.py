@@ -6,8 +6,10 @@ from app.services.distribution_service import distribute_works
 from app.models import DistributionControl
 from app.services.areas_service import get_all_areas, get_subareas_by_area, get_all_subareas
 
+
 def admin_required(fn):
     from functools import wraps
+
     @wraps(fn)
     def wrapper(*args, **kwargs):
         identity = get_jwt_identity()
@@ -15,6 +17,7 @@ def admin_required(fn):
             return jsonify({'msg': 'Acesso restrito a administradores.'}), 403
         return fn(*args, **kwargs)
     return wrapper
+
 
 @admin_bp.route('/works/distribute', methods=['POST'])
 @jwt_required()
@@ -71,6 +74,7 @@ def distribute():
     except Exception as e:
         return jsonify({'msg': f'Erro na distribuição: {str(e)}'}), 500
 
+
 @admin_bp.route('/works/distribution-status', methods=['GET'])
 @jwt_required()
 @admin_required
@@ -114,6 +118,7 @@ def distribution_status():
             }), 200
     except Exception as e:
         return jsonify({'msg': f'Erro ao verificar status: {str(e)}'}), 500
+
 
 @admin_bp.route('/works/reset-distribution', methods=['POST'])
 @jwt_required()
@@ -159,6 +164,7 @@ def reset_distribution():
     except Exception as e:
         return jsonify({'msg': f'Erro ao resetar distribuição: {str(e)}'}), 500
 
+
 @admin_bp.route('/areas', methods=['GET'])
 @jwt_required()
 @admin_required
@@ -189,6 +195,7 @@ def get_areas():
         return jsonify({'areas': areas}), 200
     except Exception as e:
         return jsonify({'msg': f'Erro ao buscar áreas: {str(e)}'}), 500
+
 
 @admin_bp.route('/areas/<area>/subareas', methods=['GET'])
 @jwt_required()

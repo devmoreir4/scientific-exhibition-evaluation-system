@@ -1,14 +1,14 @@
 from . import admin_bp
 from flask import jsonify, request
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required
 from flasgger import swag_from
 from app.models import Work, Evaluator
 from app.extensions import db
 from app.services.csv_importer_service import import_works_from_csv
 from app.services.evaluation_service import calculate_evaluation_progress, generate_works_podium
 import io
-from app.models import Evaluation
 from .misc import admin_required
+
 
 @admin_bp.route('/works', methods=['GET'])
 @jwt_required()
@@ -77,10 +77,11 @@ def list_works():
     works = pagination.items
 
     return jsonify({'works': [
-        {'id': w.id, 'title': w.title, 'authors': w.authors, 'advisor': w.advisor, 'type': w.type, 'area': w.area, 'subarea': w.subarea}
+        {'id': w.id, 'title': w.title, 'authors': w.authors, 'advisor': w.advisor,
+            'type': w.type, 'area': w.area, 'subarea': w.subarea}
         for w in works
     ],
-    'pagination': {
+        'pagination': {
         'page': pagination.page,
         'per_page': pagination.per_page,
         'pages': pagination.pages,
@@ -90,6 +91,7 @@ def list_works():
         'prev_num': pagination.prev_num,
         'next_num': pagination.next_num
     }}), 200
+
 
 @admin_bp.route('/works/distributions', methods=['GET'])
 @jwt_required()
@@ -188,16 +190,17 @@ def list_work_distributions():
         })
 
     return jsonify({'distributions': distributions,
-    'pagination': {
-        'page': pagination.page,
-        'per_page': pagination.per_page,
-        'pages': pagination.pages,
-        'total': pagination.total,
-        'has_prev': pagination.has_prev,
-        'has_next': pagination.has_next,
-        'prev_num': pagination.prev_num,
-        'next_num': pagination.next_num
-    }}), 200
+                    'pagination': {
+                        'page': pagination.page,
+                        'per_page': pagination.per_page,
+                        'pages': pagination.pages,
+                        'total': pagination.total,
+                        'has_prev': pagination.has_prev,
+                        'has_next': pagination.has_next,
+                        'prev_num': pagination.prev_num,
+                        'next_num': pagination.next_num
+                    }}), 200
+
 
 @admin_bp.route('/works', methods=['POST'])
 @jwt_required()
@@ -255,7 +258,8 @@ def list_work_distributions():
 def create_work():
     data = request.get_json()
 
-    required_fields = ['title', 'authors', 'advisor', 'type', 'area', 'subarea']
+    required_fields = ['title', 'authors',
+                       'advisor', 'type', 'area', 'subarea']
     for field in required_fields:
         if not data.get(field):
             return jsonify({'msg': f'Campo {field} é obrigatório'}), 400
@@ -284,6 +288,7 @@ def create_work():
             'subarea': work.subarea
         }
     }), 201
+
 
 @admin_bp.route('/works/import-csv', methods=['POST'])
 @jwt_required()
@@ -359,6 +364,7 @@ def import_works_csv():
             'imported_count': result['imported_count']
         }), 400
 
+
 @admin_bp.route('/works/<int:work_id>', methods=['DELETE'])
 @jwt_required()
 @admin_required
@@ -397,6 +403,7 @@ def delete_work(work_id):
     db.session.delete(work)
     db.session.commit()
     return jsonify({'msg': 'Trabalho removido com sucesso!'}), 200
+
 
 @admin_bp.route('/works/<int:work_id>', methods=['PUT'])
 @jwt_required()
@@ -458,6 +465,7 @@ def update_work(work_id):
     work.subarea = data.get('subarea', work.subarea)
     db.session.commit()
     return jsonify({'msg': 'Trabalho atualizado com sucesso!'}), 200
+
 
 @admin_bp.route('/works/evaluation-progress', methods=['GET'])
 @jwt_required()
@@ -526,6 +534,7 @@ def get_evaluation_progress():
     progress_data = calculate_evaluation_progress(page=page, per_page=per_page)
     return jsonify(progress_data), 200
 
+
 @admin_bp.route('/works/podium', methods=['GET'])
 @jwt_required()
 @admin_required
@@ -565,6 +574,7 @@ def get_evaluation_progress():
 def get_works_podium():
     podium_data = generate_works_podium()
     return jsonify({'podium_data': podium_data}), 200
+
 
 @admin_bp.route('/works/evaluator/<int:evaluator_id>', methods=['GET'])
 @jwt_required()

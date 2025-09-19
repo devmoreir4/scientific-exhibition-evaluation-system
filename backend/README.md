@@ -2,14 +2,14 @@
 
 API REST completa para gerenciamento, distribuição e avaliação de trabalhos científicos.
 
-## Stack Tecnológica
+## Tecnologias
 
 - **Framework**: Flask 3.1.1
 - **ORM**: SQLAlchemy 2.0.41
 - **Autenticação**: Flask-JWT-Extended 4.7.1
 - **CORS**: Flask-CORS 6.0.1
 - **Banco de Dados**: PostgreSQL 15-alpine
-- **Interface**: Adminer
+- **Interface DB**: Adminer
 - **Processamento de Imagens**: Google Gemini API
 - **Documentação**: Swagger
 
@@ -86,7 +86,7 @@ API REST completa para gerenciamento, distribuição e avaliação de trabalhos 
 
 2. **Execute com Docker Compose**
 ```bash
-docker-compose up -d backend
+docker-compose up backend
 ```
 
 3. **Acesse a API**
@@ -94,46 +94,6 @@ docker-compose up -d backend
 - **Documentação**: http://localhost:5000/api/v1/docs
 - **Adminer**: http://localhost:8080
 
-### Desenvolvimento Local
-
-1. **Configure o ambiente**
-```bash
-cd backend
-python -m venv venv
-# Windows
-venv\Scripts\activate
-# Linux/Mac
-source venv/bin/activate
-```
-
-2. **Instale as dependências**
-```bash
-pip install -r requirements.txt
-```
-
-3. **Configure as variáveis de ambiente**
-```bash
-# Windows
-set FLASK_ENV=local
-# Linux/Mac
-export FLASK_ENV=local
-```
-
-4. **Inicialize o banco**
-```bash
-python init_db_local.py
-```
-
-5. **Execute a aplicação**
-```bash
-python run.py
-```
-
-## Documentação da API
-
-### Swagger
-A documentação automática está disponível em: http://localhost:5000/api/v1/docs
-
-### Coleção Postman
-Uma coleção completa do Postman está disponível em:
+## Coleção Postman
+- Uma coleção completa do Postman está disponível em:
 `postman_collection/evaluation_system.postman_collection.json`

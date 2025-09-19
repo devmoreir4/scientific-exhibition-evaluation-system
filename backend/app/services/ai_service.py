@@ -4,16 +4,19 @@ import json
 import os
 import io
 
+
 def get_google_api_key():
     api_key = os.environ.get('GOOGLE_API_KEY')
     if not api_key:
         raise ValueError("GOOGLE_API_KEY não configurada.")
     return api_key
 
+
 def get_ai_model():
     api_key = get_google_api_key()
     genai.configure(api_key=api_key)
     return genai.GenerativeModel('gemini-1.5-flash')
+
 
 PROMPT = """
 Você é um assistente de IA especialista em extrair dados de formulários de avaliação científica.
@@ -54,6 +57,7 @@ Se não conseguir identificar nenhuma marca válida, retorne:
 NÃO INVENTE DADOS. Se não estiver certo, retorne null.
 """
 
+
 def validate_scores(scores):
     if not isinstance(scores, list) or len(scores) != 5:
         return [None, None, None, None, None]
@@ -68,6 +72,7 @@ def validate_scores(scores):
             validated_scores.append(None)
 
     return validated_scores
+
 
 def process_sheet_image_ai(image_bytes):
 
@@ -101,6 +106,7 @@ def process_sheet_image_ai(image_bytes):
         }
 
     except json.JSONDecodeError as e:
+        print(f"JSONDecodeError: {e}")
         return {
             'extracted_scores': [None, None, None, None, None],
             'warning': 'Erro ao processar resposta da IA.'

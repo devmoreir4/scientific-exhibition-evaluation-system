@@ -2,7 +2,7 @@
 
 Interface moderna e responsiva para gerenciamento e avaliação de trabalhos científicos.
 
-## Stack Tecnológica
+## Tecnologias
 
 ### Core
 - **Framework**: Vue 3.4.0
@@ -36,42 +36,11 @@ Interface moderna e responsiva para gerenciamento e avaliação de trabalhos cie
 
 ## Instalação e Execução
 
-### Pré-requisitos
-- Node.js 20+
-- npm ou yarn
-- Backend rodando (para desenvolvimento)
-
-### Desenvolvimento Local
-
-1. **Instale as dependências**
-```bash
-cd frontend
-npm install
-```
-
-2. **Configure a API**
-Edite `src/axios.js` se necessário:
-```javascript
-const api = axios.create({
-  baseURL: "http://localhost:5000/api/v1",
-});
-```
-
-3. **Execute o servidor de desenvolvimento**
-```bash
-npm run dev
-```
-
-4. **Acesse a aplicação**
-- **Local**: http://localhost:5173
-- **Rede**: http://seu-ip:5173
-
 ### Com Docker
 
 1. **Execute com Docker Compose**
 ```bash
-# Na raiz do projeto
-docker-compose up -d frontend
+docker-compose up frontend
 ```
 
 2. **Acesse a aplicação**
@@ -92,9 +61,6 @@ npm run preview
 ### Deploy
 ```bash
 npm run build
-
-# Os arquivos ficam em dist/
-# Copie para seu servidor web
 ```
 
 ## Funcionalidades por Tipo de Usuário

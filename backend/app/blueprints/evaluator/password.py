@@ -7,6 +7,7 @@ from app.services.auth_service import (
     change_evaluator_password, is_password_strong
 )
 
+
 @evaluator_bp.route('/change-password', methods=['PUT'])
 @jwt_required()
 @swag_from({

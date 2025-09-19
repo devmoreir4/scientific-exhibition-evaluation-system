@@ -6,6 +6,7 @@ from app.extensions import db
 from app.models import Admin
 from werkzeug.security import generate_password_hash
 
+
 def wait_for_postgres():
     max_retries = 30
     retry_interval = 2
@@ -27,12 +28,14 @@ def wait_for_postgres():
             if i < max_retries - 1:
                 time.sleep(retry_interval)
             else:
-                print("Failed to connect to PostgreSQL after all attempts.")
+                print("Failed to connect to PostgreSQL after all attempts. Error:", e)
                 return False
 
     return False
 
+
 app = create_app()
+
 
 if __name__ == "__main__":
     print("Waiting for PostgreSQL to be ready...")

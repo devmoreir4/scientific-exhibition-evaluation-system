@@ -1,6 +1,7 @@
 import os
 from datetime import timedelta
 
+
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY')
 
@@ -21,15 +22,12 @@ class Config:
     GOOGLE_API_KEY = os.environ.get('GOOGLE_API_KEY')
     UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), 'uploads')
 
+
 class DevelopmentConfig(Config):
     DEBUG = True
     FLASK_ENV = 'development'
 
+
 class ProductionConfig(Config):
     DEBUG = False
     FLASK_ENV = 'production'
-
-class LocalDevelopmentConfig(Config):
-    DEBUG = True
-    FLASK_ENV = 'development'
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///local_evaluation_system.db'

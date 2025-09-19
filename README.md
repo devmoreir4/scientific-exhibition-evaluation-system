@@ -1,10 +1,6 @@
 # Sistema de Avaliação para Mostra Científica
 
-Sistema para gerenciamento, distribuição e avaliação de trabalhos científicos em mostras e feiras de ciência.
-
-## Visão Geral
-
-Este sistema oferece uma solução completa para organizadores de mostras científicas, permitindo:
+Sistema para gerenciamento, distribuição e avaliação de trabalhos científicos em mostras e feiras de ciência. Este sistema oferece uma solução completa para organizadores de mostras científicas, permitindo:
 
 - **Cadastro e gerenciamento** de avaliadores e trabalhos
 - **Distribuição automática** de trabalhos entre avaliadores
@@ -13,15 +9,17 @@ Este sistema oferece uma solução completa para organizadores de mostras cient�
 - **Geração de pódio** automático
 - **Processamento de fichas** com IA
 
-## Stack Tecnológica
+## Tecnologias
 
 ### Backend
-- **Framework**: Flask
-- **ORM**: SQLAlchemy
+- **Framework**: Flask 3.1.1
+- **ORM**: SQLAlchemy 2.0.41
 - **Autenticação**: Flask-JWT-Extended
-- **Banco de Dados**: PostgreSQL
+- **Banco de Dados**: PostgreSQL 15
 - **IA**: Google Gemini API
 - **Documentação**: Swagger
+- **Interface DB**: Adminer
+- **Containerização**: Docker & Docker Compose
 
 ### Frontend
 - **Framework**: Vue 3.4.0
@@ -29,18 +27,12 @@ Este sistema oferece uma solução completa para organizadores de mostras cient�
 - **Gerenciamento de Estado**: Pinia 2.1.0
 - **Roteamento**: Vue Router 4.2.0
 - **HTTP Client**: Axios 1.6.0
-
-### Infraestrutura
 - **Containerização**: Docker & Docker Compose
-- **Banco de Dados**: PostgreSQL 15-alpine
-- **Interface DB**: Adminer
 
 ## Instalação e Execução
 
 ### Pré-requisitos
 - Docker e Docker Compose
-- Node.js 20+ (desenvolvimento local)
-- Python 3.11+ (desenvolvimento local)
 
 ### Execução com Docker
 
@@ -59,7 +51,7 @@ docker-compose up --build
 ```
 
 4. **Cadastrar avaliadores de exemplo (opcional)**
-Se quiser cadastrar avaliadores de exemplo no banco, execute o comando abaixo após o backend estar rodando:
+- Se quiser cadastrar avaliadores de exemplo no banco, execute o comando abaixo após o backend estar rodando:
 ```bash
 docker exec -it evaluation_backend python init_evaluators.py
 ```
@@ -70,34 +62,9 @@ docker exec -it evaluation_backend python init_evaluators.py
 - **Adminer (DB)**: http://localhost:8080
 - **Documentação API**: http://localhost:5000/api/v1/docs
 
-### Desenvolvimento Local
-
-#### Backend (SQLite)
-```bash
-cd backend
-python -m venv venv
-# Windows
-venv\Scripts\activate
-# Linux/Mac
-source venv/bin/activate
-
-pip install -r requirements.txt
-python init_db_local.py
-set FLASK_ENV=local  # Windows
-export FLASK_ENV=local  # Linux/Mac
-python run.py
-```
-
-#### Frontend
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
 ## Funcionalidades Principais
 
-### Para Administradores
+### Administradores
 - **Gestão de Usuários**: Cadastro, edição e remoção de avaliadores
 - **Gestão de Trabalhos**: Importação CSV, edição e remoção
 - **Distribuição**: Algoritmo automático de distribuição de trabalhos
@@ -105,7 +72,7 @@ npm run dev
 - **Pódio**: Geração automática de rankings
 - **Processamento de Fichas**: IA para extrair notas de imagens
 
-### Para Avaliadores
+### Avaliadores
 - **Dashboard**: Visão geral dos trabalhos atribuídos
 - **Avaliação**: Formulário com 5 critérios (1-5 pontos)
 - **Histórico**: Visualização de avaliações realizadas

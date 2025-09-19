@@ -20,15 +20,14 @@ router.beforeEach((to, from, next) => {
 
   auth.checkAuth();
 
-  // Rotas públicas
   if (to.meta.public) return next();
-  // Página 404
+
   if (to.name === "NotFound") return next();
-  // Não autenticado
+
   if (!auth.token) return next("/login");
-  // Admin
+
   if (to.meta.admin && auth.role !== "admin") return next("/dashboard");
-  // Avaliador
+
   if (to.meta.evaluator && auth.role !== "evaluator")
     return next("/admin/dashboard");
   next();

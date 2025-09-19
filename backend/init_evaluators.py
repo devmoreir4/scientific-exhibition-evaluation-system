@@ -60,9 +60,8 @@ with app.app_context():
             siape_or_cpf='963852741',
             birthdate='08081984',
             area='Ciências Sociais Aplicadas e Ciências Humanas',
-            subareas='História, Filosoa e Sociologia;Geografia e Estudos Regionais'
+            subareas='História, Filosofia e Sociologia;Geografia e Estudos Regionais'
         ),
-        # pedagogical evaluators
         Evaluator(
             name='Prof. Dr. José Pedagógico',
             siape_or_cpf='111222333',
@@ -82,7 +81,7 @@ with app.app_context():
             siape_or_cpf='777888999',
             birthdate='18051977',
             area='Pedagógica',
-            subareas='História, Filosoa e Sociologia;Geografia e Estudos Regionais'
+            subareas='História, Filosofia e Sociologia;Geografia e Estudos Regionais'
         ),
         Evaluator(
             name='Prof. Dra. Fernanda Pedagógica',
@@ -93,7 +92,6 @@ with app.app_context():
         )
     ]
 
-    # Check if evaluators already exist to avoid duplication
     existing_count = Evaluator.query.count()
     if existing_count == 0:
         for evaluator in evaluators:

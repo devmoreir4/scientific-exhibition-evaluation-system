@@ -1,5 +1,5 @@
 AREAS_SUBAREAS = {
-    'Pedagógica': [],  # Can evaluate any subarea
+    'Pedagógica': [],
 
     'Ciências Agrárias': [
         'Agricultura e Sustentabilidade no Campo',
@@ -42,11 +42,14 @@ AREAS_SUBAREAS = {
     ]
 }
 
+
 def get_all_areas():
     return list(AREAS_SUBAREAS.keys())
 
+
 def get_subareas_by_area(area):
     return AREAS_SUBAREAS.get(area, [])
+
 
 def get_all_subareas():
     all_subareas = []
@@ -54,6 +57,7 @@ def get_all_subareas():
         if area != 'Pedagógica':
             all_subareas.extend(subareas)
     return all_subareas
+
 
 def validate_area_subarea(area, subareas_list):
     if area == 'Pedagógica':
@@ -70,6 +74,7 @@ def validate_area_subarea(area, subareas_list):
 
     return True, "Válido"
 
+
 def get_areas_summary():
     summary = {}
     for area, subareas in AREAS_SUBAREAS.items():
@@ -85,8 +90,10 @@ def get_areas_summary():
             }
     return summary
 
+
 def is_area_valid(area):
     return area in AREAS_SUBAREAS
+
 
 def is_subarea_valid_for_area(area, subarea):
     if area == 'Pedagógica':

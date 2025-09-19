@@ -4,6 +4,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from flasgger import swag_from
 from app.models import Evaluator
 
+
 @evaluator_bp.route('/works/assigned', methods=['GET'])
 @jwt_required()
 @swag_from({
@@ -55,6 +56,7 @@ def get_assigned_works():
         for w in evaluator.works
     ]
     return jsonify({'works': works}), 200
+
 
 @evaluator_bp.route('/works/<int:work_id>', methods=['GET'])
 @jwt_required()

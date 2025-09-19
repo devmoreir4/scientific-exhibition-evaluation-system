@@ -6,6 +6,7 @@ from app.services.auth_service import (
     generate_access_token, validate_login_credentials
 )
 
+
 @auth_bp.route('/token', methods=['POST'])
 @swag_from({
     'tags': ['Autenticação'],
@@ -81,12 +82,10 @@ from app.services.auth_service import (
 def login():
     data = request.get_json()
 
-    # Validate login credentials
     is_valid, errors = validate_login_credentials(data, 'evaluator')
     if not is_valid:
         return jsonify({'msg': '; '.join(errors)}), 400
 
-    # Authenticate evaluator
     siape_or_cpf = data.get('siape_or_cpf')
     password = data.get('password')
 
@@ -95,10 +94,10 @@ def login():
     if not evaluator:
         return jsonify({'msg': error_msg}), 401
 
-    # Generate access token
     access_token = generate_access_token(evaluator, 'evaluator')
 
     return jsonify({'access_token': access_token, 'role': 'evaluator'}), 200
+
 
 @auth_bp.route('/admin/token', methods=['POST'])
 @swag_from({
@@ -175,12 +174,10 @@ def login():
 def login_admin():
     data = request.get_json()
 
-    # Validate login credentials
     is_valid, errors = validate_login_credentials(data, 'admin')
     if not is_valid:
         return jsonify({'msg': '; '.join(errors)}), 400
 
-    # Authenticate admin
     login = data.get('login')
     password = data.get('password')
 
@@ -189,7 +186,6 @@ def login_admin():
     if not admin:
         return jsonify({'msg': error_msg}), 401
 
-    # Generate access token
     access_token = generate_access_token(admin, 'admin')
 
     return jsonify({'access_token': access_token, 'role': 'admin'}), 200

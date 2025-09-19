@@ -3,7 +3,7 @@ from flask_cors import CORS
 from flasgger import Swagger
 from .extensions import db, jwt
 import os
-from .config import DevelopmentConfig, ProductionConfig, LocalDevelopmentConfig
+from .config import DevelopmentConfig, ProductionConfig
 
 
 def create_app():
@@ -11,8 +11,7 @@ def create_app():
 
     config_map = {
         'development': DevelopmentConfig,
-        'production': ProductionConfig,
-        'local': LocalDevelopmentConfig
+        'production': ProductionConfig
     }
 
     config_class = config_map.get(os.environ.get('FLASK_ENV', 'development'))
