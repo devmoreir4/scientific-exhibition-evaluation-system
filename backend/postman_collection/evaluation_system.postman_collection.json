@@ -289,7 +289,7 @@
         }
       },
       {
-        "name": "Admin - Confirmar Avaliação Manual",
+        "name": "Admin - Confirmar Avaliação Processada por IA",
         "request": {
           "method": "POST",
           "header": [

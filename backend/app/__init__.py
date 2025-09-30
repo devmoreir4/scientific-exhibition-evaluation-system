@@ -10,11 +10,12 @@ def create_app():
     app = Flask(__name__)
 
     config_map = {
-        'development': DevelopmentConfig,
-        'production': ProductionConfig
+        '1': DevelopmentConfig,
+        '0': ProductionConfig
     }
 
-    config_class = config_map.get(os.environ.get('FLASK_ENV', 'development'))
+    debug_mode = os.environ.get('DEBUG')
+    config_class = config_map.get(debug_mode)
     app.config.from_object(config_class)
 
     db.init_app(app)

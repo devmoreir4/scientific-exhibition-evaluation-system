@@ -12,7 +12,7 @@
     <div v-if="distMsg" class="success">{{ distMsg }}</div>
     <div v-if="distError" class="error">{{ distError }}</div>
 
-    <h2 style="margin-top:1.5rem">Processar Ficha Manual (OCR/IA)</h2>
+    <h2 style="margin-top:1.5rem">Processar Ficha (IA)</h2>
     <form @submit.prevent="processSheetAi" class="upload-form">
       <div class="file-input-wrapper">
         <input type="file" @change="onFileChange" accept="image/*" required id="file-input" />
@@ -301,7 +301,7 @@ function confirmSheet() {
 
   api.post('/admin/sheets/confirm', payload)
     .then(() => {
-      confirmMsg.value = 'Avaliação manual confirmada com sucesso!'
+      confirmMsg.value = 'Avaliação processada por IA confirmada com sucesso!'
       setTimeout(() => {
         router.push('/admin/dashboard')
       }, 1500)

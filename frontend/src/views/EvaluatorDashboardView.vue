@@ -51,7 +51,7 @@ const evalsError = ref('')
 function getMethodLabel(method) {
   const methods = {
     'online': 'Online',
-    'manual_validated': 'Manual'
+    'ai_processed': 'Processado por IA'
   }
   return methods[method] || method
 }

@@ -3,7 +3,7 @@ from flask import jsonify, request, current_app
 from flask_jwt_extended import jwt_required
 from flasgger import swag_from
 from app.services.ai_service import process_sheet_image_ai
-from app.services.evaluation_service import validate_manual_evaluation_data, create_manual_evaluation
+from app.services.evaluation_service import validate_ai_evaluation_data, create_ai_evaluation
 import os
 from .misc import admin_required
 
@@ -101,7 +101,7 @@ def process_sheet_ai():
 @swag_from({
     'tags': ['Admin - Fichas IA'],
     'summary': 'Confirmar dados extraídos',
-    'description': 'Confirma e salva os dados extraídos da ficha (manual ou após processamento IA)',
+    'description': 'Confirma e salva os dados extraídos da ficha após processamento IA',
     'security': [{'Bearer': []}],
     'parameters': [
         {
@@ -128,11 +128,11 @@ def process_sheet_ai():
     ],
     'responses': {
         201: {
-            'description': 'Avaliação manual salva com sucesso',
+            'description': 'Avaliação processada por IA salva com sucesso',
             'schema': {
                 'type': 'object',
                 'properties': {
-                    'msg': {'type': 'string', 'example': 'Avaliação manual salva com sucesso!'}
+                    'msg': {'type': 'string', 'example': 'Avaliação processada por IA salva com sucesso!'}
                 }
             }
         },
@@ -144,7 +144,7 @@ def process_sheet_ai():
 def confirm_sheet():
     data = request.get_json()
 
-    is_valid, error_message = validate_manual_evaluation_data(data)
+    is_valid, error_message = validate_ai_evaluation_data(data)
 
     if not is_valid:
         return jsonify({'msg': error_message}), 400 if 'obrigatórios' in error_message else 404
@@ -153,6 +153,6 @@ def confirm_sheet():
     evaluator_id = data.get('evaluator_id')
     scores = data.get('scores')
 
-    create_manual_evaluation(work_id, evaluator_id, scores)
+    create_ai_evaluation(work_id, evaluator_id, scores)
 
-    return jsonify({'msg': 'Avaliação manual salva com sucesso!'}), 201
+    return jsonify({'msg': 'Avaliação processada por IA salva com sucesso!'}), 201

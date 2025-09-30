@@ -194,7 +194,7 @@ def create_evaluation(evaluator_id, work_id, criteria, method='online'):
     return evaluation
 
 
-def validate_manual_evaluation_data(data):
+def validate_ai_evaluation_data(data):
     work_id = data.get('work_id')
     scores = data.get('scores')
     evaluator_id = data.get('evaluator_id')
@@ -232,14 +232,14 @@ def validate_manual_evaluation_data(data):
     return True, None
 
 
-def create_manual_evaluation(work_id, evaluator_id, scores):
+def create_ai_evaluation(work_id, evaluator_id, scores):
     evaluation = Evaluation(
         criterion1=scores[0],
         criterion2=scores[1],
         criterion3=scores[2],
         criterion4=scores[3],
         criterion5=scores[4],
-        method='manual_validated',
+        method='ai_processed',
         evaluator_id=evaluator_id,
         work_id=work_id
     )
@@ -296,7 +296,7 @@ def get_evaluation_statistics():
     total_evaluators = Evaluator.query.count()
 
     online_evaluations = Evaluation.query.filter_by(method='online').count()
-    manual_evaluations = Evaluation.query.filter_by(method='manual_validated').count()
+    ai_processed_evaluations = Evaluation.query.filter_by(method='ai_processed').count()
 
     active_evaluators = db.session.query(Evaluation.evaluator_id).distinct().count()
 
@@ -306,6 +306,6 @@ def get_evaluation_statistics():
         'total_evaluators': total_evaluators,
         'active_evaluators': active_evaluators,
         'online_evaluations': online_evaluations,
-        'manual_evaluations': manual_evaluations,
+        'ai_processed_evaluations': ai_processed_evaluations,
         'completion_rate': round((active_evaluators / total_evaluators * 100), 1) if total_evaluators > 0 else 0
     }

@@ -6,16 +6,26 @@ import io
 
 
 def get_google_api_key():
-    api_key = os.environ.get('GOOGLE_API_KEY')
-    if not api_key:
-        raise ValueError("GOOGLE_API_KEY não configurada.")
-    return api_key
+    return os.environ.get('GOOGLE_API_KEY')
 
+
+_model_cache = None
+_genai_configured = False
 
 def get_ai_model():
-    api_key = get_google_api_key()
-    genai.configure(api_key=api_key)
-    return genai.GenerativeModel('gemini-1.5-flash')
+    global _model_cache, _genai_configured
+    
+    if _model_cache is None:
+        api_key = get_google_api_key()
+        
+        if not _genai_configured:
+            genai.configure(api_key=api_key)
+            _genai_configured = True
+        
+        model_name = os.environ.get('GEMINI_MODEL')
+        _model_cache = genai.GenerativeModel(model_name)
+    
+    return _model_cache
 
 
 PROMPT = """
@@ -75,7 +85,6 @@ def validate_scores(scores):
 
 
 def process_sheet_image_ai(image_bytes):
-
     img = Image.open(io.BytesIO(image_bytes))
 
     if img.size[0] < 100 or img.size[1] < 100:

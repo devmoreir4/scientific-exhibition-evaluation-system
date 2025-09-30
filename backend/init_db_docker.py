@@ -14,11 +14,11 @@ def wait_for_postgres():
     for i in range(max_retries):
         try:
             conn = psycopg2.connect(
-                host=os.environ.get('DB_HOST', 'postgres'),
-                port=int(os.environ.get('DB_PORT', 5432)),
-                database=os.environ.get('DB_NAME', 'evaluation_system'),
-                user=os.environ.get('DB_USER', 'postgres'),
-                password=os.environ.get('DB_PASSWORD', 'postgres123')
+                host=os.environ.get('DB_HOST'),
+                port=int(os.environ.get('DB_PORT')),
+                database=os.environ.get('DB_NAME'),
+                user=os.environ.get('DB_USER'),
+                password=os.environ.get('DB_PASSWORD')
             )
             conn.close()
             print(f"PostgreSQL is ready! (attempt {i+1})")
@@ -46,8 +46,8 @@ if __name__ == "__main__":
 
             print("Checking default admin...")
 
-            admin_login = os.environ.get('ADMIN_LOGIN', 'admin')
-            admin_password = os.environ.get('ADMIN_PASSWORD', 'admin123')
+            admin_login = os.environ.get('ADMIN_LOGIN')
+            admin_password = os.environ.get('ADMIN_PASSWORD')
 
             admin = Admin.query.filter_by(login=admin_login).first()
             if not admin:

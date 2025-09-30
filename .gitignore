@@ -7,7 +7,7 @@ instance/
 Mostra2024.csv
 backups/
 exports/
-test_files/
+uploads/
 
 # ---- frontend ----
 # Logs
